@@ -1,0 +1,44 @@
+[
+  {
+    "slug": "professional-shampoo",
+    "name": "Professional Shampoo",
+    "brand": "Brand A",
+    "audience": ["SALON"],
+    "functions": ["Cleansing", "Scalp Care"],
+    "summary": "A professional-grade cleansing shampoo designed for consistent results in salon routines.",
+    "benefits": [
+      "Balanced cleansing suitable for daily salon use",
+      "Supports scalp comfort",
+      "Prepares hair for treatment and styling"
+    ],
+    "howToUse": "Apply to wet hair. Massage into scalp and lengths, then rinse thoroughly. Repeat if necessary.\nFor best results, follow with the recommended conditioner or treatment."
+  },
+  {
+    "slug": "barber-styling-pomade",
+    "name": "Barber Styling Pomade",
+    "brand": "Brand B",
+    "audience": ["BARBER"],
+    "functions": ["Styling", "Hold"],
+    "summary": "A professional pomade for barbershops seeking controlled hold and clean finish.",
+    "benefits": [
+      "Controlled hold for structured styles",
+      "Easy to work and restyle",
+      "Suitable for professional barbershop workflow"
+    ],
+    "howToUse": "Warm a small amount between palms. Apply evenly to dry or slightly damp hair. Style as desired."
+  },
+  {
+    "slug": "treatment-mask",
+    "name": "Treatment Mask",
+    "brand": "Brand A",
+    "audience": ["SALON", "BARBER"],
+    "functions": ["Repair", "Hydration"],
+    "summary": "An in-salon treatment mask for hydration and improved manageability.",
+    "benefits": [
+      "Improves manageability",
+      "Supports hydration",
+      "Designed for in-salon service routines"
+    ],
+    "howToUse": "After shampooing, apply to towel-dried hair. Leave for 5–10 minutes, then rinse thoroughly."
+  }
+]

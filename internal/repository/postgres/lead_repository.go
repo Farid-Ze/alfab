@@ -28,14 +28,22 @@ func (r *LeadRepository) Create(ctx context.Context, l lead.Lead) (lead.Lead, er
 	}
 
 	raw, _ := json.Marshal(map[string]any{
-		"name":             l.Name,
-		"email":            l.Email,
-		"phone":            l.Phone,
-		"message":          l.Message,
-		"page_url_initial": l.PageURLInitial,
-		"page_url_current": l.PageURLCurrent,
-		"user_agent":       l.UserAgent,
-		"ip_address":       l.IPAddress,
+		"business_name":       l.BusinessName,
+		"contact_name":        l.ContactName,
+		"phone_whatsapp":      l.PhoneWhatsApp,
+		"city":                l.City,
+		"salon_type":          l.SalonType,
+		"consent":             l.Consent,
+		"chair_count":         l.ChairCount,
+		"specialization":      l.Specialization,
+		"current_brands_used": l.CurrentBrandsUsed,
+		"monthly_spend_range": l.MonthlySpendRange,
+		"email":               l.Email,
+		"message":             l.Message,
+		"page_url_initial":     l.PageURLInitial,
+		"page_url_current":     l.PageURLCurrent,
+		"user_agent":           l.UserAgent,
+		"ip_address":           l.IPAddress,
 	})
 
 	q := `
@@ -43,23 +51,29 @@ func (r *LeadRepository) Create(ctx context.Context, l lead.Lead) (lead.Lead, er
 			INSERT INTO leads (
 				idempotency_key_hash,
 				name, email, phone, message,
+				business_name, contact_name, phone_whatsapp, city, salon_type, consent,
+				chair_count, specialization, current_brands_used, monthly_spend_range,
 				page_url_initial, page_url_current,
 				user_agent, ip_address,
 				raw
 			)
-			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)
 			ON CONFLICT (idempotency_key_hash) WHERE idempotency_key_hash IS NOT NULL DO NOTHING
 			RETURNING
 				id, created_at,
 				idempotency_key_hash,
-				name, email, phone, message,
+				business_name, contact_name, phone_whatsapp, city, salon_type, consent,
+				chair_count, specialization, current_brands_used, monthly_spend_range,
+				email, message,
 				page_url_initial, page_url_current,
 				user_agent, ip_address
 		)
 		SELECT
 			id, created_at,
 			COALESCE(idempotency_key_hash, ''),
-			name, email, phone, message,
+			business_name, contact_name, phone_whatsapp, city, salon_type, consent,
+			chair_count, specialization, current_brands_used, monthly_spend_range,
+			email, message,
 			page_url_initial, page_url_current,
 			user_agent, ip_address
 		FROM ins
@@ -67,7 +81,9 @@ func (r *LeadRepository) Create(ctx context.Context, l lead.Lead) (lead.Lead, er
 		SELECT
 			id, created_at,
 			COALESCE(idempotency_key_hash, ''),
-			name, email, phone, message,
+			business_name, contact_name, phone_whatsapp, city, salon_type, consent,
+			chair_count, specialization, current_brands_used, monthly_spend_range,
+			email, message,
 			page_url_initial, page_url_current,
 			user_agent, ip_address
 		FROM leads
@@ -76,12 +92,26 @@ func (r *LeadRepository) Create(ctx context.Context, l lead.Lead) (lead.Lead, er
 		LIMIT 1;
 	`
 
+	// Keep legacy non-null columns populated for backward compatibility.
+	legacyName := l.ContactName
+	legacyPhone := l.PhoneWhatsApp
+
 	row := r.db.QueryRowContext(ctx, q,
 		idem,
-		l.Name,
+		legacyName,
 		l.Email,
-		l.Phone,
+		legacyPhone,
 		l.Message,
+		l.BusinessName,
+		l.ContactName,
+		l.PhoneWhatsApp,
+		l.City,
+		l.SalonType,
+		l.Consent,
+		l.ChairCount,
+		l.Specialization,
+		l.CurrentBrandsUsed,
+		l.MonthlySpendRange,
 		l.PageURLInitial,
 		l.PageURLCurrent,
 		l.UserAgent,
@@ -93,9 +123,17 @@ func (r *LeadRepository) Create(ctx context.Context, l lead.Lead) (lead.Lead, er
 		&l.ID,
 		&l.CreatedAt,
 		&l.IdempotencyKeyHash,
-		&l.Name,
+		&l.BusinessName,
+		&l.ContactName,
+		&l.PhoneWhatsApp,
+		&l.City,
+		&l.SalonType,
+		&l.Consent,
+		&l.ChairCount,
+		&l.Specialization,
+		&l.CurrentBrandsUsed,
+		&l.MonthlySpendRange,
 		&l.Email,
-		&l.Phone,
 		&l.Message,
 		&l.PageURLInitial,
 		&l.PageURLCurrent,
@@ -113,7 +151,9 @@ func (r *LeadRepository) GetByID(ctx context.Context, id uuid.UUID) (lead.Lead, 
 		SELECT
 			id, created_at,
 			COALESCE(idempotency_key_hash, ''),
-			name, email, phone, message,
+			business_name, contact_name, phone_whatsapp, city, salon_type, consent,
+			chair_count, specialization, current_brands_used, monthly_spend_range,
+			email, message,
 			page_url_initial, page_url_current,
 			user_agent, ip_address
 		FROM leads
@@ -125,9 +165,17 @@ func (r *LeadRepository) GetByID(ctx context.Context, id uuid.UUID) (lead.Lead, 
 		&l.ID,
 		&l.CreatedAt,
 		&l.IdempotencyKeyHash,
-		&l.Name,
+		&l.BusinessName,
+		&l.ContactName,
+		&l.PhoneWhatsApp,
+		&l.City,
+		&l.SalonType,
+		&l.Consent,
+		&l.ChairCount,
+		&l.Specialization,
+		&l.CurrentBrandsUsed,
+		&l.MonthlySpendRange,
 		&l.Email,
-		&l.Phone,
 		&l.Message,
 		&l.PageURLInitial,
 		&l.PageURLCurrent,
@@ -152,7 +200,9 @@ func (r *LeadRepository) List(ctx context.Context, limit int, before time.Time) 
 		SELECT
 			id, created_at,
 			COALESCE(idempotency_key_hash, ''),
-			name, email, phone, message,
+			business_name, contact_name, phone_whatsapp, city, salon_type, consent,
+			chair_count, specialization, current_brands_used, monthly_spend_range,
+			email, message,
 			page_url_initial, page_url_current,
 			user_agent, ip_address
 		FROM leads
@@ -179,9 +229,17 @@ func (r *LeadRepository) List(ctx context.Context, limit int, before time.Time) 
 			&l.ID,
 			&l.CreatedAt,
 			&l.IdempotencyKeyHash,
-			&l.Name,
+			&l.BusinessName,
+			&l.ContactName,
+			&l.PhoneWhatsApp,
+			&l.City,
+			&l.SalonType,
+			&l.Consent,
+			&l.ChairCount,
+			&l.Specialization,
+			&l.CurrentBrandsUsed,
+			&l.MonthlySpendRange,
 			&l.Email,
-			&l.Phone,
 			&l.Message,
 			&l.PageURLInitial,
 			&l.PageURLCurrent,

@@ -1078,16 +1078,16 @@ Jika baseline tidak bisa dipenuhi 100%:
 
 | ASVS ID | Requirement (excerpt/summary) | Applies to | Implementation notes | Evidence link |
 |---|---|---|---|---|
-| v5.0.0-V2.2.1 | Positive validation (allowlist/expected structure) for business/security decisions (L1) | lead submit | Schema constraints; reject invalid; log rejects safely | _link_ |
-| v5.0.0-V2.2.2 | Input validation enforced at trusted service layer (L1) | lead submit | Server-side validation; client validation not trusted | _link_ |
-| v5.0.0-V1.2.4 | Parameterized queries/ORM protections against injection (L1) | persistence | Parameterized queries; no SQL concat | _link_ |
-| v5.0.0-V2.4.1 | Anti-automation controls (L2) | lead submit | Rate limiting; honeypot; 429 on abuse | _link_ |
-| v5.0.0-V8.3.1 | Authorization enforced at trusted service layer (L1) | admin/export | Auth token/basic auth/allowlist; server-side checks | _link_ |
-| v5.0.0-V1.2.10 | Protect against CSV/Formula Injection (L3) | export CSV | Escape dangerous leading chars (`=`,`+`,`-`,`@`, tab, null) | _link_ |
-| v5.0.0-V4.1.1 | Correct Content-Type incl. charset (L1) | API responses | Ensure JSON content-type w/ charset | _link_ |
-| v5.0.0-V3.4.4 | `X-Content-Type-Options: nosniff` (L2) | website/API | Enable header at edge/app | _link_ |
-| v5.0.0-V3.4.6 | CSP `frame-ancestors` prevents embedding by default (L2) | website | `frame-ancestors 'none'` unless allowlisted | _link_ |
-| v5.0.0-V3.4.3 | CSP baseline includes `object-src 'none'` and `base-uri 'none'` (L2) | website | Ensure directives present | _link_ |
+| v5.0.0-V2.2.1 | Positive validation (allowlist/expected structure) for business/security decisions (L1) | lead submit | Schema constraints; reject invalid; log rejects safely | `internal/domain/lead/lead.go` (Validate) + `internal/service/lead_service.go` |
+| v5.0.0-V2.2.2 | Input validation enforced at trusted service layer (L1) | lead submit | Server-side validation; client validation not trusted | `internal/service/lead_service.go` (Create validates) |
+| v5.0.0-V1.2.4 | Parameterized queries/ORM protections against injection (L1) | persistence | Parameterized queries; no SQL concat | `internal/repository/postgres/lead_repository.go` + `internal/repository/postgres/lead_notification_repository.go` |
+| v5.0.0-V2.4.1 | Anti-automation controls (L2) | lead submit | Rate limiting; honeypot; 429 on abuse | `internal/handler/app.go` (limiter) + `internal/domain/lead/lead.go` (honeypot) |
+| v5.0.0-V8.3.1 | Authorization enforced at trusted service layer (L1) | admin/export | Auth token/basic auth/allowlist; server-side checks | `internal/handler/admin_leads.go` (requireAdminToken) + `internal/handler/app.go` |
+| v5.0.0-V1.2.10 | Protect against CSV/Formula Injection (L3) | export CSV | Escape dangerous leading chars (`=`,`+`,`-`,`@`, tab, null) | `internal/handler/admin_leads.go` (csvSafe) |
+| v5.0.0-V4.1.1 | Correct Content-Type incl. charset (L1) | API responses | Ensure JSON content-type w/ charset | `internal/handler/json.go` + evidence: `artifacts/paket-a/evidence-pack/03-security/2026-01-12_lead-api_headers_snapshot.md` |
+| v5.0.0-V3.4.4 | `X-Content-Type-Options: nosniff` (L2) | website/API | Enable header at edge/app | `internal/handler/app.go` + evidence: `artifacts/paket-a/evidence-pack/03-security/2026-01-12_lead-api_headers_snapshot.md` |
+| v5.0.0-V3.4.6 | CSP `frame-ancestors` prevents embedding by default (L2) | website | `frame-ancestors 'none'` unless allowlisted | Runbook: `artifacts/paket-a/evidence-pack/03-security/website_headers_verification_runbook.md` (evidence tracked in `artifacts/paket-a/evidence-pack/03-security/index.md`) |
+| v5.0.0-V3.4.3 | CSP baseline includes `object-src 'none'` and `base-uri 'none'` (L2) | website | Ensure directives present | Runbook: `artifacts/paket-a/evidence-pack/03-security/website_headers_verification_runbook.md` (evidence tracked in `artifacts/paket-a/evidence-pack/03-security/index.md`) |
 
 Acceptable evidence examples:
 - integration test logs

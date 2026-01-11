@@ -41,6 +41,16 @@ func NewApp(cfg config.Config, leadSvc *service.LeadService) *fiber.App {
 		return err
 	})
 
+	// Baseline security headers (Paket A §15). Keep minimal and low-risk.
+	// - Apply to all responses (including errors).
+	// - Do not override if a handler already set a specific value.
+	app.Use(func(c *fiber.Ctx) error {
+		if c.Get("X-Content-Type-Options") == "" {
+			c.Set("X-Content-Type-Options", "nosniff")
+		}
+		return c.Next()
+	})
+
 	app.Get("/health", httpMetrics("/health"), healthHandler())
 	app.Get("/metrics", httpMetrics("/metrics"), requireAdminToken(cfg.AdminToken), metricsHandler(leadSvc))
 

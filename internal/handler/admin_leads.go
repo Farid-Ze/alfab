@@ -31,7 +31,7 @@ func requireAdminToken(expected string) fiber.Handler {
 		}
 
 		if !secureEquals(token, expected) {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "unauthorized"})
+			return writeJSON(c, fiber.StatusUnauthorized, fiber.Map{"error": "unauthorized"})
 		}
 
 		return c.Next()
@@ -75,21 +75,41 @@ func exportLeadsCSVHandler(svc *service.LeadService) fiber.Handler {
 		_ = w.Write([]string{
 			"id",
 			"created_at",
-			"name",
+			"business_name",
+			"contact_name",
+			"phone_whatsapp",
+			"city",
+			"salon_type",
+			"consent",
+			"chair_count",
+			"specialization",
+			"current_brands_used",
+			"monthly_spend_range",
 			"email",
-			"phone",
 			"message",
 			"page_url_initial",
 			"page_url_current",
 		})
 
 		for _, l := range leads {
+			chair := ""
+			if l.ChairCount != nil {
+				chair = strconv.Itoa(*l.ChairCount)
+			}
 			_ = w.Write([]string{
 				l.ID.String(),
 				l.CreatedAt.UTC().Format(time.RFC3339Nano),
-				csvSafe(l.Name),
+				csvSafe(l.BusinessName),
+				csvSafe(l.ContactName),
+				csvSafe(l.PhoneWhatsApp),
+				csvSafe(l.City),
+				csvSafe(l.SalonType),
+				strconv.FormatBool(l.Consent),
+				chair,
+				csvSafe(l.Specialization),
+				csvSafe(l.CurrentBrandsUsed),
+				csvSafe(l.MonthlySpendRange),
 				csvSafe(l.Email),
-				csvSafe(l.Phone),
 				csvSafe(l.Message),
 				csvSafe(l.PageURLInitial),
 				csvSafe(l.PageURLCurrent),
@@ -101,6 +121,7 @@ func exportLeadsCSVHandler(svc *service.LeadService) fiber.Handler {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal"})
 		}
 
+		c.Set("Cache-Control", "no-store")
 		c.Set(fiber.HeaderContentType, "text/csv; charset=utf-8")
 		c.Set(fiber.HeaderContentDisposition, "attachment; filename=leads.csv")
 		return c.Send(buf.Bytes())

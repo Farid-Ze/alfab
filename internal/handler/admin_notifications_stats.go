@@ -19,29 +19,29 @@ func leadNotificationsStatsHandler(svc *service.LeadService) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		stats, err := svc.NotificationBacklogStats(c.Context())
 		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal"})
+			return writeJSON(c, fiber.StatusInternalServerError, fiber.Map{"error": "internal"})
 		}
 
-	// This is an admin-only ops view; prevent caches from storing potentially sensitive operational state.
-	c.Set("Cache-Control", "no-store")
+		// This is an admin-only ops view; prevent caches from storing potentially sensitive operational state.
+		c.Set("Cache-Control", "no-store")
 
-	var oldestAgeSeconds *int64
-	var oldestAt *time.Time
-	if stats.OldestReadyPendingAt != nil {
-		oldestAt = stats.OldestReadyPendingAt
-		secs := int64(time.Since(*stats.OldestReadyPendingAt).Seconds())
-		if secs < 0 {
-			secs = 0
+		var oldestAgeSeconds *int64
+		var oldestAt *time.Time
+		if stats.OldestReadyPendingAt != nil {
+			oldestAt = stats.OldestReadyPendingAt
+			secs := int64(time.Since(*stats.OldestReadyPendingAt).Seconds())
+			if secs < 0 {
+				secs = 0
+			}
+			oldestAgeSeconds = &secs
 		}
-		oldestAgeSeconds = &secs
-	}
 
-	return c.JSON(fiber.Map{
-		"counts_by_status":               stats.CountsByStatus,
-		"pending_ready_count":            stats.PendingReadyCount,
-		"pending_delayed_count":          stats.PendingDelayedCount,
-		"oldest_ready_pending_created_at": oldestAt,
-		"oldest_ready_pending_age_seconds": oldestAgeSeconds,
-	})
+		return writeJSON(c, fiber.StatusOK, fiber.Map{
+			"counts_by_status":                stats.CountsByStatus,
+			"pending_ready_count":             stats.PendingReadyCount,
+			"pending_delayed_count":           stats.PendingDelayedCount,
+			"oldest_ready_pending_created_at": oldestAt,
+			"oldest_ready_pending_age_seconds": oldestAgeSeconds,
+		})
 	}
 }

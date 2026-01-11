@@ -88,11 +88,14 @@ func listLeadNotificationsHandler(svc *service.LeadService) fiber.Handler {
 			Before:  before,
 		})
 		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal"})
+			return writeJSON(c, fiber.StatusInternalServerError, fiber.Map{"error": "internal"})
 		}
 
+		// Admin-only operational state; avoid caches.
+		c.Set("Cache-Control", "no-store")
+
 		// Response is intentionally minimal: no lead PII, only queue state.
-		return c.JSON(fiber.Map{
+		return writeJSON(c, fiber.StatusOK, fiber.Map{
 			"items": items,
 		})
 	}

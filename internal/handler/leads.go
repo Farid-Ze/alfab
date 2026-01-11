@@ -14,12 +14,25 @@ import (
 )
 
 type createLeadRequest struct {
-	Name           string `json:"name"`
+	BusinessName      string `json:"business_name"`
+	ContactName       string `json:"contact_name"`
+	PhoneWhatsApp     string `json:"phone_whatsapp"`
+	City              string `json:"city"`
+	SalonType         string `json:"salon_type"`
+	Consent           bool   `json:"consent"`
+	ChairCount        *int   `json:"chair_count"`
+	Specialization    string `json:"specialization"`
+	CurrentBrandsUsed string `json:"current_brands_used"`
+	MonthlySpendRange string `json:"monthly_spend_range"`
+
 	Email          string `json:"email"`
-	Phone          string `json:"phone"`
 	Message        string `json:"message"`
 	PageURLInitial string `json:"page_url_initial"`
 	PageURLCurrent string `json:"page_url_current"`
+
+	// Legacy aliases (pre Partner profiling). Kept to avoid hard breaks during transition.
+	Name  string `json:"name"`
+	Phone string `json:"phone"`
 	// Honeypot is intentionally mapped to the JSON field "company" as an anti-spam measure.
 	// IMPORTANT FOR API/FRONTEND CONSUMERS:
 	//   - This field must NOT be displayed in any UI.
@@ -33,16 +46,34 @@ func createLeadHandler(svc *service.LeadService) fiber.Handler {
 		var req createLeadRequest
 		if err := c.BodyParser(&req); err != nil {
 			metrics.IncLeadSubmission("invalid_json")
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid_json"})
+			return writeJSON(c, fiber.StatusBadRequest, fiber.Map{"error": "invalid_json"})
 		}
 
 		idempotencyKeyHash := hashIdempotencyKey(c.Get("Idempotency-Key"))
 
+		contactName := req.ContactName
+		if contactName == "" {
+			contactName = req.Name
+		}
+		phoneWhatsApp := req.PhoneWhatsApp
+		if phoneWhatsApp == "" {
+			phoneWhatsApp = req.Phone
+		}
+
 		l := lead.Lead{
 			IdempotencyKeyHash: idempotencyKeyHash,
-			Name:           req.Name,
+			BusinessName:      req.BusinessName,
+			ContactName:       contactName,
+			PhoneWhatsApp:     phoneWhatsApp,
+			City:              req.City,
+			SalonType:         req.SalonType,
+			Consent:           req.Consent,
+			ChairCount:        req.ChairCount,
+			Specialization:    req.Specialization,
+			CurrentBrandsUsed: req.CurrentBrandsUsed,
+			MonthlySpendRange: req.MonthlySpendRange,
+
 			Email:          req.Email,
-			Phone:          req.Phone,
 			Message:        req.Message,
 			PageURLInitial: req.PageURLInitial,
 			PageURLCurrent: req.PageURLCurrent,
@@ -60,15 +91,15 @@ func createLeadHandler(svc *service.LeadService) fiber.Handler {
 			}
 			if lead.IsInvalid(err) {
 				metrics.IncLeadSubmission("invalid")
-				return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+				return writeJSON(c, fiber.StatusBadRequest, fiber.Map{"error": err.Error()})
 			}
 			metrics.IncLeadSubmission("internal")
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal"})
+			return writeJSON(c, fiber.StatusInternalServerError, fiber.Map{"error": "internal"})
 		}
 
 		metrics.IncLeadSubmission("accepted")
 
-		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{
+		return writeJSON(c, fiber.StatusAccepted, fiber.Map{
 			"status": "accepted",
 			"id":     created.ID.String(),
 		})
