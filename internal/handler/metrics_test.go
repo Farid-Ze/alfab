@@ -38,7 +38,7 @@ func TestMetrics_ContainsLeadPipelineMetrics(t *testing.T) {
 	app := NewApp(cfg, leadSvc)
 
 	// Drive at least one lead submission through HTTP handler to increment the counter.
-	payload := []byte(`{"name":"A","email":"a@example.com","message":"Hello"}`)
+	payload := []byte(`{"business_name":"Biz A","contact_name":"A","phone_whatsapp":"+6281111111111","city":"Jakarta","salon_type":"SALON","consent":true,"email":"a@example.com","message":"Hello"}`)
 	post := httptest.NewRequest(http.MethodPost, "/api/v1/leads", bytes.NewReader(payload))
 	post.Header.Set("Content-Type", "application/json")
 	postResp, err := app.Test(post)
@@ -86,7 +86,7 @@ func TestMetrics_LeadRateLimitedIsCounted(t *testing.T) {
 	app := NewApp(cfg, leadSvc)
 
 	// Burst a handful of requests within the same second.
-	payload := []byte(`{"name":"A","email":"a@example.com","message":"Hello"}`)
+	payload := []byte(`{"business_name":"Biz A","contact_name":"A","phone_whatsapp":"+6281111111111","city":"Jakarta","salon_type":"SALON","consent":true,"email":"a@example.com","message":"Hello"}`)
 	for i := 0; i < 10; i++ {
 		req := httptest.NewRequest(http.MethodPost, "/api/v1/leads", bytes.NewReader(payload))
 		req.Header.Set("Content-Type", "application/json")

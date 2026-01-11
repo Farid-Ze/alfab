@@ -19,9 +19,13 @@ func TestLeadService_Create_EnqueuesNotifications_WhenEnabled(t *testing.T) {
 	svc := NewLeadServiceWithNotifications(leadRepo, notifRepo, true, true)
 
 	created, err := svc.Create(ctx, lead.Lead{
-		Name:    "PT Contoh",
+		BusinessName:  "PT Contoh",
+		ContactName:   "Ops",
+		PhoneWhatsApp: "+6281234567890",
+		City:          "Jakarta",
+		SalonType:     "SALON",
+		Consent:       true,
 		Email:   "ops@example.com",
-		Phone:   "",
 		Message: "hello",
 	})
 	if err != nil {
@@ -60,8 +64,12 @@ func TestLeadService_Create_DoesNotEnqueueNotifications_WhenDisabled(t *testing.
 	svc := NewLeadServiceWithNotifications(leadRepo, notifRepo, false, false)
 
 	_, err := svc.Create(ctx, lead.Lead{
-		Name:    "PT Contoh",
-		Phone:   "+62",
+		BusinessName:  "PT Contoh",
+		ContactName:   "Ops",
+		PhoneWhatsApp: "+6281234567890",
+		City:          "Jakarta",
+		SalonType:     "SALON",
+		Consent:       true,
 		Message: "hello",
 	})
 	if err != nil {

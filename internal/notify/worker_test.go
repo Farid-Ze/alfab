@@ -31,7 +31,16 @@ func TestWorker_SendsAndMarksSent(t *testing.T) {
 	ctx := context.Background()
 
 	leadRepo := memory.NewLeadRepository()
-	created, err := leadRepo.Create(ctx, lead.Lead{Name: "PT Contoh", Email: "ops@example.com", Message: "hi"})
+	created, err := leadRepo.Create(ctx, lead.Lead{
+		BusinessName:  "PT Contoh",
+		ContactName:   "Ops",
+		PhoneWhatsApp: "+6281111111111",
+		City:          "Jakarta",
+		SalonType:     "SALON",
+		Consent:       true,
+		Email:         "ops@example.com",
+		Message:       "hi",
+	})
 	if err != nil {
 		t.Fatalf("lead create: %v", err)
 	}
@@ -77,7 +86,15 @@ func TestWorker_RetriesOnError(t *testing.T) {
 	ctx := context.Background()
 
 	leadRepo := memory.NewLeadRepository()
-	created, _ := leadRepo.Create(ctx, lead.Lead{Name: "PT Contoh", Phone: "+62", Message: "hi"})
+	created, _ := leadRepo.Create(ctx, lead.Lead{
+		BusinessName:  "PT Contoh",
+		ContactName:   "Ops",
+		PhoneWhatsApp: "+6281111111111",
+		City:          "Jakarta",
+		SalonType:     "SALON",
+		Consent:       true,
+		Message:       "hi",
+	})
 
 	notifRepo := memory.NewLeadNotificationRepository()
 	_ = notifRepo.Enqueue(ctx, created.ID, notification.ChannelWebhook)
@@ -114,7 +131,16 @@ func TestWorker_FailsAfterMaxAttempts(t *testing.T) {
 	ctx := context.Background()
 
 	leadRepo := memory.NewLeadRepository()
-	created, _ := leadRepo.Create(ctx, lead.Lead{Name: "PT Contoh", Email: "ops@example.com", Message: "hi"})
+	created, _ := leadRepo.Create(ctx, lead.Lead{
+		BusinessName:  "PT Contoh",
+		ContactName:   "Ops",
+		PhoneWhatsApp: "+6281111111111",
+		City:          "Jakarta",
+		SalonType:     "SALON",
+		Consent:       true,
+		Email:         "ops@example.com",
+		Message:       "hi",
+	})
 
 	notifRepo := memory.NewLeadNotificationRepository()
 	_ = notifRepo.Enqueue(ctx, created.ID, notification.ChannelEmail)

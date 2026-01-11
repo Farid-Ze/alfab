@@ -67,6 +67,20 @@ func NewApp(cfg config.Config, leadSvc *service.LeadService) *fiber.App {
 		},
 	})
 
+	// Rate limit telemetry endpoints (best-effort). These endpoints are not auth-protected,
+	// so keep sane bounds to reduce abuse risk.
+	telemetryLimiter := limiter.New(limiter.Config{
+		Max:        30,
+		Expiration: time.Second,
+		KeyGenerator: func(c *fiber.Ctx) string {
+			return c.IP()
+		},
+	})
+
+	// Website telemetry (Paket A A4): analytics events + CWV RUM.
+	v1.Post("/events", httpMetrics("/api/v1/events"), telemetryLimiter, ingestWebsiteEventHandler())
+	v1.Post("/rum", httpMetrics("/api/v1/rum"), telemetryLimiter, ingestRUMHandler())
+
 	v1.Post("/leads", httpMetrics("/api/v1/leads"), leadRateLimitMetricsMiddleware(), leadLimiter, createLeadHandler(leadSvc))
 
 	admin := v1.Group("/admin", requireAdminToken(cfg.AdminToken))

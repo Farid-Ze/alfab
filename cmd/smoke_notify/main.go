@@ -102,10 +102,14 @@ func main() {
 	leadSvc := service.NewLeadServiceWithNotifications(leadRepo, notifRepo, true, true)
 
 	created, err := leadSvc.Create(ctx, lead.Lead{
-		Name:           "SMOKE TEST - Lead Notifications",
-		Email:          "smoke@example.com",
-		Phone:          "",
-		Message:        "smoke test",
+		BusinessName:      "SMOKE TEST - Lead Notifications",
+		ContactName:       "Smoke Runner",
+		PhoneWhatsApp:     "+6281111111111",
+		City:              "Jakarta",
+		SalonType:         "OTHER",
+		Consent:           true,
+		Email:             "smoke@example.com",
+		Message:           "smoke test",
 		PageURLInitial: "https://example.com/smoke",
 		PageURLCurrent: "https://example.com/smoke",
 		UserAgent:      "smoke_notify",

@@ -28,3 +28,7 @@ docs/
 
 # Supabase CLI local state (do not commit)
 supabase/.temp/
+supabase/
+
+tmp/
+reference/

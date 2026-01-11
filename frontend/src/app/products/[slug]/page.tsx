@@ -8,8 +8,13 @@ export function generateStaticParams() {
   return listProducts().map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const p = getProductBySlug(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const p = getProductBySlug(slug);
   if (!p) return { title: "Product" };
   return {
     title: p.name,
@@ -17,8 +22,13 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-export default function ProductDetailPage({ params }: { params: { slug: string } }) {
-  const p = getProductBySlug(params.slug);
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const p = getProductBySlug(slug);
   if (!p) {
     return (
       <div className="space-y-3">

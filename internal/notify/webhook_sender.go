@@ -47,14 +47,27 @@ func (s *WebhookSender) Send(ctx context.Context, l lead.Lead) error {
 	payload := map[string]any{
 		"lead_id":          l.ID.String(),
 		"created_at":       l.CreatedAt.UTC().Format(time.RFC3339Nano),
-		"name":             l.Name,
+		// Backward-compatible keys (legacy contract)
+		"name":             l.ContactName,
 		"email":            l.Email,
-		"phone":            l.Phone,
+		"phone":            l.PhoneWhatsApp,
 		"message":          l.Message,
 		"page_url_initial": l.PageURLInitial,
 		"page_url_current": l.PageURLCurrent,
 		"user_agent":       l.UserAgent,
 		"ip_address":       l.IPAddress,
+
+		// Partner profiling (Paket A §5)
+		"business_name":       l.BusinessName,
+		"contact_name":        l.ContactName,
+		"phone_whatsapp":      l.PhoneWhatsApp,
+		"city":                l.City,
+		"salon_type":          l.SalonType,
+		"consent":             l.Consent,
+		"chair_count":         l.ChairCount,
+		"specialization":      l.Specialization,
+		"current_brands_used": l.CurrentBrandsUsed,
+		"monthly_spend_range": l.MonthlySpendRange,
 	}
 
 	b, err := json.Marshal(payload)

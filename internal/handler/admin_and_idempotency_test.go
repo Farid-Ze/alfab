@@ -39,7 +39,16 @@ func TestAdminExport_CSV(t *testing.T) {
 	leadSvc := service.NewLeadService(repo)
 	app := NewApp(cfg, leadSvc)
 
-	_, err := leadSvc.Create(context.Background(), lead.Lead{Name: "A", Email: "a@example.com", Message: "Hello"})
+	_, err := leadSvc.Create(context.Background(), lead.Lead{
+		BusinessName:  "Biz A",
+		ContactName:   "A",
+		PhoneWhatsApp: "+6281111111111",
+		City:          "Jakarta",
+		SalonType:     "SALON",
+		Consent:       true,
+		Email:         "a@example.com",
+		Message:       "Hello",
+	})
 	if err != nil {
 		t.Fatalf("seed lead: %v", err)
 	}
@@ -62,7 +71,7 @@ func TestAdminExport_CSV(t *testing.T) {
 	}
 
 	b, _ := io.ReadAll(resp.Body)
-	if !strings.HasPrefix(string(b), "id,created_at,name,email,phone,message,page_url_initial,page_url_current") {
+	if !strings.HasPrefix(string(b), "id,created_at,business_name,contact_name,phone_whatsapp,city,salon_type,consent,chair_count,specialization,current_brands_used,monthly_spend_range,email,message,page_url_initial,page_url_current") {
 		t.Fatalf("expected CSV header, got: %q", string(b))
 	}
 }
@@ -73,7 +82,7 @@ func TestLeadCreate_IdempotencyKey(t *testing.T) {
 	leadSvc := service.NewLeadService(repo)
 	app := NewApp(cfg, leadSvc)
 
-	payload := []byte(`{"name":"A","email":"a@example.com","message":"Hello"}`)
+	payload := []byte(`{"business_name":"Biz A","contact_name":"A","phone_whatsapp":"+6281111111111","city":"Jakarta","salon_type":"SALON","consent":true,"email":"a@example.com","message":"Hello"}`)
 
 	req1 := httptest.NewRequest(http.MethodPost, "/api/v1/leads", bytes.NewReader(payload))
 	req1.Header.Set("Content-Type", "application/json")
@@ -138,7 +147,16 @@ func TestAdminLeadNotifications_List(t *testing.T) {
 	leadSvc := service.NewLeadServiceWithNotifications(leadRepo, notifRepo, true, true)
 	app := NewApp(cfg, leadSvc)
 
-	created, err := leadSvc.Create(context.Background(), lead.Lead{Name: "A", Email: "a@example.com", Message: "Hello"})
+	created, err := leadSvc.Create(context.Background(), lead.Lead{
+		BusinessName:  "Biz A",
+		ContactName:   "A",
+		PhoneWhatsApp: "+6281111111111",
+		City:          "Jakarta",
+		SalonType:     "SALON",
+		Consent:       true,
+		Email:         "a@example.com",
+		Message:       "Hello",
+	})
 	if err != nil {
 		t.Fatalf("seed lead: %v", err)
 	}
@@ -213,7 +231,16 @@ func TestAdminLeadNotifications_Stats(t *testing.T) {
 	leadSvc := service.NewLeadServiceWithNotifications(leadRepo, notifRepo, true, true)
 	app := NewApp(cfg, leadSvc)
 
-	created, err := leadSvc.Create(context.Background(), lead.Lead{Name: "A", Email: "a@example.com", Message: "Hello"})
+	created, err := leadSvc.Create(context.Background(), lead.Lead{
+		BusinessName:  "Biz A",
+		ContactName:   "A",
+		PhoneWhatsApp: "+6281111111111",
+		City:          "Jakarta",
+		SalonType:     "SALON",
+		Consent:       true,
+		Email:         "a@example.com",
+		Message:       "Hello",
+	})
 	if err != nil {
 		t.Fatalf("seed lead: %v", err)
 	}

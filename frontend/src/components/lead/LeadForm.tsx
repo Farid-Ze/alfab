@@ -2,6 +2,9 @@
 
 import { useMemo, useState } from "react";
 
+import { trackEvent } from "@/lib/analytics";
+import { getCurrentPageUrl, getInitialPageUrl } from "@/lib/telemetry";
+
 type Result =
   | { kind: "idle" }
   | { kind: "submitting" }
@@ -71,8 +74,8 @@ export default function LeadForm() {
       current_brands_used: currentBrandsUsed.trim() || undefined,
       monthly_spend_range: monthlySpendRange.trim() || undefined,
       message: message.trim() || undefined,
-      page_url_initial: typeof window !== "undefined" ? window.location.origin : undefined,
-      page_url_current: typeof window !== "undefined" ? window.location.href : undefined,
+      page_url_initial: getInitialPageUrl(),
+      page_url_current: getCurrentPageUrl(),
       company: company.trim() || undefined,
     };
 
@@ -86,6 +89,7 @@ export default function LeadForm() {
     }).catch(() => null);
 
     if (!res) {
+      trackEvent("lead_submit_error", { reason: "network" });
       setResult({ kind: "error", message: "Network error. Please try again." });
       return;
     }
@@ -98,11 +102,14 @@ export default function LeadForm() {
       } catch {
         // honeypot spam path can be 202 with no body.
       }
+
+      trackEvent("lead_submit_success", { id });
       setResult({ kind: "success", id });
       return;
     }
 
     if (res.status === 429) {
+      trackEvent("lead_submit_error", { reason: "rate_limited" });
       setResult({ kind: "error", message: "Too many requests. Please try again in a moment." });
       return;
     }
@@ -114,6 +121,8 @@ export default function LeadForm() {
     } catch {
       // ignore
     }
+
+    trackEvent("lead_submit_error", { reason: "server", status: res.status, message: msg });
     setResult({ kind: "error", message: msg });
   }
 

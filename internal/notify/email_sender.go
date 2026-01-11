@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"net/smtp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -51,7 +52,7 @@ func (s *EmailSender) Send(ctx context.Context, l lead.Lead) error {
 		return fmt.Errorf("smtp to not configured")
 	}
 
-	subject := fmt.Sprintf("New Partner Lead: %s", safeOneLine(l.Name))
+	subject := fmt.Sprintf("New Partner Lead: %s", safeOneLine(leadDisplayName(l)))
 	body := buildEmailBody(l)
 	msg := buildRFC2822(s.cfg.From, s.cfg.To, subject, body)
 
@@ -130,14 +131,28 @@ func buildRFC2822(from string, to []string, subject, body string) string {
 }
 
 func buildEmailBody(l lead.Lead) string {
+	chairCount := ""
+	if l.ChairCount != nil {
+		chairCount = strconv.Itoa(*l.ChairCount)
+	}
+	consent := strconv.FormatBool(l.Consent)
+
 	lines := []string{
 		"New lead received:",
 		"",
 		"ID: " + l.ID.String(),
 		"CreatedAt: " + l.CreatedAt.UTC().Format(time.RFC3339Nano),
-		"Name: " + safeOneLine(l.Name),
+		"BusinessName: " + safeOneLine(l.BusinessName),
+		"ContactName: " + safeOneLine(l.ContactName),
 		"Email: " + safeOneLine(l.Email),
-		"Phone: " + safeOneLine(l.Phone),
+		"PhoneWhatsApp: " + safeOneLine(l.PhoneWhatsApp),
+		"City: " + safeOneLine(l.City),
+		"SalonType: " + safeOneLine(l.SalonType),
+		"Consent: " + consent,
+		"ChairCount: " + chairCount,
+		"Specialization: " + safeOneLine(l.Specialization),
+		"CurrentBrandsUsed: " + safeOneLine(l.CurrentBrandsUsed),
+		"MonthlySpendRange: " + safeOneLine(l.MonthlySpendRange),
 		"Message: " + safeOneLine(l.Message),
 		"PageURLInitial: " + safeOneLine(l.PageURLInitial),
 		"PageURLCurrent: " + safeOneLine(l.PageURLCurrent),
@@ -145,6 +160,19 @@ func buildEmailBody(l lead.Lead) string {
 		"IPAddress: " + safeOneLine(l.IPAddress),
 	}
 	return strings.Join(lines, "\n") + "\n"
+}
+
+func leadDisplayName(l lead.Lead) string {
+	if strings.TrimSpace(l.BusinessName) != "" {
+		return l.BusinessName
+	}
+	if strings.TrimSpace(l.ContactName) != "" {
+		return l.ContactName
+	}
+	if l.ID != (lead.Lead{}).ID {
+		return l.ID.String()
+	}
+	return "(unknown)"
 }
 
 func safeOneLine(s string) string {

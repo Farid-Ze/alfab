@@ -1,5 +1,8 @@
+"use client";
+
 import type { ComponentProps } from "react";
 
+import { trackEvent } from "@/lib/analytics";
 import { buildWhatsAppHref } from "@/lib/whatsapp";
 
 type Props = ComponentProps<"a"> & {
@@ -24,6 +27,14 @@ export default function WhatsAppLink({ prefill, href, ...props }: Props) {
       href={finalHref}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={(e) => {
+        trackEvent("cta_whatsapp_click", {
+          href: finalHref,
+          target: "whatsapp",
+        });
+
+        props.onClick?.(e);
+      }}
     />
   );
 }

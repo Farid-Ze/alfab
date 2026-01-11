@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -80,6 +81,56 @@ var (
 			Help:      "1 if there is at least one ready-to-send pending notification, else 0.",
 		},
 	)
+
+	// --- Website telemetry (Paket A A4 / UAT-16) ---
+
+	webVitalsReportsTotal = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: "lead_api",
+			Name:      "web_vitals_reports_total",
+			Help:      "Total Web Vitals reports received, labeled by metric/device_type/rating.",
+		},
+		[]string{"metric", "device_type", "rating"},
+	)
+
+	webVitalsLCPSeconds = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Namespace: "lead_api",
+			Name:      "web_vitals_lcp_seconds",
+			Help:      "Largest Contentful Paint (LCP) in seconds (RUM), labeled by device_type.",
+			Buckets:   []float64{0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10},
+		},
+		[]string{"device_type"},
+	)
+
+	webVitalsINPSeconds = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Namespace: "lead_api",
+			Name:      "web_vitals_inp_seconds",
+			Help:      "Interaction to Next Paint (INP) in seconds (RUM), labeled by device_type.",
+			Buckets:   []float64{0.05, 0.1, 0.15, 0.2, 0.3, 0.5, 1, 2},
+		},
+		[]string{"device_type"},
+	)
+
+	webVitalsCLS = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Namespace: "lead_api",
+			Name:      "web_vitals_cls",
+			Help:      "Cumulative Layout Shift (CLS) (RUM), labeled by device_type.",
+			Buckets:   []float64{0.01, 0.03, 0.05, 0.1, 0.15, 0.25, 0.5, 1},
+		},
+		[]string{"device_type"},
+	)
+
+	websiteEventsTotal = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: "lead_api",
+			Name:      "website_events_total",
+			Help:      "Website analytics events received, labeled by event/device_type.",
+		},
+		[]string{"event", "device_type"},
+	)
 )
 
 // Init registers metrics in the default registry.
@@ -96,6 +147,11 @@ func Init() {
 			leadNotificationsPendingDelayed,
 			leadNotificationsOldestReadyPendingAgeSeconds,
 			leadNotificationsOldestReadyPendingPresent,
+			webVitalsReportsTotal,
+			webVitalsLCPSeconds,
+			webVitalsINPSeconds,
+			webVitalsCLS,
+			websiteEventsTotal,
 		)
 	})
 }
@@ -154,4 +210,69 @@ func SetLeadNotificationBacklog(
 	}
 	leadNotificationsOldestReadyPendingPresent.Set(1)
 	leadNotificationsOldestReadyPendingAgeSeconds.Set(secs)
+}
+
+// ObserveWebVital records a Core Web Vitals (RUM) measurement.
+//
+// The input value is expected to be in milliseconds for LCP/INP (as emitted by web-vitals),
+// and unitless for CLS.
+//
+// Labels are intentionally low-cardinality: do NOT include URL or user identifiers.
+func ObserveWebVital(metricName string, value float64, deviceType string, rating string) {
+	Init()
+
+	metric := strings.ToUpper(strings.TrimSpace(metricName))
+	device := normalizeDeviceType(deviceType)
+	rate := normalizeRating(rating)
+
+	webVitalsReportsTotal.WithLabelValues(metric, device, rate).Inc()
+
+	switch metric {
+	case "LCP":
+		// web-vitals reports LCP in milliseconds.
+		webVitalsLCPSeconds.WithLabelValues(device).Observe(value / 1000.0)
+	case "INP":
+		// web-vitals reports INP in milliseconds.
+		webVitalsINPSeconds.WithLabelValues(device).Observe(value / 1000.0)
+	case "CLS":
+		webVitalsCLS.WithLabelValues(device).Observe(value)
+	default:
+		// Unknown metric: counted, but not histogrammed.
+		return
+	}
+}
+
+// IncWebsiteEvent increments a low-cardinality website analytics event counter.
+func IncWebsiteEvent(eventName string, deviceType string) {
+	Init()
+
+	event := strings.TrimSpace(eventName)
+	if event == "" {
+		event = "unknown"
+	}
+	websiteEventsTotal.WithLabelValues(event, normalizeDeviceType(deviceType)).Inc()
+}
+
+func normalizeDeviceType(v string) string {
+	s := strings.TrimSpace(strings.ToLower(v))
+	switch s {
+	case "mobile", "desktop":
+		return s
+	default:
+		return "unknown"
+	}
+}
+
+func normalizeRating(v string) string {
+	s := strings.TrimSpace(strings.ToLower(v))
+	switch s {
+	case "good":
+		return "good"
+	case "needs-improvement", "needs_improvement":
+		return "needs_improvement"
+	case "poor":
+		return "poor"
+	default:
+		return "unknown"
+	}
 }
