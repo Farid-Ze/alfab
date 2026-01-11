@@ -1,4 +1,4 @@
-.PHONY: run build test migrate-up migrate-down migrate-status
+.PHONY: run build test migrate-up migrate-down migrate-status db-check
 
 run:
 	go run ./cmd/server
@@ -17,3 +17,6 @@ migrate-down:
 
 migrate-status:
 	go run ./cmd/migrate status
+
+db-check:
+	go run ./cmd/dbcheck

@@ -25,3 +25,6 @@ bin/
 # Per instruction: keep PASS+Evidence and working docs local; do not commit these folders.
 artifacts/
 docs/
+
+# Supabase CLI local state (do not commit)
+supabase/.temp/
