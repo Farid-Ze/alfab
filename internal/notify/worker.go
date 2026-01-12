@@ -65,6 +65,10 @@ func (w *Worker) tick(ctx context.Context) {
 	}
 
 	for _, n := range items {
+		// Each outbox item may carry trace context from the originating HTTP request.
+		// Use a derived context per notification so logs/metrics and downstream calls can correlate.
+		itemCtx := obs.WithTraceparent(ctx, n.Traceparent)
+
 		sender, ok := w.senders[n.Channel]
 		if !ok {
 			msg := fmt.Sprintf("no sender configured for channel=%s", n.Channel)
@@ -73,21 +77,23 @@ func (w *Worker) tick(ctx context.Context) {
 				"channel":         n.Channel,
 				"lead_id":          n.LeadID.String(),
 				"attempt":         n.Attempts + 1,
+				"trace":           obs.TraceparentFromContext(itemCtx),
 			})
-			if err := w.repo.MarkFailed(ctx, n.ID, n.Attempts+1, msg); err != nil {
+			if err := w.repo.MarkFailed(itemCtx, n.ID, n.Attempts+1, msg); err != nil {
 				obs.Log("notify_mark_failed_error", obs.Fields{
 					"notification_id": n.ID.String(),
 					"channel":         n.Channel,
 					"lead_id":          n.LeadID.String(),
 					"attempt":         n.Attempts + 1,
 					"error":           err.Error(),
+					"trace":           obs.TraceparentFromContext(itemCtx),
 				})
 			}
-			metrics.ObserveLeadNotificationSendWithTraceparent(n.Channel, "no_sender", 0, obs.TraceparentFromContext(ctx))
+			metrics.ObserveLeadNotificationSendWithTraceparent(n.Channel, "no_sender", 0, obs.TraceparentFromContext(itemCtx))
 			continue
 		}
 
-		l, err := w.leadRepo.GetByID(ctx, n.LeadID)
+		l, err := w.leadRepo.GetByID(itemCtx, n.LeadID)
 		if err != nil {
 			obs.Log("notify_load_lead_failed", obs.Fields{
 				"notification_id": n.ID.String(),
@@ -95,33 +101,36 @@ func (w *Worker) tick(ctx context.Context) {
 				"lead_id":          n.LeadID.String(),
 				"attempt":         n.Attempts + 1,
 				"error":           err.Error(),
+				"trace":           obs.TraceparentFromContext(itemCtx),
 			})
-			w.retryOrFail(ctx, n, fmt.Errorf("load lead: %w", err))
-			metrics.ObserveLeadNotificationSendWithTraceparent(n.Channel, "error", 0, obs.TraceparentFromContext(ctx))
+			w.retryOrFail(itemCtx, n, fmt.Errorf("load lead: %w", err))
+			metrics.ObserveLeadNotificationSendWithTraceparent(n.Channel, "error", 0, obs.TraceparentFromContext(itemCtx))
 			continue
 		}
 
 		sendStart := time.Now()
-		if err := sender.Send(ctx, l); err != nil {
+		if err := sender.Send(itemCtx, l); err != nil {
 			obs.Log("notify_send_failed", obs.Fields{
 				"notification_id": n.ID.String(),
 				"channel":         n.Channel,
 				"lead_id":          n.LeadID.String(),
 				"attempt":         n.Attempts + 1,
 				"error":           truncate(err.Error(), 900),
+				"trace":           obs.TraceparentFromContext(itemCtx),
 			})
-			metrics.ObserveLeadNotificationSendWithTraceparent(n.Channel, "error", time.Since(sendStart), obs.TraceparentFromContext(ctx))
-			w.retryOrFail(ctx, n, err)
+			metrics.ObserveLeadNotificationSendWithTraceparent(n.Channel, "error", time.Since(sendStart), obs.TraceparentFromContext(itemCtx))
+			w.retryOrFail(itemCtx, n, err)
 			continue
 		}
-		metrics.ObserveLeadNotificationSendWithTraceparent(n.Channel, "ok", time.Since(sendStart), obs.TraceparentFromContext(ctx))
+		metrics.ObserveLeadNotificationSendWithTraceparent(n.Channel, "ok", time.Since(sendStart), obs.TraceparentFromContext(itemCtx))
 
-		if err := w.repo.MarkSent(ctx, n.ID); err != nil {
+		if err := w.repo.MarkSent(itemCtx, n.ID); err != nil {
 			obs.Log("notify_mark_sent_error", obs.Fields{
 				"notification_id": n.ID.String(),
 				"channel":         n.Channel,
 				"lead_id":          n.LeadID.String(),
 				"error":           err.Error(),
+				"trace":           obs.TraceparentFromContext(itemCtx),
 			})
 		}
 	}

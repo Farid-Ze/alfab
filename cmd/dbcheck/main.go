@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/joho/godotenv"
+
 	"example.com/alfabeauty-b2b/internal/obs"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -13,8 +15,15 @@ import (
 func main() {
 	obs.Init()
 
+	// Best-effort local dev convenience. In containers/CI, env should be injected.
+	_ = godotenv.Load()
+
 	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
+	if dbURL == "" || dbURL == "__CHANGE_ME__" {
+		_ = godotenv.Overload()
+		dbURL = os.Getenv("DATABASE_URL")
+	}
+	if dbURL == "" || dbURL == "__CHANGE_ME__" {
 		obs.Fatal("dbcheck_invalid_config", obs.Fields{"reason": "DATABASE_URL_required"})
 	}
 
@@ -239,5 +248,62 @@ func main() {
 		if def.Valid {
 			fmt.Printf("indexdef: %s\n", def.String)
 		}
+	}
+
+	fmt.Println("\n== lead_notifications traceparent schema ==")
+	var hasTraceparentCol bool
+	if err := db.QueryRow(`
+		SELECT EXISTS(
+			SELECT 1
+			FROM information_schema.columns
+			WHERE table_schema = 'public'
+			  AND table_name = 'lead_notifications'
+			  AND column_name = 'traceparent'
+		)
+	`).Scan(&hasTraceparentCol); err != nil {
+		obs.Fatal("dbcheck_query_failed", obs.Fields{"query": "lead_notifications_traceparent_column", "error": err.Error()})
+	}
+	if !hasTraceparentCol {
+		fmt.Println("traceparent column: MISSING")
+		return
+	}
+	fmt.Println("traceparent column: OK")
+
+	var conValidated sql.NullBool
+	err = db.QueryRow(`
+		SELECT c.convalidated
+		FROM pg_constraint c
+		JOIN pg_class t ON t.oid = c.conrelid
+		JOIN pg_namespace n ON n.oid = t.relnamespace
+		WHERE n.nspname = 'public'
+		  AND t.relname = 'lead_notifications'
+		  AND c.conname = 'lead_notifications_traceparent_len_chk'
+	`).Scan(&conValidated)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println("lead_notifications_traceparent_len_chk: MISSING")
+			return
+		}
+		obs.Fatal("dbcheck_query_failed", obs.Fields{"query": "lead_notifications_traceparent_constraint", "error": err.Error()})
+	}
+	if conValidated.Valid {
+		fmt.Printf("lead_notifications_traceparent_len_chk: OK (validated=%v)\n", conValidated.Bool)
+	} else {
+		fmt.Println("lead_notifications_traceparent_len_chk: OK")
+	}
+
+	var violations int
+	if err := db.QueryRow(`
+		SELECT COUNT(*)
+		FROM public.lead_notifications
+		WHERE traceparent IS NOT NULL
+		  AND length(traceparent) > 256
+	`).Scan(&violations); err != nil {
+		obs.Fatal("dbcheck_query_failed", obs.Fields{"query": "lead_notifications_traceparent_violations", "error": err.Error()})
+	}
+	if violations != 0 {
+		fmt.Printf("traceparent length violations: %d (EXPECTED 0)\n", violations)
+	} else {
+		fmt.Println("traceparent length violations: 0")
 	}
 }

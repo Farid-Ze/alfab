@@ -6,8 +6,16 @@
 -- 3) Revoke grants for anon/authenticated roles
 ALTER TABLE public.lead_notifications ENABLE ROW LEVEL SECURITY;
 
-REVOKE ALL ON TABLE public.lead_notifications FROM anon;
-REVOKE ALL ON TABLE public.lead_notifications FROM authenticated;
+DO $$
+BEGIN
+	IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN
+		REVOKE ALL ON TABLE public.lead_notifications FROM anon;
+	END IF;
+	IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN
+		REVOKE ALL ON TABLE public.lead_notifications FROM authenticated;
+	END IF;
+END
+$$;
 -- +goose StatementEnd
 
 -- +goose Down
@@ -16,6 +24,14 @@ REVOKE ALL ON TABLE public.lead_notifications FROM authenticated;
 ALTER TABLE public.lead_notifications DISABLE ROW LEVEL SECURITY;
 
 -- Restore minimal read/write (NOT recommended for production); included only for reversibility.
-GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.lead_notifications TO anon;
-GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.lead_notifications TO authenticated;
+DO $$
+BEGIN
+	IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN
+		GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.lead_notifications TO anon;
+	END IF;
+	IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN
+		GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.lead_notifications TO authenticated;
+	END IF;
+END
+$$;
 -- +goose StatementEnd

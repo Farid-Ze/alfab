@@ -57,7 +57,7 @@ func (r *LeadRepository) Create(ctx context.Context, l lead.Lead) (lead.Lead, er
 				user_agent, ip_address,
 				raw
 			)
-			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)
+			VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
 			ON CONFLICT (idempotency_key_hash) WHERE idempotency_key_hash IS NOT NULL DO NOTHING
 			RETURNING
 				id, created_at,

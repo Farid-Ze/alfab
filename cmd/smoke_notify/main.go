@@ -16,6 +16,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
+	"github.com/joho/godotenv"
+
 	"example.com/alfabeauty-b2b/internal/database"
 	"example.com/alfabeauty-b2b/internal/domain/lead"
 	"example.com/alfabeauty-b2b/internal/domain/notification"
@@ -32,9 +35,23 @@ import (
 func main() {
 	obs.Init()
 
+	// Best-effort local dev convenience. In containers/CI, env should be injected.
+	_ = godotenv.Load()
+
 	dbURL := strings.TrimSpace(os.Getenv("DATABASE_URL"))
-	if dbURL == "" {
+	if dbURL == "" || dbURL == "__CHANGE_ME__" {
+		_ = godotenv.Overload()
+		dbURL = strings.TrimSpace(os.Getenv("DATABASE_URL"))
+	}
+	if dbURL == "" || dbURL == "__CHANGE_ME__" {
 		obs.Fatal("smoke_notify_invalid_config", obs.Fields{"reason": "DATABASE_URL_required"})
+	}
+
+	// Safety guard: this smoke test performs INSERT/UPDATE operations.
+	// Require explicit opt-in so it can't accidentally be executed against production user DB.
+	allowWrite := strings.TrimSpace(strings.ToLower(os.Getenv("SMOKE_ALLOW_DB_WRITE")))
+	if allowWrite != "true" {
+		obs.Fatal("smoke_notify_guard_blocked", obs.Fields{"reason": "SMOKE_ALLOW_DB_WRITE_must_be_true"})
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -103,15 +120,39 @@ func main() {
 
 	leadSvc := service.NewLeadServiceWithNotifications(leadRepo, notifRepo, true, true)
 
+	runID := uuid.NewString()
+	businessName := fmt.Sprintf("SMOKE TEST - Lead Notifications - %s", runID)
+	msg := fmt.Sprintf("smoke test run_id=%s", runID)
+
+	keep := strings.TrimSpace(strings.ToLower(os.Getenv("SMOKE_KEEP"))) == "true"
+	cleanup := func(ctx context.Context, leadID string) {
+		if keep {
+			return
+		}
+		if err := cleanupLead(ctx, db, leadID); err != nil {
+			obs.Log("smoke_notify_cleanup_warning", obs.Fields{"error": err.Error(), "lead_id": leadID})
+		} else {
+			obs.Log("smoke_notify_cleanup_ok", obs.Fields{"lead_id": leadID})
+		}
+	}
+
+	// After we create a lead, we MUST avoid obs.Fatal (it calls os.Exit and skips defers).
+	// Use this helper so we can cleanup first to avoid leaving test rows in a real database.
+	failAfterCreate := func(event string, fields obs.Fields, leadID string) {
+		obs.Log(event, fields)
+		cleanup(ctx, leadID)
+		os.Exit(1)
+	}
+
 	created, err := leadSvc.Create(ctx, lead.Lead{
-		BusinessName:      "SMOKE TEST - Lead Notifications",
-		ContactName:       "Smoke Runner",
-		PhoneWhatsApp:     "+6281111111111",
-		City:              "Jakarta",
-		SalonType:         "OTHER",
-		Consent:           true,
-		Email:             "smoke@example.com",
-		Message:           "smoke test",
+		BusinessName:   businessName,
+		ContactName:    "Smoke Runner",
+		PhoneWhatsApp:  "+6281111111111",
+		City:           "Jakarta",
+		SalonType:      "OTHER",
+		Consent:        true,
+		Email:          "smoke@example.com",
+		Message:        msg,
 		PageURLInitial: "https://example.com/smoke",
 		PageURLCurrent: "https://example.com/smoke",
 		UserAgent:      "smoke_notify",
@@ -121,6 +162,7 @@ func main() {
 		obs.Fatal("smoke_notify_create_lead_failed", obs.Fields{"error": err.Error()})
 	}
 	obs.Log("smoke_notify_created_lead", obs.Fields{"lead_id": created.ID.String()})
+	leadID := created.ID.String()
 
 	workerCtx, workerCancel := context.WithCancel(context.Background())
 	defer workerCancel()
@@ -136,7 +178,7 @@ func main() {
 
 		statuses, err := getNotificationStatuses(ctx, db, created.ID.String())
 		if err != nil {
-			obs.Fatal("smoke_notify_query_statuses_failed", obs.Fields{"error": err.Error()})
+			failAfterCreate("smoke_notify_query_statuses_failed", obs.Fields{"error": err.Error()}, leadID)
 		}
 
 		emailOK := statuses[notification.ChannelEmail] == notification.StatusSent
@@ -149,14 +191,14 @@ func main() {
 
 	statuses, err := getNotificationStatuses(ctx, db, created.ID.String())
 	if err != nil {
-		obs.Fatal("smoke_notify_query_statuses_failed", obs.Fields{"phase": "final", "error": err.Error()})
+		failAfterCreate("smoke_notify_query_statuses_failed", obs.Fields{"phase": "final", "error": err.Error()}, leadID)
 	}
 
 	if statuses[notification.ChannelEmail] != notification.StatusSent {
-		obs.Fatal("smoke_notify_email_not_sent", obs.Fields{"status": statuses[notification.ChannelEmail]})
+		failAfterCreate("smoke_notify_email_not_sent", obs.Fields{"status": statuses[notification.ChannelEmail]}, leadID)
 	}
 	if statuses[notification.ChannelWebhook] != notification.StatusSent {
-		obs.Fatal("smoke_notify_webhook_not_sent", obs.Fields{"status": statuses[notification.ChannelWebhook]})
+		failAfterCreate("smoke_notify_webhook_not_sent", obs.Fields{"status": statuses[notification.ChannelWebhook]}, leadID)
 	}
 
 	webhookMu.Lock()
@@ -165,23 +207,18 @@ func main() {
 	webhookMu.Unlock()
 
 	if hits < 1 {
-		obs.Fatal("smoke_notify_webhook_not_called", obs.Fields{"hits": hits})
+		failAfterCreate("smoke_notify_webhook_not_called", obs.Fields{"hits": hits}, leadID)
 	}
 	if got, _ := payload["lead_id"].(string); got != created.ID.String() {
-		obs.Fatal("smoke_notify_webhook_payload_mismatch", obs.Fields{"field": "lead_id"})
+		failAfterCreate("smoke_notify_webhook_payload_mismatch", obs.Fields{"field": "lead_id"}, leadID)
 	}
 
 	smtpData := smtp.LastMessage()
 	if !bytes.Contains(smtpData, []byte(created.ID.String())) {
-		obs.Fatal("smoke_notify_smtp_payload_missing", obs.Fields{"field": "lead_id"})
+		failAfterCreate("smoke_notify_smtp_payload_missing", obs.Fields{"field": "lead_id"}, leadID)
 	}
 
-	// Cleanup (default). This keeps Supabase tidy.
-	if strings.TrimSpace(strings.ToLower(os.Getenv("SMOKE_KEEP"))) != "true" {
-		if err := cleanupLead(ctx, db, created.ID.String()); err != nil {
-			obs.Log("smoke_notify_cleanup_warning", obs.Fields{"error": err.Error()})
-		}
-	}
+	cleanup(ctx, leadID)
 
 	obs.Log("smoke_notify_pass", obs.Fields{"result": "notifications_delivered"})
 	fmt.Println("SMOKE PASS: notifications delivered (email + webhook)")

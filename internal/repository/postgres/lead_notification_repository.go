@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 
 	"example.com/alfabeauty-b2b/internal/domain/notification"
+	"example.com/alfabeauty-b2b/internal/obs"
 	"example.com/alfabeauty-b2b/internal/repository"
 )
 
@@ -22,12 +23,23 @@ func NewLeadNotificationRepository(db *sql.DB) *LeadNotificationRepository {
 }
 
 func (r *LeadNotificationRepository) Enqueue(ctx context.Context, leadID uuid.UUID, channel string) error {
+	tp := obs.TraceparentFromContext(ctx)
+	if strings.TrimSpace(tp) == "" {
+		tp = ""
+	}
+
 	q := `
-		INSERT INTO public.lead_notifications (lead_id, channel)
-		VALUES ($1, $2)
-		ON CONFLICT (lead_id, channel) DO NOTHING;
+		INSERT INTO public.lead_notifications (lead_id, channel, traceparent)
+		VALUES ($1, $2, NULLIF($3, ''))
+		ON CONFLICT (lead_id, channel)
+		DO UPDATE SET
+			traceparent = CASE
+				WHEN public.lead_notifications.traceparent IS NULL OR public.lead_notifications.traceparent = ''
+				THEN EXCLUDED.traceparent
+				ELSE public.lead_notifications.traceparent
+			END;
 	`
-	if _, err := r.db.ExecContext(ctx, q, leadID, channel); err != nil {
+	if _, err := r.db.ExecContext(ctx, q, leadID, channel, tp); err != nil {
 		return fmt.Errorf("enqueue notification: %w", err)
 	}
 	return nil
@@ -113,6 +125,7 @@ func (r *LeadNotificationRepository) ClaimBatch(ctx context.Context, limit int) 
 			n.id,
 			n.lead_id,
 			n.channel,
+			COALESCE(n.traceparent, '') AS traceparent,
 			n.status,
 			n.attempts,
 			n.next_attempt_at,
@@ -136,6 +149,7 @@ func (r *LeadNotificationRepository) ClaimBatch(ctx context.Context, limit int) 
 			&n.ID,
 			&n.LeadID,
 			&n.Channel,
+			&n.Traceparent,
 			&n.Status,
 			&n.Attempts,
 			&n.NextAttemptAt,
@@ -236,6 +250,7 @@ func (r *LeadNotificationRepository) List(ctx context.Context, q repository.Lead
 			id,
 			lead_id,
 			channel,
+			COALESCE(traceparent, '') AS traceparent,
 			status,
 			attempts,
 			next_attempt_at,
@@ -265,6 +280,7 @@ func (r *LeadNotificationRepository) List(ctx context.Context, q repository.Lead
 			&n.ID,
 			&n.LeadID,
 			&n.Channel,
+			&n.Traceparent,
 			&n.Status,
 			&n.Attempts,
 			&n.NextAttemptAt,

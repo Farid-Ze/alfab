@@ -4,12 +4,14 @@ import (
 	"context"
 	"errors"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/google/uuid"
 
 	"example.com/alfabeauty-b2b/internal/domain/notification"
+	"example.com/alfabeauty-b2b/internal/obs"
 	"example.com/alfabeauty-b2b/internal/repository"
 )
 
@@ -28,21 +30,33 @@ func NewLeadNotificationRepository() *LeadNotificationRepository {
 	}
 }
 
-func (r *LeadNotificationRepository) Enqueue(_ context.Context, leadID uuid.UUID, channel string) error {
+func (r *LeadNotificationRepository) Enqueue(ctx context.Context, leadID uuid.UUID, channel string) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
 	key := leadID.String() + "|" + channel
-	if _, ok := r.uniq[key]; ok {
+	if existingID, ok := r.uniq[key]; ok {
+		// Match postgres behavior: if this is a duplicate enqueue but we now have trace context,
+		// fill it in when the existing row has none.
+		if tp := obs.TraceparentFromContext(ctx); strings.TrimSpace(tp) != "" {
+			n := r.items[existingID]
+			if strings.TrimSpace(n.Traceparent) == "" {
+				n.Traceparent = tp
+				n.UpdatedAt = time.Now().UTC()
+				r.items[existingID] = n
+			}
+		}
 		return nil
 	}
 
 	now := time.Now().UTC()
 	id := uuid.New()
+	tp := obs.TraceparentFromContext(ctx)
 	r.items[id] = notification.LeadNotification{
 		ID:            id,
 		LeadID:        leadID,
 		Channel:       channel,
+		Traceparent:   tp,
 		Status:        notification.StatusPending,
 		Attempts:      0,
 		NextAttemptAt: now,

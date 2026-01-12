@@ -6,6 +6,14 @@ Untuk mengurangi fragmentasi, seluruh spesifikasi Paket A kini digabung menjadi 
 
 - **Baca/ubah di sini:** `docs-paket-a/paket-a.md`
 
+Dokumen handover (ringkas, untuk operator/owner):
+
+- `docs-paket-a/handover.md`
+
+Runbook deploy (urutan deploy + verifikasi aman):
+
+- `docs-paket-a/runbook-deploy.md`
+
 Dokumen-dokumen lama yang sudah disupersede disimpan sebagai arsip di:
 
 - `docs-paket-a/_deprecated/`

@@ -44,6 +44,7 @@ make migrate-down # Rollback migrations
 make migrate-status # Show migration status
 make db-check     # Verify DB hardening & schema
 make smoke-notify # End-to-end smoke for notification pipeline (uses DATABASE_URL)
+make smoke-http   # Read-only deployment smoke (health + honeypot lead + admin stats + metrics)
 ```
 
 ## Project Structure
@@ -106,7 +107,30 @@ Notes:
 Run `make smoke-notify` to validate the lead notification pipeline end-to-end without external providers.
 It uses a local fake SMTP server and a local webhook receiver, while writing outbox state to `DATABASE_URL`.
 
+Safety:
+
+- This smoke test **writes to the database** (creates a single tagged lead + outbox rows) and then **cleans up by default**.
+- To prevent accidental execution against a production user database, it requires `SMOKE_ALLOW_DB_WRITE=true`.
+- Cleanup is performed even when the smoke test fails (to avoid leaving test rows behind).
+
 Cleanup is automatic unless `SMOKE_KEEP=true`.
+
+## Deployment smoke (read-only)
+
+Run `make smoke-http` to verify main endpoints **without writing user data**.
+
+It checks:
+- `GET /health` (200)
+- `POST /api/v1/leads` with honeypot field `company` set (expects 202; should not persist)
+- `GET /api/v1/admin/lead-notifications/stats` (200, requires admin token)
+- `GET /metrics` (200, requires admin token)
+
+Required env:
+- `SMOKE_BASE_URL` (example: `https://your-domain.example`)
+- `SMOKE_ADMIN_TOKEN` (or reuse `LEAD_API_ADMIN_TOKEN`)
+
+Safety guard:
+- If `SMOKE_BASE_URL` is `http://...`, you must also set `SMOKE_ALLOW_INSECURE=true`.
 
 ## Documentation
 

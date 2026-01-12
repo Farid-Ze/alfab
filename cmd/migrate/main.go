@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/joho/godotenv"
+
 	"example.com/alfabeauty-b2b/internal/obs"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -14,11 +16,20 @@ import (
 func main() {
 	obs.Init()
 
+	// Best-effort local dev convenience. In containers/CI, env should be injected.
+	_ = godotenv.Load()
+
 	if len(os.Args) < 2 {
 		obs.Fatal("migrate_invalid_args", obs.Fields{"usage": fmt.Sprintf("%s <up|down|status>", os.Args[0])})
 	}
 
 	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" || dbURL == "__CHANGE_ME__" {
+		// Allow a local .env to override an invalid placeholder that might be set
+		// in the user's shell (e.g. DATABASE_URL=__CHANGE_ME__).
+		_ = godotenv.Overload()
+		dbURL = os.Getenv("DATABASE_URL")
+	}
 	if dbURL == "" || dbURL == "__CHANGE_ME__" {
 		obs.Fatal("migrate_invalid_config", obs.Fields{"reason": "DATABASE_URL_required"})
 	}

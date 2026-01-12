@@ -20,6 +20,7 @@ type LeadNotification struct {
 	ID            uuid.UUID
 	LeadID        uuid.UUID
 	Channel       string
+	Traceparent   string
 	Status        string
 	Attempts      int
 	NextAttemptAt time.Time

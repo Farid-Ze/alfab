@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/joho/godotenv"
+
 	"example.com/alfabeauty-b2b/internal/obs"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -16,8 +18,15 @@ import (
 func main() {
 	obs.Init()
 
+	// Best-effort local dev convenience. In containers/CI, env should be injected.
+	_ = godotenv.Load()
+
 	dbURL := strings.TrimSpace(os.Getenv("DATABASE_URL"))
-	if dbURL == "" {
+	if dbURL == "" || dbURL == "__CHANGE_ME__" {
+		_ = godotenv.Overload()
+		dbURL = strings.TrimSpace(os.Getenv("DATABASE_URL"))
+	}
+	if dbURL == "" || dbURL == "__CHANGE_ME__" {
 		obs.Fatal("dbversion_invalid_config", obs.Fields{"reason": "DATABASE_URL_required"})
 	}
 

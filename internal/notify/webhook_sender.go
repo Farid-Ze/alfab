@@ -11,6 +11,7 @@ import (
 
 	"example.com/alfabeauty-b2b/internal/domain/lead"
 	"example.com/alfabeauty-b2b/internal/domain/notification"
+	"example.com/alfabeauty-b2b/internal/obs"
 )
 
 type WebhookConfig struct {
@@ -80,6 +81,9 @@ func (s *WebhookSender) Send(ctx context.Context, l lead.Lead) error {
 		return fmt.Errorf("new request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	if tp := obs.TraceparentFromContext(ctx); strings.TrimSpace(tp) != "" {
+		req.Header.Set("traceparent", tp)
+	}
 	if strings.TrimSpace(s.cfg.Secret) != "" {
 		req.Header.Set("X-Webhook-Secret", strings.TrimSpace(s.cfg.Secret))
 	}

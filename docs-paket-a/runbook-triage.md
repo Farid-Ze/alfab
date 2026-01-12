@@ -87,8 +87,14 @@ This runbook complements `docs-paket-a/paket-a.md` (§Ops/Runbook) with a single
 ### Trace correlation limits in async
 
 - The worker runs outside the originating HTTP request context.
-- Without persisting trace context into the outbox rows, worker-side metrics cannot reliably attach exemplars.
-- Enqueue metrics can carry exemplars (because they happen within the request-scoped context).
+- We persist request-origin `traceparent` into `lead_notifications.traceparent` at enqueue time.
+- The worker then derives a per-notification context so:
+  - worker logs include `fields.trace`
+  - worker send histograms can attach exemplars when the scraper supports them
+  - downstream webhook calls receive the `traceparent` header
+
+Operational note:
+- This requires applying DB migration `migrations/00008_add_lead_notifications_traceparent.sql` before rollout.
 
 ## 3) Where to look (files)
 
