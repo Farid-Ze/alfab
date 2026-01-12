@@ -1,18 +1,18 @@
-import Link from "next/link";
+"use client";
+
+import ButtonLink from "@/components/ui/ButtonLink";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 export default function NotFound() {
+  const { locale } = useLocale();
+  const tx = t(locale);
+
   return (
     <div className="mx-auto max-w-2xl space-y-4 text-center">
-      <h1 className="text-2xl font-semibold tracking-tight">Page not found</h1>
-      <p className="text-zinc-700">
-        The page you’re looking for doesn’t exist. Please use the navigation or go back home.
-      </p>
-      <Link
-        href="/"
-        className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-900 px-5 text-sm font-semibold text-white hover:bg-zinc-800"
-      >
-        Back to Home
-      </Link>
+      <h1 className="type-h2">{tx.system.notFound.title}</h1>
+      <p className="type-body text-zinc-700">{tx.system.notFound.body}</p>
+      <ButtonLink href="/">{tx.system.notFound.backHome}</ButtonLink>
     </div>
   );
 }

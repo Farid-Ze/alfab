@@ -17,6 +17,9 @@ services:
       # left disabled by default.
       PROM_ENABLE_LOCAL_DRILL: "${PROM_ENABLE_LOCAL_DRILL:-false}"
 
+      # Optional: enable local alert routing proof (Prometheus -> Alertmanager -> webhook).
+      PROM_ENABLE_ALERTMANAGER: "${PROM_ENABLE_ALERTMANAGER:-true}"
+
     entrypoint:
       - /bin/sh
       - -lc
@@ -126,6 +129,11 @@ services:
         rule_files:
           - /etc/prometheus/rules/*.yml
 
+        alerting:
+          alertmanagers:
+            - static_configs:
+                - targets: ["alertmanager:9093"]
+
         scrape_configs:
           - job_name: "alfab-lead-api"
             metrics_path: /metrics
@@ -142,3 +150,49 @@ services:
     # On Docker Desktop (Windows/macOS), host.docker.internal is already available.
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    container_name: alfab-alertmanager
+    ports:
+      - "9093:9093"
+    environment:
+      PROM_ENABLE_ALERTMANAGER: "${PROM_ENABLE_ALERTMANAGER:-true}"
+    depends_on:
+      - alert-receiver
+    entrypoint:
+      - /bin/sh
+      - -lc
+      - |
+        set -eu
+        if [ "$${PROM_ENABLE_ALERTMANAGER:-true}" != "true" ]; then
+          echo "Alertmanager disabled (PROM_ENABLE_ALERTMANAGER != true)." >&2
+          exit 1
+        fi
+
+        cat > /tmp/alertmanager.yml <<'EOF'
+        global:
+          resolve_timeout: 5m
+
+        route:
+          receiver: local-webhook
+          group_wait: 5s
+          group_interval: 10s
+          repeat_interval: 1h
+
+        receivers:
+          - name: local-webhook
+            webhook_configs:
+              - url: http://alert-receiver:8080/
+                send_resolved: true
+        EOF
+
+        exec /bin/alertmanager \
+          --config.file=/tmp/alertmanager.yml \
+          --log.level=debug
+
+  alert-receiver:
+    image: mendhak/http-https-echo:latest
+    container_name: alfab-alert-receiver
+    ports:
+      - "8089:8080"

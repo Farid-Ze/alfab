@@ -3,6 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 const htmlReportDir = process.env.PLAYWRIGHT_HTML_REPORT_DIR ?? "playwright-report";
 const outputDir = process.env.PLAYWRIGHT_OUTPUT_DIR ?? "test-results";
 const reuseExistingServer = process.env.PLAYWRIGHT_REUSE_EXISTING_SERVER === "true" ? true : !process.env.CI;
+const skipWebServer = process.env.PLAYWRIGHT_SKIP_WEBSERVER === "true";
 
 // Paket A quality gate: Playwright smoke tests for
 // - WhatsApp CTA always works
@@ -27,23 +28,25 @@ export default defineConfig({
   },
   globalSetup: require.resolve("./e2e/global-setup"),
   globalTeardown: require.resolve("./e2e/global-teardown"),
-  webServer: {
-    command: "npm run dev",
-    url: "http://127.0.0.1:3000",
-    reuseExistingServer,
-    timeout: 120_000,
-    env: {
-      // Website runtime config for e2e.
-      LEAD_API_BASE_URL: process.env.LEAD_API_BASE_URL ?? "http://127.0.0.1:8082",
-      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? "http://127.0.0.1:3000",
+  webServer: skipWebServer
+    ? undefined
+    : {
+        command: "npm run dev",
+        url: "http://127.0.0.1:3000",
+        reuseExistingServer,
+        timeout: 120_000,
+        env: {
+          // Website runtime config for e2e.
+          LEAD_API_BASE_URL: process.env.LEAD_API_BASE_URL ?? "http://127.0.0.1:8082",
+          NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? "http://127.0.0.1:3000",
 
-      // Ensure WhatsApp CTA produces a wa.me link in UI smoke tests.
-      NEXT_PUBLIC_WHATSAPP_NUMBER: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "6281234567890",
-      NEXT_PUBLIC_WHATSAPP_PREFILL:
-        process.env.NEXT_PUBLIC_WHATSAPP_PREFILL ?? "Hello Alfa Beauty, I would like to consult.",
-      NEXT_PUBLIC_FALLBACK_EMAIL: process.env.NEXT_PUBLIC_FALLBACK_EMAIL ?? "hello@example.com",
-    },
-  },
+          // Ensure WhatsApp CTA produces a wa.me link in UI smoke tests.
+          NEXT_PUBLIC_WHATSAPP_NUMBER: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "6281234567890",
+          NEXT_PUBLIC_WHATSAPP_PREFILL:
+            process.env.NEXT_PUBLIC_WHATSAPP_PREFILL ?? "Hello Alfa Beauty, I would like to consult.",
+          NEXT_PUBLIC_FALLBACK_EMAIL: process.env.NEXT_PUBLIC_FALLBACK_EMAIL ?? "hello@example.com",
+        },
+      },
   projects: [
     {
       name: "chromium",

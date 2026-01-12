@@ -1,14 +1,31 @@
 import { expect, test } from "@playwright/test";
 
 test("Become Partner form can submit successfully", async ({ page }) => {
+  const allowRealLeadSubmit = process.env.PLAYWRIGHT_ALLOW_REAL_LEAD_SUBMIT === "true";
+  const runId = process.env.PLAYWRIGHT_E2E_RUN_ID ?? String(Date.now());
+
+  // Safety: by default, do not create real leads when running against staging/prod.
+  // Set PLAYWRIGHT_ALLOW_REAL_LEAD_SUBMIT=true to enable a real submit.
+  let apiWasCalled = false;
+  if (!allowRealLeadSubmit) {
+    await page.route("**/api/leads", async (route) => {
+      apiWasCalled = true;
+      await route.fulfill({
+        status: 202,
+        contentType: "application/json; charset=utf-8",
+        body: JSON.stringify({ status: "accepted", source: "playwright", run_id: runId }),
+      });
+    });
+  }
+
   await page.goto("/partnership/become-partner");
 
   const submit = page.getByRole("button", { name: /^submit$/i });
   await expect(submit).toBeVisible();
   await expect(submit).toBeDisabled();
 
-  await page.getByLabel(/business name/i).fill("Salon Mawar");
-  await page.getByLabel(/contact name/i).fill("Dewi");
+  await page.getByLabel(/business name/i).fill(`Salon Mawar (E2E ${runId})`);
+  await page.getByLabel(/contact name/i).fill(`Dewi (E2E ${runId})`);
   await page.getByLabel(/whatsapp number/i).fill("081234567890");
   await page.getByLabel(/city/i).fill("Bandung");
   await page.getByLabel(/salon type/i).selectOption("SALON");
@@ -23,6 +40,10 @@ test("Become Partner form can submit successfully", async ({ page }) => {
 
   await expect(page.getByText(/thank you/i)).toBeVisible();
   await expect(page.getByText(/we received your details/i)).toBeVisible();
+
+  if (!allowRealLeadSubmit) {
+    expect(apiWasCalled, "UI must attempt to call /api/leads").toBe(true);
+  }
 });
 
 test("Become Partner form requires consent before enabling submit", async ({ page }) => {

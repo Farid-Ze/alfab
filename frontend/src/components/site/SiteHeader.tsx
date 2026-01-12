@@ -1,36 +1,47 @@
+"use client";
+
 import Link from "next/link";
 
-const nav = [
-  { href: "/products", label: "Products" },
-  { href: "/education", label: "Education" },
-  { href: "/partnership", label: "Partnership" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-];
+import LocaleToggle from "@/components/i18n/LocaleToggle";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import Button from "@/components/ui/Button";
+import Container from "@/components/ui/Container";
+import { t } from "@/lib/i18n";
 
 export default function SiteHeader() {
+  const { locale } = useLocale();
+  const tx = t(locale);
+
+  const nav = [
+    { href: "/products", label: tx.nav.products },
+    { href: "/education", label: tx.nav.education },
+    { href: "/partnership", label: tx.nav.partnership },
+    { href: "/about", label: tx.nav.about },
+    { href: "/contact", label: tx.nav.contact },
+  ];
+
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="font-semibold tracking-tight">
+    <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/95 backdrop-blur">
+      <Container className="flex h-14 items-center justify-between">
+        <Link href="/" className="type-kicker text-zinc-950">
           Alfa Beauty
         </Link>
-        <nav className="hidden gap-6 text-sm text-zinc-700 md:flex">
+
+        <nav className="hidden items-center gap-8 type-kicker text-zinc-700 md:flex">
           {nav.map((n) => (
             <Link key={n.href} href={n.href} className="hover:text-zinc-950 hover:underline">
               {n.label}
             </Link>
           ))}
         </nav>
+
         <div className="flex items-center gap-3">
-          <Link
-            href="/partnership/become-partner"
-            className="inline-flex h-9 items-center justify-center rounded-full bg-zinc-900 px-4 text-xs font-semibold text-white hover:bg-zinc-800"
-          >
-            Become Partner
+          <LocaleToggle />
+          <Link href="/partnership/become-partner" className="hidden sm:block">
+            <Button size="sm">{tx.cta.becomePartner}</Button>
           </Link>
         </div>
-      </div>
+      </Container>
     </header>
   );
 }

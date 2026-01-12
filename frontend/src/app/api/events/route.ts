@@ -1,30 +1,22 @@
-import { NextResponse } from "next/server";
-
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   const baseUrl = process.env.LEAD_API_BASE_URL;
+  // Events telemetry is best-effort. The frontend must not error if the Lead API is not configured
+  // (e.g., local dev) or temporarily unreachable.
   if (!baseUrl) {
-    return NextResponse.json(
-      { error: "lead_api_not_configured" },
-      { status: 500, headers: { "Cache-Control": "no-store" } },
-    );
+    return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
   }
 
   const ct = req.headers.get("content-type") ?? "";
+  // Accept only JSON beacons. If the content type is missing or unexpected, treat as no-op.
   if (!ct.toLowerCase().startsWith("application/json")) {
-    return NextResponse.json(
-      { error: "content_type_must_be_application_json" },
-      { status: 415, headers: { "Cache-Control": "no-store" } },
-    );
+    return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
   }
 
   const body = await req.text();
   if (!body) {
-    return NextResponse.json(
-      { error: "empty_body" },
-      { status: 400, headers: { "Cache-Control": "no-store" } },
-    );
+    return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
   }
 
   const url = `${baseUrl.replace(/\/$/, "")}/api/v1/events`;
@@ -47,27 +39,15 @@ export async function POST(req: Request) {
     // Telemetry should be best-effort and fast.
     signal: AbortSignal.timeout(2000),
   }).catch((err: unknown) => {
-    const msg = err instanceof Error ? err.message : "upstream_error";
-    return new Response(JSON.stringify({ error: "lead_api_unreachable", detail: msg }), {
-      status: 502,
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        "Cache-Control": "no-store",
-      },
-    });
+    // Intentionally swallow errors so the client never sees 5xx for telemetry.
+    void err;
+    return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
   });
 
   if (upstream.status === 204) {
     return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
   }
 
-  const text = await upstream.text();
-  const contentType = upstream.headers.get("Content-Type") ?? "application/json; charset=utf-8";
-  return new Response(text, {
-    status: upstream.status,
-    headers: {
-      "Content-Type": contentType,
-      "Cache-Control": "no-store",
-    },
-  });
+  // Any non-204 response from upstream is treated as success for the client.
+  return new Response(null, { status: 204, headers: { "Cache-Control": "no-store" } });
 }

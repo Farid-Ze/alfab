@@ -143,9 +143,9 @@ via `host.docker.internal` (Docker Desktop). It does **not** require a domain.
 Files:
 - `docker-compose.prometheus.yml`
 
-Optional reference files (not required by compose, but useful as reference):
-- `prometheus/prometheus.yml`
-- `prometheus/secrets/lead_api_admin_token.example`
+Notes:
+- The compose file generates Prometheus config and the bearer token file **inside the container** to avoid Windows bind-mount issues.
+- Provide the token via your shell env: `LEAD_API_ADMIN_TOKEN`.
 
 Steps (high level):
 1) Run the Lead API on your host (default `PORT=8080`).
@@ -153,6 +153,13 @@ Steps (high level):
 3) Start Prometheus with Docker Compose.
 4) Open Prometheus UI at `http://localhost:9090` and check:
 	- `Status -> Targets` (or `/targets`) shows job `alfab-lead-api` as **UP**.
+
+Optional: Alertmanager (local)
+- Start via the same compose file; UI/API at `http://localhost:9093`.
+- You can verify received alerts via `GET /api/v2/alerts`.
+
+Optional (local-only):
+- Set `PROM_ENABLE_LOCAL_DRILL=true` before starting Prometheus to enable a synthetic alert for proving alert evaluation via `/api/v1/alerts`.
 
 ## Documentation
 

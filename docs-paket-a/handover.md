@@ -245,6 +245,36 @@ Catatan:
 
 ---
 
+## 5.3 Catatan governance: staging di akun pribadi (budget terbatas)
+
+Jika saat ini belum ada budget untuk **Vercel Pro/Team**, staging boleh berjalan di akun pribadi **dengan syarat** berikut agar tidak jadi “single point of failure”:
+
+Minimum guardrails (wajib):
+- **Repo akses:** Owner harus punya akses ke repo (GitHub) agar bisa melihat source + histori deploy.
+- **Secrets tidak disimpan di repo:** semua secrets tetap di platform env vars / secret store.
+- **Backup akses:** simpan kredensial platform (Vercel/Supabase/dll) di password manager yang bisa diserahkan ke Owner saat approval (jangan via chat).
+- **2FA:** akun pribadi yang dipakai staging wajib 2FA.
+
+Yang perlu dicatat untuk handover (isi oleh operator):
+- Hosting frontend (staging): _Vercel Hobby (personal)_
+- URL staging frontend: _<isi>_
+- Hosting Lead API (staging): _<isi>_
+- URL staging Lead API: _<isi>_
+- Lokasi env vars/secrets: _Vercel Project Settings / Supabase Project Settings_
+
+> Catatan: tujuan guardrails ini bukan “sempurna”, tapi memastikan Owner bisa mengambil alih tanpa mengulang setup dari nol.
+
+### Rencana transisi saat owner sudah approve (domain + email perusahaan)
+
+Checklist transfer (disarankan):
+1) Buat akun platform dengan email perusahaan (Owner sebagai admin).
+2) Pindahkan domain/DNS ke kendali perusahaan (Cloudflare/registrar atas nama perusahaan).
+3) Transfer proyek hosting (atau re-create dengan IaC sederhana) dan pindahkan env vars.
+4) Rotasi secrets penting (admin token, webhook secret, SMTP creds).
+5) Jalankan ulang `smoke-http` + UAT-A 01–16 (staging/prod) dan simpan evidence baru.
+
+---
+
 ## 6) Known gaps / pekerjaan lanjutan (belum freeze)
 
 - UAT-A 01–16: eksekusi UAT + sign-off final owner masih perlu dipastikan.

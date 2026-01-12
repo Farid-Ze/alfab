@@ -7,6 +7,7 @@ import SiteHeader from "@/components/site/SiteHeader";
 import WhatsAppStickyCTA from "@/components/site/WhatsAppStickyCTA";
 import WebVitalsReporter from "@/components/analytics/WebVitalsReporter";
 import StructuredData from "@/components/seo/StructuredData";
+import { LocaleProvider } from "@/components/i18n/LocaleProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -69,16 +70,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="min-h-dvh bg-white text-zinc-950">
-          <StructuredData />
-          <SiteHeader />
-          <WebVitalsReporter />
-          <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
-            {children}
-          </main>
-          <SiteFooter />
-          <WhatsAppStickyCTA />
-        </div>
+        <LocaleProvider>
+          <div className="min-h-dvh bg-white text-zinc-950">
+            <StructuredData />
+            <SiteHeader />
+            <WebVitalsReporter />
+            <main className="mx-auto w-full max-w-[80rem] px-4 py-10 sm:px-6">
+              {children}
+            </main>
+            <SiteFooter />
+            <WhatsAppStickyCTA />
+          </div>
+        </LocaleProvider>
       </body>
     </html>
   );

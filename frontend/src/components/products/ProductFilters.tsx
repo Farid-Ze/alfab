@@ -5,6 +5,8 @@ import { useMemo, useState } from "react";
 
 import type { Audience, Product } from "@/lib/types";
 import { listProducts } from "@/lib/catalog";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 function uniq(values: string[]) {
   return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
@@ -24,6 +26,9 @@ type Filters = {
 };
 
 export default function ProductFilters() {
+  const { locale } = useLocale();
+  const tx = t(locale);
+
   const all = useMemo(() => listProducts(), []);
 
   const brands = useMemo(() => uniq(all.map((p) => p.brand)), [all]);
@@ -61,24 +66,26 @@ export default function ProductFilters() {
   return (
     <section className="grid gap-6 md:grid-cols-4">
       <aside className="md:col-span-1">
-        <div className="rounded-2xl border border-zinc-200 p-5">
+        <div className="border border-zinc-200 p-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Filters</h2>
+            <h2 className="type-data font-semibold text-zinc-900">
+              {tx.products.filters.title}
+            </h2>
             <button
               type="button"
               onClick={clear}
               className="text-xs font-semibold text-zinc-900 underline"
             >
-              Clear
+              {tx.products.filters.clear}
             </button>
           </div>
 
-          <div className="mt-4 space-y-5 text-sm">
+          <div className="mt-4 space-y-5">
             <div>
-              <p className="font-semibold text-zinc-900">Brand</p>
+              <p className="type-data font-semibold text-zinc-900">{tx.products.filters.groups.brand}</p>
               <div className="mt-2 space-y-2">
                 {brands.map((b) => (
-                  <label key={b} className="flex items-center gap-2 text-zinc-700">
+                  <label key={b} className="flex items-center gap-2 type-body text-zinc-700">
                     <input
                       type="checkbox"
                       className="h-4 w-4"
@@ -92,27 +99,31 @@ export default function ProductFilters() {
             </div>
 
             <div>
-              <p className="font-semibold text-zinc-900">Audience</p>
+              <p className="type-data font-semibold text-zinc-900">
+                {tx.products.filters.groups.audience}
+              </p>
               <div className="mt-2 space-y-2">
                 {(["SALON", "BARBER"] as const).map((a) => (
-                  <label key={a} className="flex items-center gap-2 text-zinc-700">
+                  <label key={a} className="flex items-center gap-2 type-body text-zinc-700">
                     <input
                       type="checkbox"
                       className="h-4 w-4"
                       checked={filters.audiences.has(a)}
                       onChange={() => toggle("audiences", a)}
                     />
-                    {a === "SALON" ? "Salon" : "Barbershop"}
+                    {a === "SALON" ? tx.products.filters.audience.salon : tx.products.filters.audience.barber}
                   </label>
                 ))}
               </div>
             </div>
 
             <div>
-              <p className="font-semibold text-zinc-900">Function</p>
+              <p className="type-data font-semibold text-zinc-900">
+                {tx.products.filters.groups.function}
+              </p>
               <div className="mt-2 space-y-2">
                 {functions.map((f) => (
-                  <label key={f} className="flex items-center gap-2 text-zinc-700">
+                  <label key={f} className="flex items-center gap-2 type-body text-zinc-700">
                     <input
                       type="checkbox"
                       className="h-4 w-4"
@@ -130,10 +141,12 @@ export default function ProductFilters() {
 
       <div className="md:col-span-3">
         {filtered.length === 0 ? (
-          <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-8">
-            <p className="font-semibold">No results</p>
-            <p className="mt-2 text-sm text-zinc-700">
-              Try clearing filters, or contact us on WhatsApp for recommendations.
+          <div className="border border-zinc-200 bg-zinc-50 p-8">
+            <p className="type-data font-semibold text-zinc-900">
+              {tx.products.filters.empty.title}
+            </p>
+            <p className="mt-2 type-body text-zinc-700">
+              {tx.products.filters.empty.body}
             </p>
           </div>
         ) : (
@@ -142,11 +155,11 @@ export default function ProductFilters() {
               <Link
                 key={p.slug}
                 href={`/products/${p.slug}`}
-                className="rounded-2xl border border-zinc-200 p-6 hover:bg-zinc-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2"
+                className="border border-zinc-200 p-6 hover:bg-zinc-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2"
               >
-                <p className="text-xs font-semibold uppercase tracking-widest text-zinc-600">{p.brand}</p>
-                <p className="mt-2 text-base font-semibold">{p.name}</p>
-                <p className="mt-2 text-sm text-zinc-700 line-clamp-3">{p.summary}</p>
+                <p className="type-kicker">{p.brand}</p>
+                <p className="mt-2 type-body font-semibold text-zinc-950">{p.name}</p>
+                <p className="mt-2 type-body line-clamp-3">{p.summary}</p>
               </Link>
             ))}
           </div>

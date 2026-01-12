@@ -3,7 +3,14 @@
 import { useMemo, useState } from "react";
 
 import { trackEvent } from "@/lib/analytics";
+import { t } from "@/lib/i18n";
 import { getCurrentPageUrl, getInitialPageUrl } from "@/lib/telemetry";
+
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import Select from "@/components/ui/Select";
+import Textarea from "@/components/ui/Textarea";
 
 type Result =
   | { kind: "idle" }
@@ -12,6 +19,9 @@ type Result =
   | { kind: "error"; message: string };
 
 export default function LeadForm() {
+  const { locale } = useLocale();
+  const tx = t(locale);
+
   const [businessName, setBusinessName] = useState("");
   const [contactName, setContactName] = useState("");
   const [email, setEmail] = useState("");
@@ -90,7 +100,7 @@ export default function LeadForm() {
 
     if (!res) {
       trackEvent("lead_submit_error", { reason: "network" });
-      setResult({ kind: "error", message: "Network error. Please try again." });
+      setResult({ kind: "error", message: tx.leadForm.errors.network });
       return;
     }
 
@@ -110,11 +120,11 @@ export default function LeadForm() {
 
     if (res.status === 429) {
       trackEvent("lead_submit_error", { reason: "rate_limited" });
-      setResult({ kind: "error", message: "Too many requests. Please try again in a moment." });
+      setResult({ kind: "error", message: tx.leadForm.errors.rateLimited });
       return;
     }
 
-    let msg = "Submission failed. Please try again.";
+    let msg: string = tx.leadForm.errors.submitFailed;
     try {
       const json = (await res.json()) as { error?: string };
       if (json.error) msg = json.error;
@@ -129,11 +139,9 @@ export default function LeadForm() {
   if (result.kind === "success") {
     return (
       <div className="space-y-3">
-        <p className="text-lg font-semibold">Thank you — we received your details.</p>
-        <p className="text-sm text-zinc-700">
-          Our team will follow up. You can also message us on WhatsApp for faster consultation.
-        </p>
-        {result.id ? <p className="text-xs text-zinc-600">Reference: {result.id}</p> : null}
+        <p className="type-h3">{tx.leadForm.success.title}</p>
+        <p className="type-body text-zinc-700">{tx.leadForm.success.body}</p>
+        {result.id ? <p className="type-data text-zinc-600">{tx.leadForm.success.ref}: {result.id}</p> : null}
       </div>
     );
   }
@@ -141,12 +149,12 @@ export default function LeadForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-semibold" htmlFor="business_name">
-          Business name
+        <label className="block type-data font-semibold" htmlFor="business_name">
+          {tx.leadForm.fields.businessName}
         </label>
-        <input
+        <Input
           id="business_name"
-          className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+          className="mt-1 w-full"
           value={businessName}
           onChange={(e) => setBusinessName(e.target.value)}
           required
@@ -156,12 +164,12 @@ export default function LeadForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-semibold" htmlFor="contact_name">
-          Contact name
+        <label className="block type-data font-semibold" htmlFor="contact_name">
+          {tx.leadForm.fields.contactName}
         </label>
-        <input
+        <Input
           id="contact_name"
-          className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+          className="mt-1 w-full"
           value={contactName}
           onChange={(e) => setContactName(e.target.value)}
           required
@@ -172,25 +180,25 @@ export default function LeadForm() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-semibold" htmlFor="email">
-            Email (optional)
+          <label className="block type-data font-semibold" htmlFor="email">
+            {tx.leadForm.fields.emailOptional}
           </label>
-          <input
+          <Input
             id="email"
             type="email"
-            className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+            className="mt-1 w-full"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             maxLength={254}
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold" htmlFor="phone_whatsapp">
-            WhatsApp number
+          <label className="block type-data font-semibold" htmlFor="phone_whatsapp">
+            {tx.leadForm.fields.whatsAppNumber}
           </label>
-          <input
+          <Input
             id="phone_whatsapp"
-            className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+            className="mt-1 w-full"
             value={phoneWhatsApp}
             onChange={(e) => setPhoneWhatsApp(e.target.value)}
             required
@@ -201,12 +209,12 @@ export default function LeadForm() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-semibold" htmlFor="city">
-            City
+          <label className="block type-data font-semibold" htmlFor="city">
+            {tx.leadForm.fields.city}
           </label>
-          <input
+          <Input
             id="city"
-            className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+            className="mt-1 w-full"
             value={city}
             onChange={(e) => setCity(e.target.value)}
             required
@@ -215,12 +223,12 @@ export default function LeadForm() {
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold" htmlFor="salon_type">
-            Salon type
+          <label className="block type-data font-semibold" htmlFor="salon_type">
+            {tx.leadForm.fields.salonType}
           </label>
-          <select
+          <Select
             id="salon_type"
-            className="mt-1 w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm"
+            className="mt-1 w-full"
             value={salonType}
             onChange={(e) => {
               const v = e.target.value;
@@ -237,56 +245,56 @@ export default function LeadForm() {
             }}
             required
           >
-            <option value="">Select…</option>
-            <option value="SALON">Salon</option>
-            <option value="BARBER">Barbershop</option>
-            <option value="BRIDAL">Bridal</option>
-            <option value="UNISEX">Unisex</option>
-            <option value="OTHER">Other</option>
-          </select>
+            <option value="">{tx.leadForm.fields.salonTypePlaceholder}</option>
+            <option value="SALON">{tx.leadForm.salonTypes.salon}</option>
+            <option value="BARBER">{tx.leadForm.salonTypes.barber}</option>
+            <option value="BRIDAL">{tx.leadForm.salonTypes.bridal}</option>
+            <option value="UNISEX">{tx.leadForm.salonTypes.unisex}</option>
+            <option value="OTHER">{tx.leadForm.salonTypes.other}</option>
+          </Select>
         </div>
       </div>
 
-      <details className="rounded-2xl border border-zinc-200 p-4">
-        <summary className="cursor-pointer text-sm font-semibold text-zinc-900">
-          Additional details (optional)
+      <details className="border border-zinc-200 p-4">
+        <summary className="cursor-pointer type-body font-semibold text-zinc-900">
+          {tx.leadForm.additionalDetails.summary}
         </summary>
         <div className="mt-4 space-y-4">
           <div>
-            <label className="block text-sm font-semibold" htmlFor="chair_count">
-              Chair count
+            <label className="block type-data font-semibold" htmlFor="chair_count">
+              {tx.leadForm.additionalDetails.chairCount}
             </label>
-            <input
+            <Input
               id="chair_count"
               inputMode="numeric"
-              className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+              className="mt-1 w-full"
               value={chairCount}
               onChange={(e) => setChairCount(e.target.value)}
-              placeholder="e.g. 6"
+              placeholder={tx.leadForm.additionalDetails.chairCountPlaceholder}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold" htmlFor="specialization">
-              Specialization
+            <label className="block type-data font-semibold" htmlFor="specialization">
+              {tx.leadForm.additionalDetails.specialization}
             </label>
-            <input
+            <Input
               id="specialization"
-              className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+              className="mt-1 w-full"
               value={specialization}
               onChange={(e) => setSpecialization(e.target.value)}
-              placeholder="e.g. coloring, keratin"
+              placeholder={tx.leadForm.additionalDetails.specializationPlaceholder}
               maxLength={200}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold" htmlFor="current_brands_used">
-              Current brands used
+            <label className="block type-data font-semibold" htmlFor="current_brands_used">
+              {tx.leadForm.additionalDetails.currentBrandsUsed}
             </label>
-            <input
+            <Input
               id="current_brands_used"
-              className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+              className="mt-1 w-full"
               value={currentBrandsUsed}
               onChange={(e) => setCurrentBrandsUsed(e.target.value)}
               maxLength={200}
@@ -294,15 +302,15 @@ export default function LeadForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold" htmlFor="monthly_spend_range">
-              Monthly spend range
+            <label className="block type-data font-semibold" htmlFor="monthly_spend_range">
+              {tx.leadForm.additionalDetails.monthlySpendRange}
             </label>
-            <input
+            <Input
               id="monthly_spend_range"
-              className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+              className="mt-1 w-full"
               value={monthlySpendRange}
               onChange={(e) => setMonthlySpendRange(e.target.value)}
-              placeholder="optional"
+              placeholder={tx.leadForm.additionalDetails.monthlySpendRangePlaceholder}
               maxLength={80}
             />
           </div>
@@ -311,14 +319,14 @@ export default function LeadForm() {
 
       {/* Honeypot field: must be hidden from real users (Paket A / Lead API anti-spam) */}
       <div className="hidden" aria-hidden="true">
-        <label className="block text-sm font-semibold" htmlFor="company">
-          Company
+        <label className="block type-data font-semibold" htmlFor="company">
+          {tx.leadForm.honeypot.companyLabel}
         </label>
-        <input
+        <Input
           id="company"
           tabIndex={-1}
           autoComplete="off"
-          className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+          className="mt-1 w-full"
           value={company}
           onChange={(e) => setCompany(e.target.value)}
           maxLength={200}
@@ -326,12 +334,12 @@ export default function LeadForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-semibold" htmlFor="message">
-          Message (optional)
+        <label className="block type-data font-semibold" htmlFor="message">
+          {tx.leadForm.fields.messageOptional}
         </label>
-        <textarea
+        <Textarea
           id="message"
-          className="mt-1 w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm"
+          className="mt-1 w-full"
           rows={5}
           maxLength={2000}
           value={message}
@@ -339,7 +347,7 @@ export default function LeadForm() {
         />
       </div>
 
-      <label className="flex items-start gap-3 text-xs text-zinc-700">
+      <label className="flex items-start gap-3 type-data text-zinc-700">
         <input
           type="checkbox"
           className="mt-0.5 h-4 w-4"
@@ -347,24 +355,18 @@ export default function LeadForm() {
           onChange={(e) => setConsent(e.target.checked)}
           required
         />
-        <span>
-          I consent to be contacted for partnership follow-up.
-        </span>
+        <span>{tx.leadForm.consent}</span>
       </label>
 
       {result.kind === "error" ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+        <div className="border border-red-200 bg-red-50 p-3 type-body text-red-800">
           {result.message}
         </div>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={!canSubmit}
-        className="inline-flex h-11 w-full items-center justify-center rounded-full bg-zinc-900 px-5 text-sm font-semibold text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {result.kind === "submitting" ? "Submitting…" : "Submit"}
-      </button>
+      <Button type="submit" disabled={!canSubmit} className="w-full">
+        {result.kind === "submitting" ? tx.leadForm.actions.submitting : tx.leadForm.actions.submit}
+      </Button>
     </form>
   );
 }

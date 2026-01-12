@@ -63,6 +63,21 @@ Yang diverifikasi:
 Safety guard:
 - Jika base URL `http://...`, set `SMOKE_ALLOW_INSECURE=true` (untuk staging/local saja).
 
+### Catatan: dimana URL staging?
+
+Repo ini **tidak menyimpan** URL staging secara hardcoded.
+
+Umumnya (Paket A):
+- **Frontend (Next.js)** di-host di **Vercel** → ambil URL dari **Vercel Dashboard → Project → Deployments** (Preview URL). Anda bisa menjadikan deployment branch `main` atau branch `staging` sebagai “staging”.
+- **Lead API (Go)**: gunakan base URL yang di-expose oleh hosting Anda (mis. `https://api-staging.<domain>`).
+
+Tips agar rapi:
+- Tetapkan alias domain `staging.<domain>` (frontend) dan `api-staging.<domain>` (backend), lalu jadikan itu input untuk smoke/UAT.
+
+Budget note:
+- Jika belum ada budget untuk **Vercel Pro/Team**, staging masih bisa berjalan di **Vercel Hobby (akun personal)**.
+- Best-practice minimal: aktifkan 2FA dan pastikan proses serah-terima kredensial ke Owner sudah disiapkan (lihat `docs-paket-a/handover.md` §5.3).
+
 ---
 
 ## 4) Smoke test — end-to-end notifications (staging / controlled only)
@@ -104,15 +119,27 @@ Jika belum ada domain/ingress untuk Prometheus, akses UI Prometheus bisa dilakuk
 
 Repo ini menyediakan compose minimal:
 - `docker-compose.prometheus.yml`
-- `prometheus/prometheus.yml`
 
 Catatan penting:
 - Endpoint `/metrics` di Lead API **admin-protected**, jadi Prometheus perlu token via `bearer_token_file`.
-- Buat file token lokal (ignored by git): `prometheus/secrets/lead_api_admin_token`
+- Untuk menghindari masalah bind-mount di Windows (terutama drive non-`C:`), compose ini **generate config + token file di dalam container**.
+- Token diambil dari environment host: `LEAD_API_ADMIN_TOKEN`.
 
 UI:
 - Buka `http://localhost:9090`
 - Validasi `Status -> Targets` (atau `/targets`) menunjukkan job `alfab-lead-api` status **UP**.
+
+Alertmanager (opsional, local):
+- UI/API Alertmanager: `http://localhost:9093`
+- Validasi alert diterima: `GET http://localhost:9093/api/v2/alerts`
+
+Validasi tambahan (tanpa UI):
+- Rules ter-load: `GET http://localhost:9090/api/v1/rules`
+- Alerts aktif: `GET http://localhost:9090/api/v1/alerts`
+
+Opsional (local-only):
+- Untuk membuktikan mekanisme alert FIRING tanpa fault injection, set `PROM_ENABLE_LOCAL_DRILL=true` lalu restart compose.
+- Jangan gunakan drill ini di staging/prod.
 
 ### Opsi 2: Kubernetes port-forward (lebih aman)
 
