@@ -22,7 +22,9 @@
   --radius: var(--radius);
   --radius-tight: var(--radius-tight);
 
-  --font-sans: var(--font-geist-sans);
+  /* Typography: Inter for body, Instrument Serif for headings/display */
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-display);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -36,7 +38,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+  font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
@@ -50,23 +52,31 @@ body {
 }
 
 .type-h1 {
+  font-family: var(--font-display), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   font-size: clamp(2rem, 5vw, 3.5rem);
-  line-height: 1.05;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  line-height: 1.08;
+  /* Instrument Serif is designed primarily in regular weight; avoid synthesized bold. */
+  font-weight: 400;
+  letter-spacing: 0;
+  font-synthesis: none;
 }
 
 .type-h2 {
+  font-family: var(--font-display), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   font-size: clamp(1.25rem, 2.6vw, 1.75rem);
   line-height: 1.15;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-synthesis: none;
 }
 
 .type-h3 {
+  font-family: var(--font-display), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   font-size: clamp(1.05rem, 2vw, 1.25rem);
   line-height: 1.2;
-  font-weight: 600;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-synthesis: none;
 }
 
 .type-lede {

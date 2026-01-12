@@ -30,23 +30,29 @@ export default function LocaleToggle() {
     router.push(qs ? `${nextPath}?${qs}` : nextPath);
   }
 
+  const baseBtn =
+    "h-8 px-2 text-xs font-medium tracking-wide underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2";
+
   return (
-    <div className="inline-flex items-center border border-zinc-200 bg-white">
+    <div className="inline-flex items-center gap-2 bg-transparent">
       <button
         type="button"
         onClick={() => navigate("en")}
-        className={`h-9 px-3 type-kicker ${
-          locale === "en" ? "bg-zinc-950 text-white" : "text-zinc-700 hover:bg-zinc-50"
+        className={`${baseBtn} ${
+          locale === "en" ? "text-zinc-950 underline" : "text-zinc-700 hover:text-zinc-950"
         }`}
         aria-pressed={locale === "en"}
       >
         EN
       </button>
+      <span className="select-none text-zinc-400" aria-hidden="true">
+        /
+      </span>
       <button
         type="button"
         onClick={() => navigate("id")}
-        className={`h-9 px-3 type-kicker ${
-          locale === "id" ? "bg-zinc-950 text-white" : "text-zinc-700 hover:bg-zinc-50"
+        className={`${baseBtn} ${
+          locale === "id" ? "text-zinc-950 underline" : "text-zinc-700 hover:text-zinc-950"
         }`}
         aria-pressed={locale === "id"}
       >

@@ -25,6 +25,50 @@ const dict = {
       about: "About",
       contact: "Contact",
     },
+    header: {
+      announcement: "WhatsApp-first consultation — no public pricing.",
+      quickLinkBecomePartner: "Become Partner",
+      quickLinkContact: "Contact",
+      promo: {
+        rotateMs: 5000,
+        actions: {
+          details: "Details",
+          close: "Close",
+        },
+        items: [
+          {
+            message: "WhatsApp-first consultation — no public pricing.",
+            detailsTitle: "No public pricing",
+            detailsBody:
+              "We do not publish public pricing on the website. Consultation, recommendations, and ordering happen via WhatsApp.",
+          },
+          {
+            message: "Become a partner: curated products + education + technical support.",
+            detailsTitle: "Partnership",
+            detailsBody:
+              "Submit your business details and our team will follow up within 24 hours.",
+          },
+        ],
+      },
+      mega: {
+        shopAll: "Shop all",
+        featuredTitle: "Featured",
+        featuredBody:
+          "Professional, B2B-first — no public pricing. Contact us for recommendations.",
+        actions: {
+          back: "Back",
+        },
+        links: {
+          articles: "Articles",
+          events: "Events",
+        },
+      },
+      actions: {
+        openMenu: "Open menu",
+        closeMenu: "Close menu",
+        openSearch: "Go to Products",
+      },
+    },
     cta: {
       becomePartner: "Become Partner",
       whatsappConsult: "WhatsApp Consult",
@@ -357,6 +401,50 @@ const dict = {
       partnership: "Kemitraan",
       about: "Tentang",
       contact: "Kontak",
+    },
+    header: {
+      announcement: "Konsultasi via WhatsApp — tanpa harga publik.",
+      quickLinkBecomePartner: "Jadi Partner",
+      quickLinkContact: "Kontak",
+      promo: {
+        rotateMs: 5000,
+        actions: {
+          details: "Detail",
+          close: "Tutup",
+        },
+        items: [
+          {
+            message: "Konsultasi via WhatsApp — tanpa harga publik.",
+            detailsTitle: "Tanpa harga publik",
+            detailsBody:
+              "Kami tidak menampilkan harga publik di website. Konsultasi, rekomendasi, dan pemesanan dilakukan via WhatsApp.",
+          },
+          {
+            message: "Jadi partner: produk terkurasi + edukasi + dukungan teknis.",
+            detailsTitle: "Kemitraan",
+            detailsBody:
+              "Kirim detail bisnis Anda dan tim kami akan follow up dalam 24 jam.",
+          },
+        ],
+      },
+      mega: {
+        shopAll: "Lihat semua",
+        featuredTitle: "Unggulan",
+        featuredBody:
+          "Profesional, B2B-first — tanpa harga publik. Hubungi kami untuk rekomendasi.",
+        actions: {
+          back: "Kembali",
+        },
+        links: {
+          articles: "Artikel",
+          events: "Event",
+        },
+      },
+      actions: {
+        openMenu: "Buka menu",
+        closeMenu: "Tutup menu",
+        openSearch: "Ke halaman Produk",
+      },
     },
     cta: {
       becomePartner: "Jadi Partner",
