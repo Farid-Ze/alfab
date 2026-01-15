@@ -14,6 +14,30 @@ type Props = {
   product: Product | null;
 };
 
+function IconChevronRight(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" {...props}>
+      <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function IconCheck(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" {...props}>
+      <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function IconSparkle(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" {...props}>
+      <path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" />
+    </svg>
+  );
+}
+
 export default function ProductDetailContent({ product }: Props) {
   const { locale } = useLocale();
   const tx = t(locale);
@@ -21,10 +45,21 @@ export default function ProductDetailContent({ product }: Props) {
 
   if (!product) {
     return (
-      <div className="space-y-4">
-        <p className="type-body">{tx.productDetail.notFound.body}</p>
-        <AppLink href={`${base}/products`} underline="always" className="type-body-strong text-foreground">
-          {tx.productDetail.notFound.back}
+      <div className="flex min-h-[40vh] flex-col items-center justify-center space-y-6 text-center">
+        <div className="h-16 w-16 rounded-full bg-subtle flex items-center justify-center">
+          <IconSparkle className="h-8 w-8 text-muted" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="type-h3">{tx.productDetail.notFound.body}</h2>
+          <p className="type-body text-muted max-w-md">
+            The product you&apos;re looking for may have been moved or is no longer available.
+          </p>
+        </div>
+        <AppLink 
+          href={`${base}/products`} 
+          className="inline-flex items-center gap-2 type-body-strong text-foreground hover:underline"
+        >
+          ← {tx.productDetail.notFound.back}
         </AppLink>
       </div>
     );
@@ -33,66 +68,151 @@ export default function ProductDetailContent({ product }: Props) {
   const prefill = tx.productDetail.consult.prefill.replace("{{product}}", product.name);
 
   return (
-    <div className="space-y-10">
-      <nav className="type-body">
-        <AppLink href={`${base}/products`}>
+    <div className="space-y-8 lg:space-y-12">
+      {/* Breadcrumb Navigation */}
+      <nav className="flex items-center gap-1 type-data text-muted">
+        <AppLink 
+          href={`${base}/products`}
+          className="hover:text-foreground transition-colors"
+        >
           {tx.nav.products}
         </AppLink>
-        <span className="px-2">/</span>
-        <span className="text-foreground">{product.name}</span>
+        <IconChevronRight className="h-4 w-4" />
+        <span className="text-foreground truncate">{product.name}</span>
       </nav>
 
-      <header className="space-y-3">
-        <p className="type-kicker">{product.brand}</p>
-        <h1 className="type-h2">{product.name}</h1>
-        <p className="type-body max-w-2xl">{product.summary}</p>
-      </header>
-
-      <section className="grid gap-8 md:grid-cols-3">
-        <div className="md:col-span-2 space-y-6">
-          <Card className="p-6">
-            <h2 className="type-h3">{tx.productDetail.sections.keyBenefits}</h2>
-            <ul className="mt-3 list-disc space-y-1 pl-5 type-body">
-              {product.benefits.map((b) => (
-                <li key={b}>{b}</li>
-              ))}
-            </ul>
-          </Card>
-
-          <Card className="p-6">
-            <h2 className="type-h3">{tx.productDetail.sections.howToUse}</h2>
-            <p className="mt-3 type-body whitespace-pre-line">{product.howToUse}</p>
-          </Card>
+      {/* Product Header */}
+      <header className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+        {/* Product Image Placeholder */}
+        <div className="aspect-square bg-subtle border border-border flex items-center justify-center">
+          <div className="text-center space-y-3 px-6">
+            <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-background border border-border">
+              <IconSparkle className="h-8 w-8 text-muted" />
+            </div>
+            <p className="type-data text-muted">Product Image</p>
+          </div>
         </div>
 
-        <aside className="space-y-5">
-          <div className="border border-border bg-panel p-6">
-            <h2 className="type-h3">{tx.productDetail.consult.title}</h2>
-            <p className="mt-2 type-body">{tx.productDetail.consult.body}</p>
-            <div className="mt-4 flex flex-col gap-3">
-              <WhatsAppLink className={getButtonClassName({ variant: "primary", size: "md" })} prefill={prefill}>
+        {/* Product Info */}
+        <div className="flex flex-col justify-center space-y-6">
+          <div className="space-y-3">
+            <p className="type-kicker">{product.brand}</p>
+            <h1 className="type-h1">{product.name}</h1>
+            <p className="type-body text-muted-strong max-w-lg">{product.summary}</p>
+          </div>
+
+          {/* Quick Tags */}
+          <div className="flex flex-wrap gap-2">
+            {product.functions.slice(0, 3).map((fn) => (
+              <span key={fn} className="inline-flex items-center px-3 py-1 bg-subtle border border-border type-data">
+                {fn}
+              </span>
+            ))}
+          </div>
+
+          {/* CTA Section */}
+          <div className="pt-4 space-y-4 border-t border-border">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <WhatsAppLink 
+                className={getButtonClassName({ variant: "primary", size: "lg" }) + " flex-1 sm:flex-none"}
+                prefill={prefill}
+              >
                 {tx.cta.whatsappConsult}
               </WhatsAppLink>
-              <ButtonLink href={`${base}/partnership/become-partner`} variant="secondary">
+              <ButtonLink 
+                href={`${base}/partnership/become-partner`} 
+                variant="secondary"
+                size="lg"
+                className="flex-1 sm:flex-none"
+              >
                 {tx.cta.becomePartner}
               </ButtonLink>
             </div>
+            <p className="type-data text-muted">
+              {tx.productDetail.consult.body}
+            </p>
           </div>
+        </div>
+      </header>
 
-          <Card className="p-6">
-            <h2 className="type-h3">{tx.productDetail.sections.recommendedFor}</h2>
-            <ul className="mt-3 space-y-1 type-body">
-              <li>
-                <span className="type-data-strong text-foreground">{tx.productDetail.labels.audience}:</span>{" "}
-                {product.audience.join(", ")}
+      {/* Product Details Grid */}
+      <section className="grid gap-6 lg:grid-cols-3 lg:gap-8">
+        {/* Benefits Card */}
+        <Card className="p-6 lg:p-8 space-y-4 lg:col-span-2">
+          <h2 className="type-h3 flex items-center gap-2">
+            <span className="inline-flex h-8 w-8 items-center justify-center bg-foreground text-background rounded-full">
+              <IconCheck className="h-4 w-4" />
+            </span>
+            {tx.productDetail.sections.keyBenefits}
+          </h2>
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {product.benefits.map((benefit) => (
+              <li key={benefit} className="flex items-start gap-3 type-body">
+                <IconCheck className="h-5 w-5 text-foreground shrink-0 mt-0.5" />
+                <span>{benefit}</span>
               </li>
-              <li>
-                <span className="type-data-strong text-foreground">{tx.productDetail.labels.functions}:</span>{" "}
-                {product.functions.join(", ")}
-              </li>
-            </ul>
-          </Card>
-        </aside>
+            ))}
+          </ul>
+        </Card>
+
+        {/* Recommended For Card */}
+        <Card className="p-6 lg:p-8 space-y-4 bg-subtle">
+          <h2 className="type-h3">{tx.productDetail.sections.recommendedFor}</h2>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <p className="type-data-strong text-foreground uppercase">
+                {tx.productDetail.labels.audience}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {product.audience.map((aud) => (
+                  <span key={aud} className="inline-flex px-2.5 py-1 bg-background border border-border type-data">
+                    {aud}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="type-data-strong text-foreground uppercase">
+                {tx.productDetail.labels.functions}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {product.functions.map((fn) => (
+                  <span key={fn} className="inline-flex px-2.5 py-1 bg-background border border-border type-data">
+                    {fn}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* How To Use Card */}
+        <Card className="p-6 lg:p-8 space-y-4 lg:col-span-3">
+          <h2 className="type-h3">{tx.productDetail.sections.howToUse}</h2>
+          <div className="prose prose-neutral max-w-none">
+            <p className="type-body whitespace-pre-line">{product.howToUse}</p>
+          </div>
+        </Card>
+      </section>
+
+      {/* Bottom CTA */}
+      <section className="border-t border-border pt-8 lg:pt-12">
+        <div className="bg-foreground text-background p-6 lg:p-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div className="space-y-2">
+            <h3 className="type-h3 text-background">{tx.productDetail.consult.title}</h3>
+            <p className="type-body text-background/80 max-w-lg">
+              {tx.productDetail.consult.body}
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+            <WhatsAppLink 
+              className="inline-flex items-center justify-center px-6 py-3 bg-background text-foreground type-body-strong hover:bg-subtle transition-colors"
+              prefill={prefill}
+            >
+              {tx.cta.whatsappConsult}
+            </WhatsAppLink>
+          </div>
+        </div>
       </section>
     </div>
   );
