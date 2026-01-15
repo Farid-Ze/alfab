@@ -340,6 +340,14 @@ const dict = {
         companyLabel: "Company",
       },
       consent: "I consent to be contacted for partnership follow-up.",
+      validation: {
+        businessNameRequired: "Business name is required (min 2 characters)",
+        contactNameRequired: "Contact name is required (min 2 characters)",
+        phoneRequired: "WhatsApp number is required (min 8 digits)",
+        cityRequired: "City is required (min 2 characters)",
+        salonTypeRequired: "Please select your business type",
+        consentRequired: "Please agree to be contacted",
+      },
       actions: {
         submit: "Submit",
         submitting: "Submitting…",
@@ -348,6 +356,8 @@ const dict = {
         title: "Thank you — we received your details.",
         body: "Our team will follow up. You can also message us on WhatsApp for faster consultation.",
         ref: "Reference",
+        whatsappCta: "Chat on WhatsApp",
+        whatsappPrefill: "Hi Alfa Beauty, I just submitted my partnership application and would like to discuss further.",
       },
       errors: {
         network: "Network error. Please try again.",
@@ -719,6 +729,14 @@ const dict = {
         companyLabel: "Company",
       },
       consent: "Saya setuju untuk dihubungi untuk tindak lanjut kemitraan.",
+      validation: {
+        businessNameRequired: "Nama bisnis wajib diisi (min 2 karakter)",
+        contactNameRequired: "Nama kontak wajib diisi (min 2 karakter)",
+        phoneRequired: "Nomor WhatsApp wajib diisi (min 8 digit)",
+        cityRequired: "Kota wajib diisi (min 2 karakter)",
+        salonTypeRequired: "Pilih tipe bisnis Anda",
+        consentRequired: "Mohon setujui untuk dihubungi",
+      },
       actions: {
         submit: "Kirim",
         submitting: "Mengirim…",
@@ -727,6 +745,8 @@ const dict = {
         title: "Terima kasih — data Anda sudah kami terima.",
         body: "Tim kami akan follow up. Anda juga bisa chat via WhatsApp untuk konsultasi lebih cepat.",
         ref: "Referensi",
+        whatsappCta: "Chat via WhatsApp",
+        whatsappPrefill: "Halo Alfa Beauty, saya baru saja mengirim data kemitraan dan ingin berdiskusi lebih lanjut.",
       },
       errors: {
         network: "Koneksi bermasalah. Silakan coba lagi.",

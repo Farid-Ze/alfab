@@ -16,22 +16,22 @@ export default function TermsContent() {
         <span className="type-strong text-foreground">{policy.intro.prefix}</span> {policy.intro.body}
       </p>
 
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="type-h3">{sections.websiteUse.title}</h2>
         <p className="type-body">{sections.websiteUse.body}</p>
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="type-h3">{sections.noPublicPricing.title}</h2>
         <p className="type-body">{sections.noPublicPricing.body}</p>
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="type-h3">{sections.limitations.title}</h2>
         <p className="type-body">{sections.limitations.body}</p>
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="type-h3">{sections.changes.title}</h2>
         <p className="type-body">{sections.changes.body}</p>
       </section>

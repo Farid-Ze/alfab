@@ -9,8 +9,8 @@ export default function BecomePartnerContent() {
   const copy = t(locale);
 
   return (
-    <div className="grid gap-10 md:grid-cols-2">
-      <div className="space-y-4">
+    <div className="grid gap-12 md:grid-cols-2">
+      <div className="space-y-5">
         <h1 className="type-h2">{copy.becomePartner.title}</h1>
         <p className="type-body">{copy.becomePartner.lede}</p>
 
@@ -24,7 +24,7 @@ export default function BecomePartnerContent() {
         </div>
       </div>
 
-      <div className="border border-border p-6">
+      <div className="border border-border bg-panel p-6">
         <LeadForm />
       </div>
     </div>

@@ -14,7 +14,7 @@ export default function EducationEventDetailClient({ slug }: { slug: string }) {
 
   if (!event) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-5">
         <h1 className="type-h2">{tx.education.event.notFound.title}</h1>
         <p className="type-body">{tx.education.event.notFound.body}</p>
         <ButtonLink href={`${base}/education`} variant="secondary" size="sm">
@@ -25,8 +25,8 @@ export default function EducationEventDetailClient({ slug }: { slug: string }) {
   }
 
   return (
-    <article className="space-y-8">
-      <header className="space-y-3">
+    <article className="space-y-10 max-w-3xl">
+      <header className="space-y-4">
         <p className="type-kicker">
           {event.city} • {event.date}
         </p>

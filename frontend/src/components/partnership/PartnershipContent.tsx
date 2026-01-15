@@ -11,13 +11,13 @@ export default function PartnershipContent() {
   const base = `/${locale}`;
 
   return (
-    <div className="space-y-8">
-      <header className="space-y-2">
+    <div className="space-y-10">
+      <header className="space-y-3">
         <h1 className="type-h2">{copy.partnership.title}</h1>
         <p className="type-body">{copy.partnership.lede}</p>
       </header>
 
-      <section className="grid gap-4 md:grid-cols-3">
+      <section className="grid gap-6 md:grid-cols-3 md:gap-6">
         {[copy.partnership.cards.curated, copy.partnership.cards.education, copy.partnership.cards.b2b].map(
           (x) => (
             <Card key={x.title} className="p-6">

@@ -27,7 +27,7 @@ export async function generateMetadata({
 
 export default function LocalizedHome() {
   return (
-    <div className="space-y-14">
+    <div className="space-y-16 sm:space-y-20">
       <HomeHero />
       <Pillars />
       <ProductHighlights />

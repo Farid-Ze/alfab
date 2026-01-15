@@ -8,9 +8,9 @@ export default function ProductsHeader() {
   const copy = t(locale);
 
   return (
-    <header className="space-y-2">
+    <header className="space-y-3">
       <h1 className="type-h2">{copy.products.title}</h1>
-      <p className="type-body">{copy.products.lede}</p>
+      <p className="type-body max-w-2xl">{copy.products.lede}</p>
     </header>
   );
 }

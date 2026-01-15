@@ -20,10 +20,10 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="mx-auto max-w-2xl space-y-3">
+    <div className="mx-auto max-w-2xl space-y-4">
       <h1 className="type-h2">Something went wrong</h1>
       <p className="type-body">Please try again. If the issue persists, contact us.</p>
-      <div className="flex flex-col gap-2 sm:flex-row">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <Button type="button" onClick={() => reset()}>
           Try again
         </Button>

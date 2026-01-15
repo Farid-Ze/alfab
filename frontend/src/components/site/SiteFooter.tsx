@@ -11,14 +11,14 @@ export default function SiteFooter() {
 
   return (
     <footer className="border-t border-border bg-background">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3">
-        <div className="space-y-2">
+      <div className="mx-auto grid max-w-[80rem] gap-10 px-4 py-12 sm:px-6 md:grid-cols-3">
+        <div className="space-y-3">
           <p className="type-data-strong text-foreground">Alfa Beauty Cosmetica</p>
           <p className="type-body">{tx.footer.blurb}</p>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-3">
           <p className="type-data-strong text-foreground">{tx.footer.explore}</p>
-          <ul className="space-y-1 type-body">
+          <ul className="space-y-2 type-body">
             <li>
               <AppLink href={`${base}/products`}>
                 {tx.nav.products}
@@ -36,9 +36,9 @@ export default function SiteFooter() {
             </li>
           </ul>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-3">
           <p className="type-data-strong text-foreground">{tx.footer.legal}</p>
-          <ul className="space-y-1 type-body">
+          <ul className="space-y-2 type-body">
             <li>
               <AppLink href={`${base}/privacy`}>
                 {tx.legal.privacyTitle}
@@ -52,8 +52,8 @@ export default function SiteFooter() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-border py-6">
-        <p className="mx-auto max-w-6xl px-4 type-data sm:px-6">
+      <div className="border-t border-border py-8">
+        <p className="mx-auto max-w-[80rem] px-4 type-data sm:px-6">
           © {new Date().getFullYear()} Alfa Beauty Cosmetica. {tx.footer.copyrightSuffix}
         </p>
       </div>

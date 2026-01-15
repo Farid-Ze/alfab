@@ -9,6 +9,7 @@
     "lint:typography": "node scripts/lint-typography.mjs",
     "lint:links": "node scripts/lint-links.mjs",
     "lint:tokens": "node scripts/lint-tokens.mjs",
+    "lint:summary": "node scripts/lint-summary.mjs",
     "lint": "npm run lint:typography && npm run lint:links && npm run lint:tokens && eslint",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",

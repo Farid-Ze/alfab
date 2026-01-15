@@ -35,6 +35,19 @@ npm run dev
 
 The default dev server port is pinned to 3000.
 
+### Lint + safety summary
+
+```bash
+npm run lint
+npm run lint:summary
+```
+
+Optional: write JSON output for evidence.
+
+```bash
+npm run lint:summary -- --out tmp/lint_summary.json
+```
+
 ### Run with backend proxy
 
 Start the Go Lead API separately (repo root). Then ensure `LEAD_API_BASE_URL` points to it.

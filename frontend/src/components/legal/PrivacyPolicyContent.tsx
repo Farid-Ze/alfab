@@ -16,35 +16,35 @@ export default function PrivacyPolicyContent() {
         <span className="type-strong text-foreground">{policy.intro.prefix}</span> {policy.intro.body}
       </p>
 
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="type-h3">{sections.informationWeCollect.title}</h2>
-        <ul className="list-disc space-y-1 pl-5 type-body">
+        <ul className="list-disc space-y-2 pl-5 type-body">
           {sections.informationWeCollect.items.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="type-h3">{sections.howWeUse.title}</h2>
-        <ul className="list-disc space-y-1 pl-5 type-body">
+        <ul className="list-disc space-y-2 pl-5 type-body">
           {sections.howWeUse.items.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="type-h3">{sections.storageSecurity.title}</h2>
         <p className="type-body">{sections.storageSecurity.body}</p>
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="type-h3">{sections.cookies.title}</h2>
         <p className="type-body">{sections.cookies.body}</p>
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-3">
         <h2 className="type-h3">{sections.contact.title}</h2>
         <p className="type-body">{sections.contact.body}</p>
       </section>

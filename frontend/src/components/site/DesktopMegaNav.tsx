@@ -235,17 +235,17 @@ export default function DesktopMegaNav({ items }: { items: MegaItem[] }) {
         <>
           {/*
             Overlay + panel are positioned to start below the sticky header.
-            Header heights: promo (h-9 = 36px) + nav (72px) = 108px.
+            Uses --header-offset from SiteHeader for accurate alignment.
           */}
           <div
-            className="fixed inset-x-0 bottom-0 top-[108px] z-30 bg-black/20"
+            className="fixed inset-x-0 bottom-0 top-[var(--header-offset)] z-30 bg-black/20"
             aria-hidden="true"
             onMouseDown={() => closePanel({ key: active.key })}
           />
           <div
             id={`mega-${active.key}`}
             ref={panelRef}
-            className="fixed left-0 right-0 top-[108px] z-40 border-b border-border bg-background"
+            className="fixed left-0 right-0 top-[var(--header-offset)] z-40 max-h-[calc(100dvh-var(--header-offset))] overflow-y-auto border-b border-border bg-background"
             onMouseEnter={() => setActiveKey(active.key)}
             role="region"
             aria-labelledby={`mega-trigger-${active.key}`}

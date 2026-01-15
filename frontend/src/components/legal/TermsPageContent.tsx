@@ -10,7 +10,7 @@ export default function TermsPageContent() {
   const tx = t(locale);
 
   return (
-    <div className="space-y-4 max-w-3xl">
+    <div className="space-y-6 max-w-3xl">
       <h1 className="type-h2">{tx.legal.termsTitle}</h1>
       <TermsContent />
     </div>

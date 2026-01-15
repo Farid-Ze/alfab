@@ -8,7 +8,7 @@ export default function AboutContent() {
   const copy = t(locale);
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="max-w-3xl space-y-8">
       <h1 className="type-h2">{copy.about.title}</h1>
       <p className="type-body">{copy.about.body}</p>
     </div>

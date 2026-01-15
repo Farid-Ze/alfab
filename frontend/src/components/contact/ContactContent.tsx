@@ -10,11 +10,11 @@ export default function ContactContent({ fallbackEmail }: { fallbackEmail?: stri
   const copy = t(locale);
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="max-w-3xl space-y-8">
       <h1 className="type-h2">{copy.contact.title}</h1>
       <p className="type-body">{copy.contact.body}</p>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <WhatsAppLink className={getButtonClassName({ variant: "primary", size: "md" })}>
           {copy.cta.whatsappConsult}
         </WhatsAppLink>

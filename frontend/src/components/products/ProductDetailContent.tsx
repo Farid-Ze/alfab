@@ -21,7 +21,7 @@ export default function ProductDetailContent({ product }: Props) {
 
   if (!product) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-4">
         <p className="type-body">{tx.productDetail.notFound.body}</p>
         <AppLink href={`${base}/products`} underline="always" className="type-body-strong text-foreground">
           {tx.productDetail.notFound.back}
@@ -33,7 +33,7 @@ export default function ProductDetailContent({ product }: Props) {
   const prefill = tx.productDetail.consult.prefill.replace("{{product}}", product.name);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <nav className="type-body">
         <AppLink href={`${base}/products`}>
           {tx.nav.products}
@@ -42,13 +42,13 @@ export default function ProductDetailContent({ product }: Props) {
         <span className="text-foreground">{product.name}</span>
       </nav>
 
-      <header className="space-y-2">
+      <header className="space-y-3">
         <p className="type-kicker">{product.brand}</p>
         <h1 className="type-h2">{product.name}</h1>
-        <p className="type-body max-w-3xl">{product.summary}</p>
+        <p className="type-body max-w-2xl">{product.summary}</p>
       </header>
 
-      <section className="grid gap-6 md:grid-cols-3">
+      <section className="grid gap-8 md:grid-cols-3">
         <div className="md:col-span-2 space-y-6">
           <Card className="p-6">
             <h2 className="type-h3">{tx.productDetail.sections.keyBenefits}</h2>
@@ -65,7 +65,7 @@ export default function ProductDetailContent({ product }: Props) {
           </Card>
         </div>
 
-        <aside className="space-y-4">
+        <aside className="space-y-5">
           <div className="border border-border bg-panel p-6">
             <h2 className="type-h3">{tx.productDetail.consult.title}</h2>
             <p className="mt-2 type-body">{tx.productDetail.consult.body}</p>

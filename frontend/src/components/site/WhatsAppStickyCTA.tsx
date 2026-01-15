@@ -12,7 +12,7 @@ export default function WhatsAppStickyCTA() {
   const copy = t(locale);
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2 sm:bottom-6 sm:right-6">
       <WhatsAppLink
         className={getButtonClassName({ variant: "primary", size: "md" })}
         prefill={process.env.NEXT_PUBLIC_WHATSAPP_PREFILL}
@@ -21,7 +21,7 @@ export default function WhatsAppStickyCTA() {
       </WhatsAppLink>
 
       {fallbackEmail ? (
-        <div className="mt-2 text-right">
+        <div className="text-right">
           <a
             className="type-data-strong text-foreground-muted underline underline-offset-2 hover:text-foreground"
             href={`mailto:${fallbackEmail}`}

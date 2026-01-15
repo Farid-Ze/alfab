@@ -33,6 +33,14 @@ make migrate-up
 make run
 ```
 
+### Frontend (Paket A)
+
+```bash
+cd frontend
+npm install
+npm run lint:summary
+```
+
 ### Available Commands
 
 ```bash

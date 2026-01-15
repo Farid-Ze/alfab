@@ -78,6 +78,7 @@ export default function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const headerRef = useRef<HTMLElement | null>(null);
   const drawerRef = useRef<HTMLDivElement | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
   const openerRef = useRef<HTMLButtonElement | null>(null);
@@ -186,6 +187,28 @@ export default function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    const headerEl = headerRef.current;
+    if (!headerEl) return;
+
+    const updateOffset = () => {
+      const height = headerEl.offsetHeight;
+      root.style.setProperty("--header-offset", `${height}px`);
+    };
+
+    updateOffset();
+
+    if (typeof ResizeObserver !== "undefined") {
+      const observer = new ResizeObserver(() => updateOffset());
+      observer.observe(headerEl);
+      return () => observer.disconnect();
+    }
+
+    window.addEventListener("resize", updateOffset);
+    return () => window.removeEventListener("resize", updateOffset);
+  }, []);
+
   const becomePartnerHref = `${base}/partnership/become-partner`;
   const contactHref = `${base}/contact`;
   const productsHref = `${base}/products`;
@@ -194,6 +217,7 @@ export default function SiteHeader() {
 
   return (
     <header
+      ref={headerRef}
       className={"sticky top-0 z-40 bg-background"}
       data-scrolled={scrolled ? "true" : "false"}
     >

@@ -17,20 +17,20 @@ export default function EducationHub() {
   const articles = listArticles(locale);
 
   return (
-    <div className="space-y-10">
-      <header className="space-y-3">
+    <div className="space-y-12">
+      <header className="space-y-4">
         <p className="type-kicker">{tx.nav.education}</p>
         <h1 className="type-h2">{tx.education.hub.title}</h1>
         <p className="type-body max-w-2xl">{tx.education.hub.lede}</p>
       </header>
 
-      <section className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-4">
+      <section className="grid gap-8 md:grid-cols-2">
+        <div className="space-y-5">
           <h2 className="type-kicker text-foreground">{tx.education.hub.sections.events}</h2>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {events.map((e) => (
-              <Card key={e.slug} className="p-5">
+              <Card key={e.slug} className="p-6">
                 <div className="space-y-2">
                   <p className="type-kicker">
                     {e.city} • {e.date}
@@ -56,12 +56,12 @@ export default function EducationHub() {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           <h2 className="type-kicker text-foreground">{tx.education.hub.sections.articles}</h2>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {articles.map((a) => (
-              <Card key={a.slug} className="p-5">
+              <Card key={a.slug} className="p-6">
                 <div className="space-y-2">
                   <p className="type-kicker">{a.date}</p>
                   <AppLink
