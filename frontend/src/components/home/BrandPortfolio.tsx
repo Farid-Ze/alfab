@@ -46,7 +46,7 @@ function BrandLogo({ name, logo }: BrandLogoProps) {
             className="flex h-full w-full items-center justify-center px-6"
             title={name}
         >
-            <span className="type-h3 text-foreground whitespace-nowrap tracking-tight">
+            <span className="type-h3 text-foreground whitespace-nowrap">
                 {name}
             </span>
         </div>

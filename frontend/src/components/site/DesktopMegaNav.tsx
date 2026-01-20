@@ -41,9 +41,27 @@ export default function DesktopMegaNav({
   const panelRef = useRef<HTMLDivElement | null>(null);
   const triggerLinkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const triggerBtnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const active = useMemo(() => items.find((i) => i.key === activeKey), [activeKey, items]);
   const panelOpen = Boolean(active && active.links && active.links.length > 0);
+
+  // Cancel any pending close when entering nav item or panel
+  const handleMouseEnter = useCallback((key: string) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    // Only update if different key to prevent unnecessary rerenders
+    setActiveKey(prev => prev === key ? prev : key);
+  }, []);
+
+  // Enterprise-grade debounced close (200ms for smooth transitions)
+  const handleMouseLeave = useCallback(() => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setActiveKey(null);
+    }, 200);
+  }, []);
 
   useEffect(() => {
     onOpenChange?.(panelOpen);
@@ -177,7 +195,7 @@ export default function DesktopMegaNav({
   const navMutedTextClass = tone === "onMedia" ? "text-background/80 hover:text-background" : "text-foreground-muted hover:text-foreground";
 
   return (
-    <div ref={rootRef} className="relative header-desktop-only-block" onMouseLeave={() => setActiveKey(null)}>
+    <div ref={rootRef} className="relative header-desktop-only-block" onMouseLeave={handleMouseLeave}>
       <nav className={`flex items-center gap-10 type-nav ${navTextClass}`} aria-label="Main Navigation" id="nav-main">
         {items.map((item) => {
           const hasPanel = Boolean(item.links && item.links.length > 0);
@@ -187,7 +205,7 @@ export default function DesktopMegaNav({
           const panelId = `mega-${item.key}`;
 
           return (
-            <div key={item.key} className="relative" onMouseEnter={() => setActiveKey(item.key)}>
+            <div key={item.key} className="relative py-2 -my-2" onMouseEnter={() => handleMouseEnter(item.key)}>
               <div className="flex items-center gap-1">
                 <AppLink
                   href={item.href}
@@ -197,9 +215,11 @@ export default function DesktopMegaNav({
                   aria-current={isCurrent ? "page" : undefined}
                   aria-expanded={hasPanel ? (isActive ? true : false) : undefined}
                   aria-controls={hasPanel ? panelId : undefined}
-                  className={`ui-focus-ring ui-radius-tight ${isActive || isCurrent
+                  className={`ui-focus-ring ui-radius-tight transition-colors duration-150 ${isCurrent
                     ? `${tone === "onMedia" ? "text-background" : "text-foreground"} underline underline-offset-[10px]`
-                    : tone === "onMedia" ? "hover:text-background" : "hover:text-foreground"
+                    : isActive
+                      ? `${tone === "onMedia" ? "text-background" : "text-foreground"}`
+                      : tone === "onMedia" ? "text-background/80 hover:text-background" : "text-foreground/70 hover:text-foreground"
                     }`}
                   onKeyDown={(e) => {
                     if (!hasPanel) {
@@ -286,55 +306,128 @@ export default function DesktopMegaNav({
 
       {panelOpen && active ? (
         <>
-          {/*
-            Overlay + panel are positioned to start below the sticky header.
-            Uses --header-offset from SiteHeader for accurate alignment.
-          */}
+          {/* Overlay with subtle blur */}
           <div
-            className="fixed inset-x-0 bottom-0 top-[var(--header-offset)] z-30 bg-black/20"
+            className="fixed inset-x-0 bottom-0 top-[var(--header-offset)] z-30 
+                       bg-black/5 backdrop-blur-[2px]"
             aria-hidden="true"
             onMouseDown={() => closePanel({ key: active.key })}
           />
+
+          {/* Enterprise Mega Panel */}
           <div
             id={`mega-${active.key}`}
             ref={panelRef}
-            className="fixed left-0 right-0 top-[var(--header-offset)] z-40 max-h-[calc(var(--vh,100dvh)-var(--header-offset))] overflow-y-auto border-b border-border bg-background"
-            onMouseEnter={() => setActiveKey(active.key)}
+            className="fixed left-0 right-0 top-[var(--header-offset)] z-40 
+                       max-h-[calc(var(--vh,100dvh)-var(--header-offset))] 
+                       overflow-y-auto bg-background
+                       shadow-[0_4px_24px_-6px_rgba(0,0,0,0.1)]"
+            style={{
+              animation: 'megaMenuEnter 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            }}
+            onMouseEnter={() => handleMouseEnter(active.key)}
             role="region"
             aria-labelledby={`mega-trigger-${active.key}`}
           >
-            <div className="mx-auto grid w-full max-w-[120rem] grid-cols-12 gap-8 px-4 py-8 sm:px-6 lg:px-10">
-              <div className="col-span-4">
-                <p className="type-kicker text-muted">{tx.header.mega.featuredTitle}</p>
-                <p className="mt-2 type-body-compact">{tx.header.mega.featuredBody}</p>
-                <div className="mt-4">
-                  <AppLink
-                    href={active.href}
-                    className="inline-flex type-data-strong text-foreground underline underline-offset-4 hover:no-underline"
-                    onClick={() => setActiveKey(null)}
-                  >
-                    {tx.header.mega.shopAll} {active.label}
-                  </AppLink>
-                </div>
-              </div>
+            {/* Top accent line */}
+            <div className="h-px bg-gradient-to-r from-transparent via-foreground/15 to-transparent" />
 
-              <div className="col-span-8">
-                <div className="grid grid-cols-2 gap-x-10 gap-y-3">
-                  {active.links?.map((l) => (
+            <div className="mx-auto w-full max-w-[90rem] px-8 py-8 lg:px-12">
+              <div
+                className="grid grid-cols-12 gap-16"
+                style={{
+                  animation: 'megaMenuContentFade 300ms cubic-bezier(0.16, 1, 0.3, 1) 50ms forwards',
+                  opacity: 0,
+                }}
+              >
+
+                {/* Links Section - Clean columns with headers */}
+                <div className="col-span-7 lg:col-span-8">
+                  {/* Category title */}
+                  <p className="type-data text-foreground/40 uppercase mb-4">
+                    {active.label}
+                  </p>
+
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-0">
+                    {active.links?.map((l) => (
+                      <AppLink
+                        key={l.href}
+                        href={l.href}
+                        aria-current={isActiveHref(l.href) ? "page" : undefined}
+                        className={`py-1.5 type-body transition-colors duration-150
+                          ${isActiveHref(l.href)
+                            ? "text-foreground"
+                            : "text-foreground/60 hover:text-foreground"
+                          }`}
+                        onClick={() => closePanel({ key: active.key })}
+                      >
+                        {l.label}
+                      </AppLink>
+                    ))}
+                  </div>
+
+                  {/* Shop All CTA */}
+                  <div className="mt-6 pt-5 border-t border-border/50">
                     <AppLink
-                      key={l.href}
-                      href={l.href}
-                      aria-current={isActiveHref(l.href) ? "page" : undefined}
-                      className={`type-data ${isActiveHref(l.href) ? "text-foreground" : "text-foreground-soft hover:text-foreground"
-                        }`}
-                      onClick={() => closePanel({ key: active.key })}
+                      href={active.href}
+                      className="inline-flex items-center gap-3 type-body-strong 
+                                 text-foreground group"
+                      onClick={() => setActiveKey(null)}
                     >
-                      {l.label}
+                      <span className="underline underline-offset-4 decoration-foreground/30
+                                      group-hover:decoration-foreground transition-colors duration-200">
+                        {tx.header.mega.shopAll} {active.label}
+                      </span>
+                      <svg
+                        width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" strokeWidth="1.5" aria-hidden="true"
+                        className="group-hover:translate-x-1 transition-transform duration-200"
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
                     </AppLink>
-                  ))}
+                  </div>
                 </div>
+
+                {/* Featured Section - Premium visual */}
+                <div className="col-span-5 lg:col-span-4">
+                  <div className="relative aspect-[5/3] bg-muted overflow-hidden group cursor-pointer">
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent 
+                                   group-hover:from-black/80 transition-all duration-500" />
+
+                    {/* Content */}
+                    <div className="absolute inset-x-0 bottom-0 p-5">
+                      <p className="type-data uppercase text-background/60 mb-2">
+                        {tx.header.mega.featuredTitle}
+                      </p>
+                      <p className="type-body text-background
+                                   group-hover:translate-y-[-2px] transition-transform duration-300">
+                        {tx.header.mega.featuredBody}
+                      </p>
+
+                      {/* Explore indicator */}
+                      <div className="mt-3 flex items-center gap-2 text-background/70 type-data uppercase
+                                     opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0
+                                     transition-all duration-300 delay-100">
+                        <span>{locale === 'id' ? 'Jelajahi' : 'Explore'}</span>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Corner accent */}
+                    <div className="absolute top-4 right-4 w-6 h-px bg-background/30" />
+                    <div className="absolute top-4 right-4 w-px h-6 bg-background/30" />
+                  </div>
+                </div>
+
               </div>
             </div>
+
+            {/* Bottom accent line */}
+            <div className="h-px bg-border" />
           </div>
         </>
       ) : null}

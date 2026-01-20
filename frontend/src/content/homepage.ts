@@ -206,33 +206,6 @@ export function getBrandPortfolioContent(locale: Locale) {
 }
 
 // =============================================================================
-// CTA Section
-// =============================================================================
-
-export const ctaBenefits = {
-    en: [
-        "Volume-based pricing tailored to your business",
-        "Full access to 25+ premium brand catalog",
-        "Free training & certification programs",
-        "Dedicated account manager support",
-    ],
-    id: [
-        "Harga berbasis volume sesuai skala bisnis Anda",
-        "Akses lengkap ke 25+ katalog brand premium",
-        "Program pelatihan & sertifikasi gratis",
-        "Dukungan account manager khusus",
-    ],
-} as const;
-
-export function getCtaBenefits(locale: Locale) {
-    return ctaBenefits[locale];
-}
-
-export function getCtaKicker(locale: Locale) {
-    return locale === "id" ? "Kemitraan" : "Partnership";
-}
-
-// =============================================================================
 // Editorial Carousel Sections
 // =============================================================================
 
@@ -301,112 +274,6 @@ export function getStatsContent(locale: Locale) {
 }
 
 // =============================================================================
-// Testimonials (Social Proof)
-// =============================================================================
-
-export const testimonials = [
-    {
-        id: "1",
-        quote: {
-            en: "Since partnering with Alfa Beauty, our product range has expanded significantly. The training programs have truly elevated our team's expertise.",
-            id: "Sejak bermitra dengan Alfa Beauty, rangkaian produk kami berkembang signifikan. Program pelatihan benar-benar meningkatkan keahlian tim kami.",
-        },
-        author: "Maya Sari",
-        role: {
-            en: "Owner, Salon Cantika",
-            id: "Pemilik, Salon Cantika",
-        },
-        location: "Jakarta",
-        avatar: "/images/testimonials/avatar-1.jpg",
-    },
-    {
-        id: "2",
-        quote: {
-            en: "The quality of Wella and Sebastian products is unmatched. Our clients notice the difference, and so does our bottom line.",
-            id: "Kualitas produk Wella dan Sebastian tidak tertandingi. Klien kami merasakan perbedaannya, begitu juga pendapatan kami.",
-        },
-        author: "Budi Hartono",
-        role: {
-            en: "Founder, Barbershop Bro's",
-            id: "Pendiri, Barbershop Bro's",
-        },
-        location: "Surabaya",
-        avatar: "/images/testimonials/avatar-2.jpg",
-    },
-    {
-        id: "3",
-        quote: {
-            en: "Responsive support team, fast delivery, and consistent quality. Exactly what a professional salon needs from a distributor.",
-            id: "Tim support responsif, pengiriman cepat, dan kualitas konsisten. Persis yang dibutuhkan salon profesional dari distributor.",
-        },
-        author: "Linda Wijaya",
-        role: {
-            en: "Manager, Beauty House Salon",
-            id: "Manajer, Beauty House Salon",
-        },
-        location: "Bandung",
-        avatar: "/images/testimonials/avatar-3.jpg",
-    },
-] as const;
-
-export function getTestimonials(locale: Locale) {
-    return testimonials.map((t) => ({
-        id: t.id,
-        quote: t.quote[locale],
-        author: t.author,
-        role: t.role[locale],
-        location: t.location,
-        avatar: t.avatar,
-    }));
-}
-
-export const testimonialsContent = {
-    en: {
-        kicker: "PARTNER VOICES",
-        title: "What Our Partners Say",
-    },
-    id: {
-        kicker: "SUARA PARTNER",
-        title: "Apa Kata Partner Kami",
-    },
-} as const;
-
-export function getTestimonialsContent(locale: Locale) {
-    return testimonialsContent[locale];
-}
-
-// =============================================================================
-// Newsletter Section
-// =============================================================================
-
-export const newsletterContent = {
-    en: {
-        kicker: "STAY UPDATED",
-        title: "Professional Beauty Insights",
-        description: "Get exclusive product updates, industry trends, and partner-only offers delivered to your inbox.",
-        placeholder: "Enter your email",
-        button: "Subscribe",
-        consent: "By subscribing, you agree to receive marketing emails. Unsubscribe anytime.",
-        success: "Thank you for subscribing!",
-        error: "Something went wrong. Please try again.",
-    },
-    id: {
-        kicker: "TETAP UPDATE",
-        title: "Insight Beauty Profesional",
-        description: "Dapatkan update produk eksklusif, tren industri, dan penawaran khusus partner langsung ke inbox Anda.",
-        placeholder: "Masukkan email Anda",
-        button: "Berlangganan",
-        consent: "Dengan berlangganan, Anda setuju menerima email marketing. Berhenti berlangganan kapan saja.",
-        success: "Terima kasih telah berlangganan!",
-        error: "Terjadi kesalahan. Silakan coba lagi.",
-    },
-} as const;
-
-export function getNewsletterContent(locale: Locale) {
-    return newsletterContent[locale];
-}
-
-// =============================================================================
 // Cookie Consent
 // =============================================================================
 
@@ -429,26 +296,4 @@ export const cookieConsentContent = {
 
 export function getCookieConsentContent(locale: Locale) {
     return cookieConsentContent[locale];
-}
-
-
-// =============================================================================
-// Pillars Section
-// =============================================================================
-
-export const pillarsContent = {
-    en: {
-        kicker: "Our Services",
-        title: "Complete Solutions for Your Salon Business",
-        learnMore: "Learn more",
-    },
-    id: {
-        kicker: "Layanan Kami",
-        title: "Solusi Lengkap untuk Bisnis Salon Anda",
-        learnMore: "Pelajari lebih lanjut",
-    },
-} as const;
-
-export function getPillarsContent(locale: Locale) {
-    return pillarsContent[locale];
 }

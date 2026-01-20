@@ -1,15 +1,14 @@
-# Example Prometheus alert rules for Paket A (Option B Lead API)
+# Example Prometheus alert rules for Paket A (lead submit health)
 #
 # This file is intentionally minimal and should be adapted to your environment
 # (job/instance labels, routing, notification channels).
 #
-# Notes:
-# - The Lead API can attach trace exemplars (trace_id) to HTTP duration histograms.
-#   To see exemplars, scrape /metrics with OpenMetrics enabled (Prometheus will usually
-#   negotiate this automatically via Accept headers).
+# Catatan:
+# - Aturan di file ini fokus pada health endpoint lead submit.
+# - Aturan backlog/outbox/persistence hanya relevan bila Perusahaan mengaktifkan scope tambahan (CR).
 
 groups:
-  - name: paket-a-lead-api
+  - name: paket-a-lead-submit
     rules:
       # Paket A §7 "Alerting (minimal)": error rate > 1% for 5 minutes
       - alert: LeadAPIHighErrorRate
@@ -38,19 +37,6 @@ groups:
         annotations:
           summary: "Lead submit endpoint failing continuously"
           description: "Non-zero 5xx rate on /api/v1/leads sustained for 10 minutes."
-
-      # Ops health: outbox backlog is ready-but-stuck
-      - alert: LeadNotificationBacklogStuck
-        expr: |
-          lead_api_lead_notifications_pending_ready_total > 0
-          and
-          lead_api_lead_notifications_oldest_ready_pending_age_seconds > 600
-        for: 10m
-        labels:
-          severity: sev2
-        annotations:
-          summary: "Lead notification backlog stuck (ready pending > 10m)"
-          description: "Outbox has ready-to-send items older than 10 minutes. Check worker/senders and provider health."
 
       # Latency (alertability): p95 duration of /api/v1/leads is too slow.
       # Use route label (stable template) to avoid cardinality blow-up.

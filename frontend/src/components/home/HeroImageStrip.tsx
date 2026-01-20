@@ -5,6 +5,7 @@ import Image from "next/image";
 import AppLink from "@/components/ui/AppLink";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { categories, getCategoryLabel, getCategoryDescription, getCategoryStripTitle } from "@/content/homepage";
+import { ImageTransition, ContentTransition } from "@/components/ui/ImageTransition";
 
 // =============================================================================
 // Types
@@ -29,11 +30,13 @@ interface HighlightPosition {
 
 function useNavigationHighlight(containerRef: React.RefObject<HTMLDivElement | null>) {
     const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
+    const [previousIndex, setPreviousIndex] = React.useState<number | null>(null);
     const [highlightPos, setHighlightPos] = React.useState<HighlightPosition>({ left: 0, width: 0 });
     const [dropdownLeft, setDropdownLeft] = React.useState(0);
     const [isVisible, setIsVisible] = React.useState(false);
 
     const itemRefs = React.useRef<(HTMLDivElement | null)[]>([]);
+    const closeTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const calculatePositions = React.useCallback((index: number) => {
         const container = containerRef.current;
@@ -52,18 +55,55 @@ function useNavigationHighlight(containerRef: React.RefObject<HTMLDivElement | n
     }, [containerRef]);
 
     const handleItemHover = React.useCallback((index: number) => {
+        // Cancel any pending close
+        if (closeTimeoutRef.current) {
+            clearTimeout(closeTimeoutRef.current);
+            closeTimeoutRef.current = null;
+        }
+
+        // Track previous for direction calculation
+        setPreviousIndex(activeIndex);
         setActiveIndex(index);
         setIsVisible(true);
         calculatePositions(index);
-    }, [calculatePositions]);
+
+        // Smart auto-scroll: if user hasn't scrolled much, scroll to show dropdown
+        if (typeof window !== 'undefined') {
+            const scrollY = window.scrollY;
+            const viewportHeight = window.innerHeight;
+            const container = containerRef.current;
+
+            if (container && scrollY < viewportHeight * 0.3) {
+                // User is near top - auto-scroll to show dropdown
+                const containerRect = container.getBoundingClientRect();
+                const dropdownHeight = 400; // Approximate dropdown height
+                const targetBottom = containerRect.bottom + dropdownHeight + 32; // 32px padding
+
+                if (targetBottom > viewportHeight) {
+                    const scrollAmount = targetBottom - viewportHeight;
+                    window.scrollTo({
+                        top: scrollY + scrollAmount,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        }
+    }, [calculatePositions, containerRef]);
 
     const handleContainerLeave = React.useCallback(() => {
-        setIsVisible(false);
-        setActiveIndex(null);
+        // Debounced close to allow time to move to dropdown
+        closeTimeoutRef.current = setTimeout(() => {
+            setIsVisible(false);
+            setActiveIndex(null);
+        }, 100);
     }, []);
 
     const handleDropdownEnter = React.useCallback(() => {
-        // Keep visible when mouse enters dropdown
+        // Cancel pending close and keep visible
+        if (closeTimeoutRef.current) {
+            clearTimeout(closeTimeoutRef.current);
+            closeTimeoutRef.current = null;
+        }
         setIsVisible(true);
     }, []);
 
@@ -73,6 +113,7 @@ function useNavigationHighlight(containerRef: React.RefObject<HTMLDivElement | n
 
     return {
         activeIndex,
+        previousIndex,
         highlightPos,
         dropdownLeft,
         isVisible,
@@ -120,10 +161,13 @@ function CategoryLinkItem({ item, isActive, onHover, registerRef }: CategoryLink
             <AppLink
                 href={item.href}
                 underline="none"
-                className="flex items-center gap-2 py-2"
+                className="flex items-center gap-2 py-2 group"
             >
-                <span className={`text-sm sm:text-base font-medium transition-colors duration-200
-                    ${isActive ? 'text-foreground' : 'text-foreground/50'}`}>
+                <span className={`type-body transition-colors duration-200
+                    ${isActive
+                        ? 'text-foreground'
+                        : 'text-foreground/50 hover:text-foreground'
+                    }`}>
                     {item.label}
                 </span>
 
@@ -163,6 +207,7 @@ function ArrowIcon({ isActive }: ArrowIconProps) {
 interface CategoryPreviewDropdownProps {
     items: CategoryItem[];
     activeIndex: number | null;
+    previousIndex: number | null;
     leftPosition: number;
     isVisible: boolean;
     locale: string;
@@ -173,6 +218,7 @@ interface CategoryPreviewDropdownProps {
 function CategoryPreviewDropdown({
     items,
     activeIndex,
+    previousIndex,
     leftPosition,
     isVisible,
     locale,
@@ -181,15 +227,26 @@ function CategoryPreviewDropdown({
 }: CategoryPreviewDropdownProps) {
     const activeItem = activeIndex !== null ? items[activeIndex] : null;
 
+    // Don't render anything if no active item to prevent ghost hover zones
+    if (!isVisible && activeIndex === null) {
+        return null;
+    }
+
+    // Calculate direction based on index change (1 = right, -1 = left)
+    const direction = previousIndex !== null && activeIndex !== null
+        ? (activeIndex > previousIndex ? 1 : -1)
+        : 1;
+
     return (
         <div
             className="absolute top-full pt-4 z-50
-                       transition-all duration-300 ease-out"
+                       transition-all duration-150 ease-out"
             style={{
                 left: leftPosition,
                 opacity: isVisible ? 1 : 0,
                 transform: `translateX(-50%) translateY(${isVisible ? '0' : '8px'})`,
                 pointerEvents: isVisible ? 'auto' : 'none',
+                visibility: isVisible ? 'visible' : 'hidden',
             }}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
@@ -197,31 +254,33 @@ function CategoryPreviewDropdown({
             <AppLink
                 href={activeItem?.href ?? '#'}
                 underline="none"
-                className="block pointer-events-auto"
+                className="block group"
             >
-                <div className="relative w-[260px] h-[340px] sm:w-[300px] sm:h-[400px] overflow-hidden">
-                    {/* Stacked images with cross-fade */}
-                    {items.map((item, index) => (
-                        <CrossFadeImage
-                            key={item.key}
-                            src={item.image}
-                            alt={item.label}
-                            isActive={activeIndex === index}
+                {/* Glass morphism container with backdrop blur */}
+                <div className="relative w-[260px] h-[340px] sm:w-[300px] sm:h-[400px] overflow-hidden
+                               rounded-lg ring-1 ring-white/10 shadow-2xl
+                               backdrop-blur-sm">
+                    {/* Enterprise Image Transition with blur + slide + scale */}
+                    {activeItem && (
+                        <ImageTransition
+                            src={activeItem.image}
+                            alt={activeItem.label}
+                            activeKey={activeItem.key}
+                            direction={direction}
                         />
-                    ))}
+                    )}
 
                     <GradientOverlay />
 
-                    {/* Stacked typography with cross-fade */}
-                    {items.map((item, index) => (
-                        <PreviewContent
-                            key={item.key}
-                            label={item.label}
-                            description={item.description}
-                            isActive={activeIndex === index}
-                            locale={locale}
+                    {/* Enterprise Content Transition with stagger */}
+                    {activeItem && (
+                        <ContentTransition
+                            label={activeItem.label}
+                            description={activeItem.description}
+                            activeKey={activeItem.key}
+                            ctaText="Explore"
                         />
-                    ))}
+                    )}
                 </div>
             </AppLink>
         </div>
@@ -269,19 +328,114 @@ function PreviewContent({ label, description, isActive, locale }: PreviewContent
     return (
         <div className={`absolute inset-x-0 bottom-0 p-5 sm:p-6 transition-opacity duration-300
             ${isActive ? 'opacity-100' : 'opacity-0'}`}>
-            <h3 className="text-white text-lg sm:text-xl font-medium tracking-wide mb-2">
+            <h3 className="text-white type-body-strong mb-2">
                 {label}
             </h3>
-            <p className="text-white/60 text-sm leading-relaxed mb-4">
+            <p className="text-white/60 type-body mb-4">
                 {description}
             </p>
-            <span className="inline-flex items-center gap-2 text-white/80 text-xs uppercase tracking-[0.2em]">
+            <span className="inline-flex items-center gap-2 text-white/80 type-data uppercase">
                 {locale === "id" ? "Jelajahi" : "Explore"}
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                     <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
             </span>
         </div>
+    );
+}
+
+// =============================================================================
+// Mobile Category Card (Touch-friendly with visible image)
+// Quality by Design: 44px minimum touch target, clear visual hierarchy
+// =============================================================================
+
+interface MobileCategoryCardProps {
+    item: CategoryItem;
+}
+
+function MobileCategoryCard({ item }: MobileCategoryCardProps) {
+    return (
+        <AppLink
+            href={item.href}
+            underline="none"
+            className="block group"
+        >
+            {/* Image thumbnail - consistent aspect ratio */}
+            <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+                <Image
+                    src={item.image}
+                    alt={item.label}
+                    fill
+                    sizes="(max-width: 640px) 40vw, 120px"
+                    className="object-cover transition-transform duration-300 
+                              group-hover:scale-105 group-active:scale-[0.98]"
+                />
+            </div>
+
+            {/* Label - min 44px touch target height */}
+            <div className="pt-3 pb-1 min-h-[44px] flex items-start justify-center">
+                <p className="type-data text-foreground text-center">
+                    {item.label}
+                </p>
+            </div>
+        </AppLink>
+    );
+}
+
+// =============================================================================
+// Desktop Category Card (Professional Reveal)
+// Text inside card, image 20% opacity → 100% on hover, seamless with hero
+// =============================================================================
+
+interface DesktopCategoryCardProps {
+    item: CategoryItem;
+}
+
+function DesktopCategoryCard({ item }: DesktopCategoryCardProps) {
+    return (
+        <AppLink
+            href={item.href}
+            underline="none"
+            className="block group"
+        >
+            {/* Card container - dark bg to blend with hero, image subtle hint */}
+            <div className="relative aspect-[4/5] overflow-hidden bg-foreground">
+                {/* Image - 20% opacity default, full on hover */}
+                <Image
+                    src={item.image}
+                    alt={item.label}
+                    fill
+                    sizes="200px"
+                    className="object-cover transition-all duration-500 ease-out
+                              opacity-20 scale-105
+                              group-hover:opacity-100 group-hover:scale-100"
+                />
+
+                {/* Gradient overlay for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent
+                               transition-opacity duration-300"
+                    aria-hidden="true" />
+
+                {/* Category text - inside card, centered, professional typography */}
+                <div className="absolute inset-0 flex items-center justify-center p-4">
+                    <p className="text-white text-center font-light tracking-wide text-sm sm:text-base uppercase
+                                  transition-all duration-300
+                                  group-hover:opacity-0 group-hover:translate-y-2">
+                        {item.label}
+                    </p>
+                </div>
+
+                {/* Hover state: Show "Explore" CTA */}
+                <div className="absolute inset-x-0 bottom-0 p-4
+                               opacity-0 translate-y-2
+                               transition-all duration-300
+                               group-hover:opacity-100 group-hover:translate-y-0">
+                    <p className="text-white text-center font-light tracking-wide text-sm uppercase">
+                        {item.label}
+                    </p>
+                </div>
+            </div>
+        </AppLink>
     );
 }
 
@@ -303,6 +457,7 @@ export default function HeroImageStrip() {
         handleContainerLeave,
         handleDropdownEnter,
         registerItemRef,
+        previousIndex,
     } = useNavigationHighlight(containerRef);
 
     // Transform categories to include computed properties
@@ -318,40 +473,40 @@ export default function HeroImageStrip() {
 
     return (
         <section className="relative bg-background" aria-labelledby="category-hero-title">
-            <div className="border-y border-border">
-                <div className="mx-auto max-w-[120rem] px-6 sm:px-10 lg:px-16 py-5 sm:py-6">
+            <h2 id="category-hero-title" className="sr-only">{sectionTitle}</h2>
 
-                    <h2 id="category-hero-title" className="sr-only">{sectionTitle}</h2>
+            {/* Mobile: Grid layout with visible thumbnails */}
+            <div className="lg:hidden border-y border-border">
+                <div className="py-6 sm:py-8">
+                    {/* Section title for mobile */}
+                    <p className="px-4 sm:px-6 mb-5 type-data uppercase text-foreground/50">
+                        {locale === 'id' ? 'Telusuri Kategori' : 'Browse Categories'}
+                    </p>
 
-                    <div
-                        ref={containerRef}
-                        className="relative flex flex-wrap items-center justify-center gap-x-8 gap-y-3 sm:gap-x-12 lg:gap-x-16"
-                        onMouseLeave={handleContainerLeave}
-                    >
-                        <SlidingHighlight position={highlightPos} isVisible={isVisible} />
+                    {/* Grid container - 3 columns mobile, wraps to 6 on tablet */}
+                    <div className="px-4 sm:px-6">
+                        <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4">
+                            {categoryItems.map((item) => (
+                                <MobileCategoryCard key={item.key} item={item} />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                        {categoryItems.map((item, index) => (
-                            <CategoryLinkItem
-                                key={item.key}
-                                item={item}
-                                isActive={activeIndex === index}
-                                onHover={() => handleItemHover(index)}
-                                registerRef={(el) => registerItemRef(index, el)}
-                            />
+            {/* Desktop: CK-Style Category Cards - Clean Professional */}
+            <div className="hidden lg:block bg-foreground">
+                {/* Clean container - no borders, seamless with hero */}
+                <div className="mx-auto max-w-[120rem] px-6 sm:px-10 lg:px-16 py-10 lg:py-14">
+                    {/* Grid of category cards */}
+                    <div className="grid grid-cols-6 gap-4 lg:gap-5">
+                        {categoryItems.map((item) => (
+                            <DesktopCategoryCard key={item.key} item={item} />
                         ))}
-
-                        <CategoryPreviewDropdown
-                            items={categoryItems}
-                            activeIndex={activeIndex}
-                            leftPosition={dropdownLeft}
-                            isVisible={isVisible}
-                            locale={locale}
-                            onMouseEnter={handleDropdownEnter}
-                            onMouseLeave={handleContainerLeave}
-                        />
                     </div>
                 </div>
             </div>
         </section>
     );
 }
+

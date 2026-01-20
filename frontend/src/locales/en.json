@@ -145,20 +145,6 @@
             "button": "Start Conversation"
         }
     },
-    "pillars": {
-        "products": {
-            "title": "Products",
-            "body": "Curated professional brands — designed to support consistent performance in real-world use."
-        },
-        "education": {
-            "title": "Education",
-            "body": "Training and technical knowledge to help your team apply products correctly."
-        },
-        "partnership": {
-            "title": "Partnership",
-            "body": "A strategic partner for salons and barbershops — no retail gimmicks, no public pricing."
-        }
-    },
     "partnership": {
         "title": "Partnership",
         "lede": "We work as a strategic partner for salons and barbershops: curated products, education, and technical support. B2B-first, professional, no retail gimmicks.",

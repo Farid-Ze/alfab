@@ -108,25 +108,6 @@ export function FormFieldSkeleton() {
 }
 
 /**
- * Pre-built skeleton for testimonial cards
- */
-export function TestimonialSkeleton() {
-  return (
-    <div className="border border-border p-6 ui-radius space-y-4">
-      <Skeleton className="h-8 w-8 rounded" />
-      <Skeleton variant="text" lines={3} />
-      <div className="flex items-center gap-4 pt-4 border-t border-border">
-        <Skeleton variant="avatar" />
-        <div className="space-y-2 flex-1">
-          <Skeleton variant="text" className="w-24" />
-          <Skeleton variant="text" className="w-16" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/**
  * Pre-built skeleton for stats bar
  */
 export function StatsSkeleton() {

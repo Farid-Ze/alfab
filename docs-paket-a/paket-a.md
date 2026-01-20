@@ -1,13 +1,16 @@
-# Paket A — Website Professional B2B (Single Canonical Document)
+# Paket A — Website B2B + Lead Capture (WhatsApp + Become Partner)
 ## PT. Alfa Beauty Cosmetica
 
-**Version:** 2.1 (consolidated + execution-ready)  
-**Date:** January 10, 2026  
-**Scope:** Website Paket A + **Option B: Lightweight Lead API**  
+**Version:** 4.0 (Supabase DB + email notifikasi + export CSV + CMS free tier; tanpa admin dashboard kompleks; tanpa RUM khusus)  
+**Date:** January 20, 2026  
+**Scope:** Website Paket A + **Become Partner lead persistence di Supabase + email notifikasi + export CSV**  
 
-Dokumen ini adalah **spesifikasi + kontrak penerimaan (UAT/DoD)** untuk Paket A. Semua batas scope, keputusan arsitektur, acceptance, serta baseline procurement yang dibutuhkan untuk implementasi **production-ready** berada di sini.
+Dokumen ini adalah **spesifikasi implementasi + kontrak penerimaan (UAT/DoD)** untuk Paket A.
 
-**Rule:** jika ada konflik informasi, dokumen ini adalah **source of truth**.
+**Aturan konsistensi dokumen:**
+- `docs-paket-a/proposal1.md` adalah acuan komersial (scope, UAT, biaya, OpEx).
+- Dokumen ini adalah acuan teknis untuk cara implementasi dan evidence.
+- Jika ada konflik, yang menang adalah: **proposal1.md untuk scope/UAT/angka**, dokumen ini untuk **detail teknis**.
 
 ---
 
@@ -19,7 +22,7 @@ Dokumen ini adalah **spesifikasi + kontrak penerimaan (UAT/DoD)** untuk Paket A.
 - [5. Partner profiling (lead capture spec)](#5-partner-profiling-lead-capture-spec)
 - [6. Non-functional requirements](#6-non-functional-requirements)
 - [7. SLIs & SLOs](#7-slis--slos)
-- [8. Acceptance contract (UAT-A 01–16) + sign-off](#8-acceptance-contract-uat-a-0116--sign-off)
+- [8. Acceptance contract (UAT-A 01–19) + sign-off](#8-acceptance-contract-uat-a-01%E2%80%9319--sign-off)
 - [9. Definition of Done (Done = PASS + Evidence)](#9-definition-of-done-done--pass--evidence)
 - [10. Audit checklist + audit→WBS mapping](#10-audit-checklist--auditwbs-mapping)
 - [11. WBS (workstreams) + delivery plan](#11-wbs-workstreams--delivery-plan)
@@ -28,7 +31,7 @@ Dokumen ini adalah **spesifikasi + kontrak penerimaan (UAT/DoD)** untuk Paket A.
 - [14. Ops & governance pack](#14-ops--governance-pack)
 - [15. Security headers baseline](#15-security-headers-baseline)
 - [16. OWASP ASVS v5.0.0 minimal traceability](#16-owasp-asvs-v500-minimal-traceability)
-- [17. AI workflow productivity (optional)](#17-ai-workflow-productivity-optional)
+- [17. AI workflow productivity (internal)](#17-ai-workflow-productivity-internal)
 - [18. Legacy mapping (old file → new section)](#18-legacy-mapping-old-file--new-section)
 
 ---
@@ -47,8 +50,9 @@ Paket A adalah website profesional yang berfungsi sebagai:
 
 - Pengunjung dapat menemukan produk yang relevan **tanpa harga publik** (navigasi + filter jelas).
 - Jalur konversi (WhatsApp + Become Partner) **terlihat cepat** dan **berfungsi konsisten** di mobile.
-- Lead “Become Partner” **tidak hilang**: persisted (durable) sebelum dianggap sukses, terlindungi dari spam, dan dapat diexport oleh admin.
-- Setelah launch, performa dipantau via **RUM p75** (CWV) + indikator conversion (WA click + lead submit).
+- Lead “Become Partner” **tersimpan di database (Supabase) sebagai source of truth**, dan **email internal** digunakan sebagai **notifikasi operasional** untuk follow-up.
+- Owner/PIC dapat melakukan **export data lead (CSV)** untuk operasional tanpa copy manual dari email.
+- Konversi dipantau via event analytics (WA click + lead submit). Pengukuran performa mengandalkan tools standar (mis. Lighthouse/PageSpeed/CrUX bila tersedia), tanpa wiring RUM khusus.
 
 ### Company introduction (approved copy)
 
@@ -80,8 +84,10 @@ Blueprint dianggap “approved” hanya bila ada sign-off eksplisit + evidence.
 - About/Contact/Privacy/Terms
 - Basic SEO + social metadata + JSON-LD minimum
 - Analytics events
-- Core Web Vitals RUM wiring (field/RUM; p75-ready)
-- **Option B lead pipeline** (persisted, anti-spam, export protected)
+- Lead pipeline “Become Partner”: server-side validation + anti-spam minimum + **persistence di Supabase** + **email notifikasi**
+- Export lead: **download CSV** (mekanisme minimal untuk Owner/PIC; tanpa admin dashboard kompleks)
+- Integrasi **CMS (free tier)** untuk konten yang disepakati
+- Setup **GA4 + Google Search Console** (verifikasi + submit sitemap)
 - Runbook + production checklist
 - **i18n (bilingual EN/ID)**
 
@@ -108,7 +114,8 @@ Blueprint dianggap “approved” hanya bila ada sign-off eksplisit + evidence.
   - Detail
 - Education
   - Trainings & Events (listing)
-  - Event detail (optional)
+  - Event detail
+  - Article detail
 - Partnership
   - Become Partner (lead capture)
   - Partnership benefits (value props)
@@ -116,6 +123,7 @@ Blueprint dianggap “approved” hanya bila ada sign-off eksplisit + evidence.
 - Contact
 - Privacy Policy
 - Terms
+ - 404
 
 ### CTA strategy
 
@@ -130,14 +138,14 @@ Konfigurasi yang harus dipastikan sebelum production (agar tidak ambigu saat imp
 | WhatsApp prefill message | _TBD_ | Disepakati dengan Owner (tone B2B) |
 | Fallback contact email | _TBD_ | Dipakai saat device tidak support deep link |
 
-### System diagram (Option B lead pipeline)
+### System diagram (lead persistence + email notif + export CSV)
 
 ```mermaid
 graph TD
   HOME[Home] --> PRODUCTS[Products Overview]
   PRODUCTS --> PDETAIL[Product Detail]
   HOME --> EDU[Education/Events]
-  EDU --> EDETAIL[Event Detail (optional)]
+  EDU --> EDETAIL[Event Detail (jika disepakati)]
   HOME --> PARTNER[Partnership]
   PARTNER --> BECOME[Become Partner Form]
   HOME --> ABOUT[About]
@@ -146,11 +154,12 @@ graph TD
   PDETAIL --> WA[WhatsApp Consult CTA]
   HOME --> WA
 
-  %% Lead pipeline (Option B)
-  BECOME --> LEADAPI[Lead API (Option B)]
-  LEADAPI --> STORE[(Durable Persistence)]
-  LEADAPI --> NOTIF[Notification/Fanout]
-  LEADAPI --> EXPORT[Admin Export (Access-controlled)]
+  %% Lead delivery (final scope)
+  BECOME --> API[Server-side Lead API]
+  API --> DB[Supabase (Leads DB)]
+  API --> EMAIL[Internal Email Inbox (Perusahaan) — notification]
+  OWNER[Owner/PIC] --> CSV[Export CSV]
+  CSV --> DB
 ```
 
 ---
@@ -198,7 +207,7 @@ Website harus terasa **professional B2B**:
 
 **Functional:**
 - filter kombinatif (AND)
-- shareable URL querystring (optional)
+- URL querystring dapat disalin (basic; tanpa requirement edge case kompleks)
 
 #### Product detail
 
@@ -208,17 +217,18 @@ Website harus terasa **professional B2B**:
 - Summary + key benefits
 - Recommended for + use cases
 - How to use
-- Training available (optional)
+- Training available (jika ada konten yang disediakan Perusahaan)
 - CTA block: WhatsApp consult / Become Partner
 
 #### Education / events
 
 **Components:**
 - Event list + highlight
-- Event detail (optional)
+- Event detail
+- Article detail
 
 **Functional:**
-- filter by audience (Salon/Barber) (optional)
+- filter by audience (Salon/Barber) bila disepakati sebagai change request
 
 #### Partnership — Become Partner
 
@@ -233,23 +243,18 @@ Profil field detail: lihat [Partner profiling](#5-partner-profiling-lead-capture
 
 ### IDD (data interfaces)
 
-Paket A bisa diimplementasikan dengan 2 pendekatan:
+Paket A pada scope ini memakai pendekatan sederhana namun reliabel:
 
-- **Option A — Static/Repo Content (No backend changes)**
-  - Konten product/event disimpan sebagai file JSON/MD di repo.
-  - Form lead mengirim ke email/Google Sheet/CRM via webhook.
-
-- **Option B — Lightweight API (selected)**
-  - `GET /api/public/products`
-  - `GET /api/public/products/{slug}`
-  - `GET /api/public/brands`
-  - `GET /api/public/categories`
-  - `GET /api/public/events`
-  - `POST /api/public/partner-leads`
+- Konten marketing/teks/gambar yang disepakati dikelola melalui **CMS (free tier)**.
+- Konten katalog produk dan education dapat dikelola melalui CMS sesuai keputusan implementasi (minimal: field yang dibutuhkan untuk listing + detail).
+- Form lead (Become Partner) diproses melalui endpoint server-side untuk validasi + anti-spam, lalu:
+  - **disimpan ke Supabase (database) sebagai source of truth**,
+  - mengirim **email notifikasi** ke inbox internal Perusahaan (bukan satu-satunya penyimpanan),
+  - mendukung **export CSV** untuk Owner/PIC.
 
 #### Partner lead payload (actual contract)
 
-Frontend sends a **flat** payload to `/api/leads` (Next.js proxy), which forwards to Lead API:
+Frontend mengirim payload **flat** ke endpoint server-side (mis. route handler di Next.js) yang melakukan validasi + anti-spam minimum, lalu mengirim email ke inbox internal:
 
 ```json
 {
@@ -271,7 +276,7 @@ Frontend sends a **flat** payload to `/api/leads` (Next.js proxy), which forward
 }
 ```
 
-> **Note:** Optional fields (`chair_count`, `specialization`, etc.) may be omitted if empty. The `company` field is a honeypot for anti-spam.
+> **Catatan:** field tambahan (`chair_count`, `specialization`, dll.) dapat dibiarkan kosong. Field `company` dipakai sebagai honeypot anti-spam.
 
 ---
 
@@ -302,12 +307,12 @@ Profiling ringan untuk:
 - `salon_type` (Enum): `SALON | BARBER | BRIDAL | UNISEX | OTHER`
 - `consent` (checkbox): persetujuan dihubungi
 
-#### Optional (progressive profiling)
+#### Tambahan (progressive profiling)
 
 - `chair_count` (integer)
 - `specialization` (text)
 - `current_brands_used` (text)
-- `monthly_spend_range` (enum; optional jika owner setuju)
+- `monthly_spend_range` (enum; bila disetujui Owner)
 
 ### Validation rules
 
@@ -318,8 +323,8 @@ Profiling ringan untuk:
 ### Privacy notes
 
 - tampilkan ringkas: data dipakai untuk kontak bisnis dan tidak dijual
-- retensi: default 12 bulan (atau sesuai kebijakan internal)
-  - jika kebijakan internal berbeda, angka final wajib tercermin di copy Privacy Policy + SOP purge, dan disetujui saat sign-off
+- retensi: kebijakan internal Perusahaan (default 12 bulan untuk operasional B2B)
+  - karena lead disimpan di Supabase (database Perusahaan) dan email hanya notifikasi operasional, kebijakan retensi berlaku untuk database dan mailbox internal (SOP internal Perusahaan) dan perlu dicerminkan di Privacy Policy.
 
 ---
 
@@ -331,7 +336,7 @@ Profiling ringan untuk:
 - **Structured data:** JSON-LD minimum (Organization + Breadcrumb; Product bila feasible) dan valid.
 - **Accessibility:** struktur heading, kontras, keyboard navigation.
 - **Observability:** error logging + pageview/conversion events.
-- **Security baseline:** security headers minimum + hardening endpoint lead (Option B).
+- **Security baseline:** security headers minimum + hardening endpoint lead (server-side validation + anti-spam minimum).
 
 ---
 
@@ -350,7 +355,7 @@ Target (best effort):
 - INP p75 < 200ms (best effort)
 
 Catatan:
-- Angka p75 idealnya diambil dari **RUM** (field data) — bukan hanya Lighthouse.
+- Tanpa wiring RUM khusus, pengukuran performa mengandalkan Lighthouse/PageSpeed dan/atau CrUX bila tersedia.
 
 ### Conversion SLIs
 
@@ -366,84 +371,87 @@ Contoh rules Prometheus (minimal): `docs-paket-a/prometheus_alerts_example.yml`
 
 ---
 
-## 8. Acceptance contract (UAT-A 01–16) + sign-off
+## 8. Acceptance contract (UAT-A 01–19) + sign-off
 
 Jika seluruh skenario PASS, maka deliverable dianggap selesai.
 
 ### UAT-01 — Homepage positioning
 **Steps:** buka home di mobile dan desktop  
-**Expected:** hero value proposition terlihat, CTA “Explore Products” dan “Become Partner” dapat diklik, logo brand tampil.
+**Expected:** hero/value proposition terlihat, CTA dapat diklik, logo/brand tampil.
 
 ### UAT-02 — Products overview navigation
 **Steps:** buka Products overview  
 **Expected:** kategori tampil, grid produk tampil, tidak ada harga.
 
 ### UAT-03 — Filter brand/fungsi/audience
-**Steps:** pilih Brand; tambah filter Audience; reset filter  
+**Steps:** pilih filter; reset filter  
 **Expected:** hasil berubah sesuai filter, empty-state jelas jika tidak ada hasil.
 
-### UAT-04 — Product detail decision support
-**Steps:** buka 3 product detail  
-**Expected:** header + brand + kategori tampil, benefits/use-cases/how-to-use tampil ringkas, CTA WhatsApp tersedia.
+### UAT-04 — Product detail
+**Steps:** buka beberapa product detail  
+**Expected:** struktur konten rapi, CTA WhatsApp tersedia.
 
 ### UAT-05 — WhatsApp contact
 **Steps:** klik WhatsApp CTA dari Home + Product detail  
-**Expected:** membuka WA (atau deep link), fallback contact tersedia bila device tidak support.
+**Expected:** membuka WA/deep link; fallback tersedia bila device tidak mendukung.
 
 ### UAT-06 — Become Partner lead form
-**Steps:** submit form valid; coba submit tanpa consent; coba nomor WA invalid  
-**Expected:** valid submit sukses + success state; invalid ditolak dengan pesan jelas.
+**Steps:** submit valid; coba submit tanpa consent; coba nomor WA invalid  
+**Expected:** valid sukses + success state; invalid ditolak dengan pesan jelas.
 
-### UAT-07 — Education/events
+### UAT-07 — Education/Events
 **Steps:** buka halaman education/events  
-**Expected:** listing tampil rapi, CTA register/WA (jika ada) berfungsi.
+**Expected:** listing rapi; CTA register/WA berfungsi (bila ada).
 
-### UAT-08 — Responsive & basic accessibility
-**Steps:** cek breakpoint mobile, tablet, desktop; navigasi keyboard untuk menu  
-**Expected:** layout tidak pecah, fokus terlihat.
+### UAT-08 — Bilingual (ID/EN)
+**Steps:** akses halaman in-scope pada ID dan EN  
+**Expected:** semua halaman in-scope dapat diakses di kedua bahasa tanpa merusak navigasi.
 
 ### UAT-09 — SEO basics
 **Steps:** cek title/meta; cek sitemap.xml & robots.txt  
-**Expected:** metadata sesuai, sitemap dapat diakses.
+**Expected:** metadata sesuai; sitemap dan robots dapat diakses.
 
 ### UAT-10 — Performance sanity
-**Steps:** load home di koneksi lambat (simulasi)  
-**Expected:** tidak ada asset blocking berlebihan; gambar ter-optimized.
+**Steps:** load home pada simulasi koneksi lambat  
+**Expected:** halaman tetap ringan; gambar teroptimasi.
 
-### UAT-11 — Lead pipeline (Option B) reliability
-**Steps:** submit form valid; lakukan 3x submit cepat; lakukan 1x submit dengan payload invalid  
-**Expected:**
-- submit valid sukses dan tidak hilang (persisted)
-- spam/throttle bekerja (request berlebihan ditolak dengan state yang jelas)
-- invalid payload ditolak oleh server-side validation
+### UAT-11 — Lead persistence + email notification
+**Steps:** submit lead valid; cek database; cek email notifikasi  
+**Expected:** submit valid sukses; record tersimpan di Supabase; email notifikasi masuk.
 
-### UAT-12 — Lead admin export (access-controlled)
-**Steps:** akses endpoint export/inbox tanpa kredensial; lalu akses dengan kredensial yang benar; download/export leads  
-**Expected:**
-- tanpa kredensial ditolak
-- dengan kredensial berhasil export (CSV/format lain yang disepakati)
-- data minimal sesuai kebutuhan follow-up (nama, kontak, timestamp, metadata penting)
+### UAT-12 — Lead export (CSV)
+**Steps:** lakukan export CSV menggunakan mekanisme yang disepakati (mis. view/export Supabase atau endpoint export yang diproteksi)  
+**Expected:** Owner/PIC dapat mengunduh data lead sebagai file CSV.
 
-### UAT-13 — Legal & static pages
-**Steps:** buka About, Contact, Privacy Policy, Terms dari navigasi/footer  
-**Expected:** semua halaman dapat diakses, copy placeholder diperbolehkan tetapi struktur rapi dan link tidak broken.
+### UAT-13 — Tracking + GA4
+**Steps:** klik WA dan submit lead; cek GA4 Realtime/DebugView  
+**Expected:** event tercatat di GA4 sesuai naming yang disepakati.
 
-### UAT-14 — 404 & error fallback
-**Steps:** akses URL yang tidak ada (mis. `/this-page-does-not-exist`)  
-**Expected:** tampil halaman 404 yang user-friendly dan ada navigasi kembali ke Home.
+### UAT-14 — Google Search Console
+**Steps:** cek verifikasi GSC dan status sitemap  
+**Expected:** situs terverifikasi dan sitemap tersubmit.
 
-### UAT-15 — Social metadata
+### UAT-15 — Legal & static pages
+**Steps:** buka About/Contact/Privacy/Terms dari navigasi/footer  
+**Expected:** halaman dapat diakses; link tidak broken.
+
+### UAT-16 — 404
+**Steps:** akses URL yang tidak ada  
+**Expected:** tampil halaman 404 yang user-friendly.
+
+### UAT-17 — CMS editing
+**Steps:** ubah teks/gambar yang disepakati melalui CMS; cek tampilan di produksi/staging  
+**Expected:** perubahan tampil sesuai environment.
+
+### UAT-18 — Handover & training
+**Steps:** serah terima dokumentasi + sesi pelatihan  
+**Expected:** dokumentasi diserahkan dan sesi pelatihan dilakukan.
+
+### UAT-19 — Social metadata
 **Steps:** inspeksi `<head>` pada Home + Product detail  
-**Expected:** ada OpenGraph metadata minimal (title/description/image) dan Twitter card metadata; tidak ada metadata kosong/invalid.
+**Expected:** OpenGraph + Twitter card ada dan valid (tidak kosong).
 
-### UAT-16 — Core Web Vitals reporting (RUM)
-**Steps:** buka Home, lakukan interaksi ringan (scroll/click), lalu cek bahwa event Web Vitals terkirim  
-**Expected:** metric set minimal (LCP/CLS/INP atau yang disupport) ter-report tanpa mem-blok UI.
 
-Catatan verifikasi payload (minimum):
-- ada identifier untuk dedupe (mis. `metric_id`),
-- ada dimensi URL untuk diagnosis SPA (mis. `page_url_initial` dan `page_url_current`),
-- pengiriman non-blocking (mis. `sendBeacon` / `fetch` keepalive) dan tidak bergantung pada event `unload`.
 
 ### UAT sign-off record (PASS + Evidence)
 
@@ -478,12 +486,14 @@ Sebuah item dianggap DONE jika:
 - Success state + error state jelas
 - Anti-spam minimum: honeypot + rate limit/throttle
 
-### Lead pipeline DoD (Option B)
+### Lead pipeline DoD (Supabase + email notif + export)
 
-- Lead **persisted** (durable) sebelum dianggap sukses
-- Ada idempotency / duplicate handling
-- Ada mekanisme notifikasi (fanout) + retry/outbox (minimal at-least-once)
-- Ada admin export/inbox yang **access-controlled**
+- Server-side validation (allowlist + length limits)
+- Anti-spam minimum: honeypot + rate limit/throttle (429 on abuse)
+- **Persistence:** record lead tersimpan di Supabase (source of truth)
+- **Notification:** email notifikasi terkirim ke inbox internal
+- **Export:** Owner/PIC bisa export/download CSV (mekanisme minimal yang disepakati)
+- Evidence: contoh record di Supabase + contoh email notifikasi + contoh file CSV + bukti penolakan payload invalid + bukti 429 saat abuse test
 
 ### SEO + performance DoD
 
@@ -492,16 +502,7 @@ Sebuah item dianggap DONE jika:
 - Social metadata (OpenGraph + Twitter) tersedia untuk halaman kunci
 - Structured data (JSON-LD minimum) tersedia dan valid
 - Gambar ter-optimized sesuai policy
-- Core Web Vitals RUM wiring aktif (metric terkirim, non-blocking)
-  - Metodologi **field/RUM** dan pelaporan memakai **p75** (bukan rata-rata)
-  - Target threshold CWV:
-    - LCP: $\le 2.5s$ (good)
-    - INP: $\le 200ms$ (good)
-    - CLS: $\le 0.1$ (good)
-  - Reporting minimal breakdown **mobile vs desktop**
-  - Lifecycle-safe sending: flush di `visibilitychange` → `hidden` (bukan `unload`)
-  - Dedupe menggunakan `metric_id`
-  - Kirim `page_url_initial` + `page_url_current` untuk diagnosis SPA
+- Performa dijaga via kebijakan asset (image/font) + verifikasi Lighthouse/PageSpeed pada halaman kunci (Home + Products + Product detail)
 
 ### Accessibility DoD (minimum; aligned with WCAG 2.2 AA where relevant)
 
@@ -511,15 +512,14 @@ Sebuah item dianggap DONE jika:
 
 ### Observability & ops DoD
 
-- Error logging untuk failure di lead pipeline
-- Minimal metric/indikator: lead submit success rate
+- Error logging untuk failure pada endpoint lead delivery
+- Minimal metric/indikator: lead submit success rate (berbasis event analytics)
 - Runbook: cara deploy, rollback, incident (SEV-1/2)
 
 ### Quality gates DoD
 
 - Playwright smoke untuk: WA CTA + lead form
-- Integration test untuk lead API (contract + rate limit)
-- UAT-A (01–16) PASS dengan evidence
+- UAT-A (01–19) PASS dengan evidence
 
 ### Engineering excellence (baseline)
 
@@ -530,7 +530,8 @@ Sebuah item dianggap DONE jika:
 ### Security/privacy DoD (minimum)
 
 - Secrets tidak ada di repo (env/secret store)
-- Endpoint admin/export tidak terbuka publik tanpa proteksi
+- Tidak ada admin dashboard kompleks pada Paket A; export CSV disediakan untuk Owner/PIC dengan kontrol akses minimal.
+- Supabase: akses write untuk lead dilakukan dari server-side (service role) dan akses admin dibatasi ke PIC.
 - Consent text jelas di form (privacy policy tersedia)
 - Security headers baseline diterapkan (lihat [Security headers baseline](#15-security-headers-baseline))
 - Ada traceability minimum berbasis **OWASP ASVS v5.0.0** (lihat [ASVS traceability](#16-owasp-asvs-v500-minimal-traceability))
@@ -575,17 +576,15 @@ Sebuah item dianggap DONE jika:
 | SEO-01 | Metadata per halaman | Title/description sesuai page; canonical bila perlu | View-source | Hindari empty/duplicate |
 | SEO-02 | robots.txt + sitemap.xml | Endpoint dapat diakses | URL evidence | Ikuti konvensi Next.js |
 | SEO-03 | Social metadata | OG/Twitter tags ada + reasonable defaults | View-source | Minimal title/desc/image |
-| SEO-04 | Structured data (JSON-LD) | Organization + Breadcrumb valid (Product optional) | Validator screenshot | Jangan klaim palsu |
+| SEO-04 | Structured data (JSON-LD) | Organization + Breadcrumb valid (Product bila feasible) | Validator screenshot | Jangan klaim palsu |
 
-#### 4) Performance & Core Web Vitals
+#### 4) Performance (baseline)
 
 | ID | Check | How to verify (acceptance) | Evidence | Notes |
 |---|---|---|---|---|
 | PERF-01 | Image/font policy | next/image + next/font (atau setara); CLS terkendali | Lighthouse screenshot | Fokus LCP/CLS |
-| PERF-02 | CWV RUM wiring | Metric set minimal terkirim via analytics endpoint | Network screenshot | Non-blocking |
-| PERF-03 | CWV methodology + attribution | p75 + breakdown mobile/desktop; payload: `metric_id`, `page_url_initial`, `page_url_current` | Dashboard/query + payload sample | Lihat ADR-0002 |
-| PERF-04 | Lifecycle-safe analytics + bfcache-friendly | Flush `visibilitychange`→`hidden`; tidak bergantung `unload`; bfcache tidak diblok | DevTools bfcache screenshot | bfcache penting |
-| PERF-05 | (Opsional) bfcache diagnostics | Jika perlu, gunakan `PerformanceNavigationTiming.notRestoredReasons` (Chrome) | Screenshot/notes | Jangan bergantung string reason |
+| PERF-02 | Lighthouse/PageSpeed sanity | Home + Products + Product detail memenuhi baseline (best effort) | Lighthouse screenshot | Fokus LCP/CLS/INP (lab) |
+| PERF-03 | bfcache sanity (bila relevan) | bfcache tidak terblokir untuk navigasi dasar (best effort) | DevTools bfcache screenshot | Menghindari regresi UX |
 
 #### 5) Security (minimum)
 
@@ -594,34 +593,29 @@ Sebuah item dianggap DONE jika:
 | SEC-01 | Server-side validation | Allowlist + length limits; invalid ditolak | Test log | Jangan percaya client |
 | SEC-02 | Input hardening | Content-Type check, max body size, reject logging | Log snippet | Prevent abuse |
 | SEC-03 | Anti-spam + rate limit | Honeypot + throttle; 429 on abuse | Test evidence | Protect lead endpoint |
-| SEC-04 | Admin/export protected | Export/inbox butuh kredensial | UAT evidence | Jangan public |
+| SEC-04 | No public admin dashboard | Tidak ada admin dashboard kompleks; export CSV diproteksi untuk Owner/PIC | (audit) | Mengurangi risiko |
 | SEC-05 | Secrets management | Secret di env/secret store | Repo scan note | No secrets in repo |
 | SEC-06 | Security headers baseline | Header snapshot sesuai baseline | Response headers snapshot | Lihat baseline section |
-| SEC-07 | OWASP ASVS traceability (v5.0.0) | Ada tabel requirement→evidence untuk scope lead API + export | Evidence links | Format `v5.0.0-...` |
+| SEC-07 | OWASP ASVS traceability (v5.0.0) | Ada tabel requirement→evidence untuk scope endpoint lead submit + headers | Evidence links | Format `v5.0.0-...` |
 
 #### 6) Observability & ops
 
 | ID | Check | How to verify (acceptance) | Evidence | Notes |
 |---|---|---|---|---|
 | OPS-01 | Error logging lead pipeline | Error lead tidak silent; ada log/trace minimal | Screenshot/log | Fokus drop lead |
-| OPS-02 | Metric “lead success rate” | Ada indikator sukses/gagal per periode | Dashboard/metrics | Minimal cukup |
+| OPS-02 | Metric “lead submit success rate” | Ada indikator submit sukses/gagal per periode | Dashboard/metrics | Minimal cukup |
 | OPS-03 | Runbook deploy/rollback | Ada langkah deploy, rollback, incident | Doc link | Handover-ready |
 
-Catatan implementasi (Option B Lead API):
+Catatan implementasi:
 
-- Endpoint metrics (admin-only): `GET /metrics`
-- Metric utama untuk OPS-02:
-  - `lead_api_lead_submissions_total{result="accepted|invalid|spam|internal|invalid_json|rate_limited"}`
-  - (ops queue health) `lead_api_lead_notifications_pending_ready_total`
-  - (ops queue health) `lead_api_lead_notifications_oldest_ready_pending_age_seconds`
+- Untuk verifikasi UAT-11, gunakan Supabase project (staging) dan alamat email internal (test inbox) yang disepakati.
 
 #### 7) Quality gates
 
 | ID | Check | How to verify (acceptance) | Evidence | Notes |
 |---|---|---|---|---|
 | QA-01 | Playwright smoke | WA CTA + lead form smoke stabil | CI log/report | Prevent regressions |
-| QA-02 | API integration tests | Contract + rate limit PASS | Test log | Coverage minimal |
-| QA-03 | UAT PASS | UAT-01..16 PASS + evidence | Evidence pack | DoD |
+| QA-02 | UAT PASS | UAT-01..19 PASS + evidence | Evidence pack | DoD |
 
 #### 8) Engineering governance (versioning + UI/CSS)
 
@@ -636,11 +630,11 @@ Catatan implementasi (Option B Lead API):
 |---|---|---|---|---|
 | SIGNOFF-01 | A1 | A1-04 | (gate) | Blueprint sign-off + evidence link required |
 | SIGNOFF-02 | A5 | A5-07 | (gate) | Client UAT approval + evidence link required |
-| TRACE-01 | A5 | A5-03 | UAT-01..16 | Evidence pack + mapping completeness |
+| TRACE-01 | A5 | A5-03 | UAT-01..19 | Evidence pack + mapping completeness |
 | UX-01 | A2 | A2-01 | UAT-01/02 | Navigation + footer links |
-| UX-02 | A2, A4, A6 | A2-03, A2-08, A2-12–A2-13, A4-06, A6-01..A6-07 | UAT-05/06/11/12 | Conversion path end-to-end |
-| UX-03 | A2 | A2-16..A2-18 | UAT-13 | Static/legal pages |
-| UX-04 | A2 | A2-19 | UAT-14 | 404 + error fallback |
+| UX-02 | A2, A4 | A2-03, A2-08, A2-12–A2-13, A4-03, A4-04 | UAT-05/06/11 | Conversion path end-to-end |
+| UX-03 | A2 | A2-16..A2-18 | UAT-15 | Static/legal pages |
+| UX-04 | A2 | A2-19 | UAT-16 | 404 + error fallback |
 | A11Y-01 | A2 | A2-14, A2-15 | UAT-08 | Keyboard + focus |
 | A11Y-02 | A2 | A2-12..A2-14 | UAT-06/08 | Form error states |
 | A11Y-03 | A2 | A2-14, A2-15 | UAT-08 | Focus not obscured |
@@ -648,26 +642,21 @@ Catatan implementasi (Option B Lead API):
 | A11Y-05 | A2 | A2-14, A2-15 | UAT-08 | Dragging alternatives |
 | SEO-01 | A4 | A4-01 | UAT-09 | Title/desc/canonical |
 | SEO-02 | A4 | A4-02 | UAT-09 | robots + sitemap |
-| SEO-03 | A4 | A4-03 | UAT-15 | OG/Twitter |
+| SEO-03 | A4 | A4-03 | UAT-19 | OG/Twitter |
 | SEO-04 | A4 | A4-04 | (audit) | JSON-LD validation |
 | PERF-01 | A4 | A4-05 | UAT-10 | Image/font policy |
-| PERF-02 | A4 | A4-07 | UAT-16 | CWV RUM wiring |
-| PERF-03 | A4, A5 | A4-07, A5-03 | UAT-16 | p75 schema + URL attribution |
-| PERF-04 | A4, A5 | A4-07, A5-03 | (audit) | Lifecycle-safe sending; bfcache |
-| PERF-05 | A4 | A4-07 | (optional) | notRestoredReasons |
-| SEC-01 | A6 | A6-01 | UAT-11 | Server-side allowlist validation |
-| SEC-02 | A6 | A6-06 | UAT-11 | content-type/body limits + reject logging |
-| SEC-03 | A6 | A6-05 | UAT-11 | honeypot + rate limit |
-| SEC-04 | A6 | A6-04 | UAT-12 | access control export |
+| PERF-02 | A4 | A4-05 | UAT-10 | Lighthouse/PageSpeed sanity |
+| SEC-01 | A4 | A4-08 | UAT-11 | Server-side allowlist validation |
+| SEC-02 | A4 | A4-08 | UAT-11 | content-type/body limits + reject logging |
+| SEC-03 | A4 | A4-08 | UAT-11 | honeypot + rate limit |
 | SEC-05 | A7 | A7-01 | (doc) | no secrets in repo |
 | SEC-06 | A7 | A7-02 | (audit) | security headers baseline |
 | SEC-07 | A7 | A7-05 | (audit) | ASVS minimal traceability |
-| OPS-01 | A4/A6 | A6-07 | UAT-11 (indirect) | logging lead failures |
-| OPS-02 | A4/A6 | A6-07 | (ops) | lead success rate metric |
+| OPS-01 | A4 | A4-08 | UAT-11 (indirect) | logging lead failures |
+| OPS-02 | A4 | A4-03 | (ops) | lead submit success rate |
 | OPS-03 | A7 | A7-03, A5-05 | (handover) | runbook + rollback |
 | QA-01 | A5 | A5-01 | (CI) | Playwright smoke |
-| QA-02 | A5 | A5-02 | UAT-11 | API integration tests |
-| QA-03 | A5 | A5-03 | UAT-01..16 | evidence pack |
+| QA-03 | A5 | A5-03 | UAT-01..19 | evidence pack |
 | ENG-01 | A7, A5 | A7-04, A5-06 | (CI) | pinning + lifecycle compliance |
 | ENG-02 | A2 | A2-20 | UAT-08 (indirect) | UI tokens + discipline |
 
@@ -680,8 +669,8 @@ Catatan implementasi (Option B Lead API):
 - Konten kreatif disediakan klien; tim dev menyediakan placeholder dan struktur.
 - Tidak ada login, tidak ada harga publik.
 - Fokus: UX cepat, profesional, mudah di-maintain.
-- **Option B dipilih:** lead capture menggunakan **lightweight API**.
-- “Selesai” = **production-ready**: ada acceptance evidence, anti-spam, observability, dan runbook minimum.
+- Lead capture tersimpan di **Supabase (database)**; email internal dipakai sebagai **notifikasi**; tersedia **export CSV**.
+- “Selesai” = **production-ready**: ada acceptance evidence, anti-spam minimum, dan runbook minimum.
 
 ### Workstreams
 
@@ -704,27 +693,19 @@ Catatan implementasi (Option B Lead API):
 
 #### Epic A3 — Content system
 - A3.1 Define content schema (brand/category/product/event)
-- A3.2 Seed content pipeline (JSON/MD)
+- A3.2 CMS setup (free tier) + content seeding
 
 #### Epic A4 — SEO / Analytics / Ops
 - A4.1 SEO basics: metadata, sitemap, robots
 - A4.2 Social metadata + JSON-LD minimum
 - A4.3 Analytics events
-- A4.4 Core Web Vitals (RUM) reporting wiring
-- A4.5 Error logging + basic monitoring
+- A4.4 Setup GA4 + Google Search Console (verifikasi + submit sitemap)
+- A4.5 Lead pipeline wiring (Supabase + email notif + export) + logging minimum
 
 #### Epic A5 — QA & UAT
 - A5.1 Test cases execution (UAT-A)
 - A5.2 Bug fix & polish
 - A5.3 Client UAT sign-off + evidence
-
-#### Epic A6 — Lead API (Option B)
-- A6.1 Lead API contract + validation
-- A6.2 Lead persistence + idempotency
-- A6.3 Delivery fanout + retry/outbox
-- A6.4 Admin export + access control
-- A6.5 Anti-spam + rate limiting
-- A6.6 Input validation hardening
 
 #### Epic A7 — Production readiness
 - A7.1 Secrets/config management
@@ -736,14 +717,14 @@ Catatan implementasi (Option B Lead API):
 
 - Week 1: A1 + A2.1–A2.3 (Home + Products overview)
 - Week 2: A2.4–A2.7 + A3 + A4
-- Week 3 (buffer): A6 + A7 + A5 + polish + content finalization
+- Week 3 (buffer): A7 + A5 + polish + content finalization
 
 ### Stage gates (hard stops)
 
-- **Gate 0 — Scope freeze:** §2 dan §8 dianggap final (perubahan = change request).
+- **Gate 0 — Scope & UAT lock:** §2 dan §8 dianggap final (perubahan = change request).
 - **Gate 1 — Blueprint sign-off:** tabel “Blueprint sign-off record” status bukan PENDING + evidence.
 - **Gate 2 — Staging readiness:** smoke test lulus (Home/Products/Detail/WA CTA/Lead form) + baseline security headers siap diambil.
-- **Gate 3 — UAT PASS:** UAT-01..16 PASS + evidence pack terisi.
+- **Gate 3 — UAT PASS:** UAT-01..19 PASS + evidence pack terisi.
 - **Gate 4 — Production release:** deploy, smoke test ulang, monitoring aktif, dan rencana rollback siap.
 
 ---
@@ -754,7 +735,7 @@ Catatan implementasi (Option B Lead API):
 
 Effort expressed as **MD** (1 MD = 8 hours focused work).
 
-> **Catatan penting (hindari salah tafsir):** Kolom **Class (A/B/C)** di tabel ini adalah **band risiko/kritis** untuk kebutuhan *planning* (dipakai untuk multiplier di §12.2), **bukan** label “tingkat sulit” atau “rate card”.
+> **Catatan penting (hindari salah tafsir):** Kolom **Class (A/B/C)** di tabel ini adalah **band risiko/kritis** untuk kebutuhan *planning*, **bukan** label “tingkat sulit” atau “rate card”.
 > 
 > - Class **A** = jalur konversi/ops/security yang *hard gate* (bisa saja implementasinya sederhana, tapi dampaknya kritikal & rework biasanya muncul di akhir).
 > - Class **B** = pekerjaan sistematis dengan banyak *paper cuts* (SEO/perf/a11y/ops/evidence).
@@ -778,7 +759,8 @@ Effort expressed as **MD** (1 MD = 8 hours focused work).
 | A2-07 | Product detail template | 1.25 | C | Decision support blocks |
 | A2-08 | Product CTA block | 0.75 | A | Consistent placement |
 | A2-09 | Education/events listing | 0.75 | C | Listing clean |
-| A2-10 | Event detail page | 0.5 | C | Optional |
+| A2-10 | Event detail page | 0.5 | C | In-scope |
+| A2-10b | Article detail page | 0.5 | C | In-scope |
 | A2-11 | Partnership page | 0.75 | C | Value props clear |
 | A2-12 | Become Partner form | 1.5 | A | Valid/invalid states |
 | A2-13 | Success state + WhatsApp prompt | 0.5 | A | Confirmation |
@@ -788,98 +770,48 @@ Effort expressed as **MD** (1 MD = 8 hours focused work).
 | A2-17 | Contact page | 0.25 | C | WA + fallback contact |
 | A2-18 | Privacy + Terms pages | 0.25 | B | Placeholder allowed |
 | A2-19 | Global 404 + error fallback UI | 0.5 | B | No blank page |
-| A3-01 | Content schema definition | 1.0 | B | JSON/MD structure |
-| A3-02 | Content seeding pipeline | 1.0 | C | Repo-based content |
+| A3-01 | Content model definition | 1.0 | B | CMS model (product/event/pages) |
+| A3-02 | CMS setup + seeding | 1.0 | C | Free tier + initial content |
 | A4-01 | SEO basics metadata per page | 1.0 | B | Titles/description |
 | A4-02 | sitemap.xml + robots.txt | 0.5 | B | Accessible endpoints |
 | A4-03 | Social metadata | 0.75 | B | Share cards |
 | A4-04 | Structured data JSON-LD minimum | 0.75 | B | Validates |
 | A4-05 | Image + font optimization policy | 0.75 | B | Prevent CLS |
 | A4-06 | Analytics events | 0.75 | A | Event names fixed |
-| A4-07 | CWV RUM wiring | 0.75 | B | p75-ready + lifecycle-safe |
-| A6-01 | Lead API contract + endpoint | 1.0 | A | Server-side validation |
-| A6-02 | Lead persistence + idempotency | 1.0 | A | Durable storage |
-| A6-03 | Fanout + retry/outbox | 1.0 | A | At-least-once |
-| A6-04 | Admin export + access protection | 0.75 | A | Protected export |
-| A6-05 | Anti-spam (honeypot + rate limit) | 0.75 | A | 429 on abuse |
-| A6-06 | Input hardening (max body, content-type, reject logging) | 0.5 | A | Prevent malformed input |
-| A6-07 | Error logging + metrics lead pipeline | 0.75 | A | Success rate visible |
+| A4-07 | Setup GA4 + Google Search Console | 0.5 | B | Verifikasi + submit sitemap |
+| A4-08 | Lead pipeline wiring (Supabase + email notif + export CSV) | 1.0 | A | Validation + anti-spam + persistence + notif + export |
 | A7-01 | Secrets/config management | 0.5 | A | No secrets in repo |
 | A7-02 | Security headers baseline | 0.75 | B | Snapshot evidence |
 | A7-05 | ASVS v5.0.0 minimal traceability | 0.5 | B | Fill evidence links |
 | A7-03 | Deployment wiring + runbook | 1.0 | B | Deploy + rollback |
 | A7-04 | Version pinning + lifecycle compliance | 0.5 | B | Lockfile + CI |
 | A5-01 | Playwright smoke tests | 1.0 | A | WA CTA + lead form |
-| A5-02 | API integration tests | 0.75 | A | Contract + rate limit |
+| A5-02 | Lead pipeline verification (staging) | 0.75 | A | Bukti record Supabase + email notif + export CSV + reject invalid + 429 abuse |
 | A5-06 | CI quality gates | 0.5 | B | lint + typecheck + smoke |
 | A5-03 | UAT-A execution + evidence | 1.25 | B | PASS evidence |
 | A5-07 | Client UAT sign-off + evidence | 0.25 | B | Fill UAT sign-off record |
 | A5-04 | Bugfix & polish wave | 2.0 | B | Includes retest |
 | A5-05 | Production readiness review + handover | 0.75 | B | Checklist + owner handoff |
 
-**Total (likely):** **40.25 MD**
-
-### 12.2 Estimation ranges (envelope)
-
-Breakdown by class (from table):
-- Class A: **12.75 MD**
-- Class B: **19.75 MD**
-- Class C: **7.75 MD**
-
-Range multipliers:
-
-| Class | Best multiplier | Likely | Worst multiplier | Rationale |
-|---:|---:|---:|---:|---|
-| A | 0.95× | 1.00× | 1.35× | Jalur kritikal: rework & integration sering muncul di akhir |
-| B | 0.90× | 1.00× | 1.25× | Banyak “paper cuts”: SEO/perf/a11y/ops + evidence |
-| C | 0.90× | 1.00× | 1.15× | UI stabil tapi bisa kena rework minor |
-
-Results:
-
-$$\text{Best} = 12.75\times0.95 + 19.75\times0.90 + 7.75\times0.90 \approx 36.86\ \text{MD}$$
-
-$$\text{Likely} = 40.25\ \text{MD}$$
-
-$$\text{Worst} = 12.75\times1.35 + 19.75\times1.25 + 7.75\times1.15 \approx 50.81\ \text{MD}$$
-
-Rounded:
-- **Best:** ~**36.9 MD**
-- **Likely:** **40.25 MD**
-- **Worst:** ~**50.8 MD**
-
-### Planning decision (current)
-
-Gunakan **Worst = ~50.8 MD** sebagai baseline planning/delivery.
-
-Optional maximal planning cap (P95-ish):
-
-$$\text{Maximal} = \text{Worst}\times1.15 \approx 58.5\ \text{MD}$$
+Catatan: angka komersial final (MD dan Fixed Price) mengacu ke `docs-paket-a/proposal1.md` agar tidak terjadi duplikasi angka yang berisiko beda versi.
 
 ---
 
 ## 13. Architecture decisions (ADR-0001..0004)
 
-### ADR-0001 — Lead API hosting target (Option B)
+### ADR-0001 — Lead pipeline strategy (Supabase + email notif + export)
 
-**Decision:** default rekomendasi host Lead API di **dedicated backend service**. Jika constraint mengharuskan Next.js route handler, tetap wajib memenuhi persistence non-lossy dan export protected.
+**Decision:** lead “Become Partner” diproses server-side untuk validasi + anti-spam minimum, kemudian:
+1) disimpan di **Supabase (database)** sebagai source of truth,
+2) mengirim **email notifikasi** ke inbox internal Perusahaan,
+3) mendukung **export CSV** untuk Owner/PIC.
 
-**Persistence decision (current):** gunakan **managed Postgres (Supabase — Free plan)** sebagai persistence awal untuk lead pipeline.
+**Security note:** endpoint lead memakai server-side validation + anti-spam minimum untuk mencegah spam ke inbox internal/DB.
 
-**Risk note (wajib disadari & disetujui):** berdasarkan informasi di halaman pricing Supabase, **Free projects dipause setelah 1 minggu tidak ada aktivitas**, **tidak ada automatic backups**, dan **log retention lebih pendek**. Karena Paket A punya hard gate “lead persisted” (UAT-11/DoD), keputusan ini dianggap **PASS** hanya jika:
-- risiko tersebut diterima Owner/Finance (evidence sign-off), dan
-- ada **upgrade trigger** yang jelas: upgrade ke plan berbayar sebelum/ketika free plan constraints mulai mengancam reliability (mis. kebutuhan backup/retention, kebutuhan always-on yang lebih ketat, dsb.).
+### ADR-0002 — Web performance measurement (no RUM wiring)
 
-**Consequences:** repo implementasi harus menyediakan `.env.example`/secret store untuk `LEAD_API_ADMIN_TOKEN`; UAT-11/12 tetap gate.
-
-### ADR-0002 — Core Web Vitals (CWV) RUM strategy
-
-- Library: `web-vitals`
-- Reporting: **p75** + minimal breakdown **mobile vs desktop**
-- Transport: `sendBeacon()` + fallback `fetch(..., {keepalive:true})`
-- Lifecycle: flush `visibilitychange`→`hidden` (bukan `unload`)
-- Dedupe: `metric_id`
-- SPA-safe attribution: `page_url_initial` + `page_url_current`
-- Soft navigations: eksperimen terpisah (bukan acceptance gate)
+- Baseline: verifikasi Lighthouse/PageSpeed untuk halaman kunci (Home + Products + Product detail)
+- Fokus: menjaga LCP/CLS/INP secara best effort tanpa menambah wiring RUM khusus
 
 ### ADR-0003 — Tech stack & versioning policy (2025–2026)
 
@@ -917,7 +849,7 @@ Operational policy:
 
 - Perubahan konten harus **terkontrol** (traceable).
 - Error harus **terlihat** (logging/metrics minimal).
-- Jalur lead (Become Partner) **tidak boleh putus** (persisted + export protected).
+- Jalur lead (Become Partner) **tidak boleh putus** (validasi server-side + persistence Supabase + email notifikasi + export).
 
 ### Incident severity
 
@@ -938,59 +870,34 @@ Evidence & execution artifacts (dipakai saat implementasi):
 - Evidence pack (PASS + Evidence): `artifacts/paket-a/evidence-pack/`
 - Kickoff plan: `artifacts/paket-a/kickoff.md`
 
-#### RAB & procurement (baseline + syarat approval)
+#### RAB & procurement (ringkas)
 
-Bagian ini mendokumentasikan **baseline biaya** untuk Paket A yang dipakai sebagai acuan approval budget dan setup vendor. Karena jalur lead adalah komponen kritikal, setiap angka harus **bisa dibuktikan**.
+Angka CapEx/OpEx final mengacu ke `docs-paket-a/proposal1.md` agar Owner/Finance mengaudit **1 sumber angka**.
 
-**Syarat approval (wajib):**
-- Setiap line item memiliki **bukti** (pricing link/invoice/receipt) dan **kurs** USD→IDR pada tanggal approval.
-- Bukti approval budget (Owner/Finance) disimpan sebagai **lampiran** di `artifacts/paket-a/evidence-pack/01-signoff/`.
-
-**Domain (untuk procurement & DNS):**
+**Domain (untuk DNS):**
 - Primary domain: `alfabeautycosmetica.com`
 - Redirect/defensive domain: `alfabeautycosmetica.co` (redirect ke `.com`)
 
-### Baseline biaya — CapEx (delivery)
+### Parameter yang harus diputuskan sebelum go-live
 
-Envelope biaya delivery (IDR) berdasarkan estimasi Best/Likely/Worst:
-- Best: ~**13.017.000**
-- Likely: **15.112.500**
-- Worst (baseline planning): ~**19.071.000**
-
-### Baseline biaya — OpEx (running)
-
-Baseline operasi yang dipakai saat ini (Scenario M / Medium):
-- Kurs: `usd_to_idr = 16851.60`
-- Parameter operasi: `vercel_seats = 2`, `upstash_usd = 10`, `sentry_usd = 26`, database = **Supabase Free**
-
-Ringkasan OpEx (IDR):
-- Subtotal OpEx (tanpa Domain/DNS/Email): **Rp1.280.722 / bulan**
-- Domain/DNS/Email (Year-1 total): **Rp1.148.774 / tahun** (≈ **Rp95.732 / bulan**)
-- Total OpEx (dengan Domain/DNS/Email): **Rp1.376.454 / bulan**
-- Total OpEx tahun 1 (dengan Domain/DNS/Email): **Rp16.517.438**
-
-**Lampiran bukti domain/email (Year-1 purchase):** `artifacts/paket-a/evidence-pack/01-signoff/domain_email_quote_2026-01-10.md`.
-
-### Parameter procurement yang harus diputuskan sebelum billing/PO aktif
-
-- **Vercel:** jumlah seat yang benar-benar dibayar (`vercel_seats`).
-- **Upstash:** pilihan plan (free/payg/fixed) dan/atau target `commands_per_month`.
-- **Sentry:** pilihan plan (Developer/Team/Business) dan kebijakan billing (annual/monthly).
+- **Vercel:** jumlah seat yang benar-benar dibayar.
 - **Kurs USD→IDR:** sumber kurs + bukti snapshot pada tanggal approval.
-- **Renewal Year-2+ (domain/email):** angka renewal wajib berasal dari invoice/quote renewal (bukan asumsi/promo).
+- **Lead notification email:** alamat email tujuan + kebijakan spam/quarantine.
+- **Email deliverability:** domain/From address yang dipakai untuk pengirim + akses DNS untuk setup **SPF/DKIM/DMARC**.
+- **Supabase:** PIC owner untuk akses admin + kebijakan backup/retention.
 
-#### Scope freeze checklist (pra-implementasi)
+#### Kickoff checklist (pra-implementasi)
 
-Paket A dianggap **scope-frozen** bila:
+Paket A dianggap siap dikerjakan bila:
 
 - [ ] In-scope/out-of-scope di §2 tidak ada item “abu-abu”.
-- [ ] UAT-A 01–16 di §8 dianggap final (perubahan = change request).
-- [ ] Risiko utama disepakati (contoh: content readiness, hosting, DNS/SSL).
-- [ ] “Option B Lead API” dipastikan benar-benar dipakai (bukan revert ke webhook tanpa persistence).
+- [ ] UAT-A 01–19 di §8 dianggap final (perubahan = change request).
+- [ ] Risiko utama disepakati (contoh: content readiness, hosting, DNS/SSL, deliverability email).
+- [ ] Jalur lead disepakati: Supabase project siap (PIC owner) + email notifikasi tujuan + mekanisme export CSV yang dipilih.
 
 #### Sign-off workflow (PASS + Evidence)
 
-1) Jalankan UAT-A 01–16 (staging), isi `artifacts/paket-a/evidence-pack/02-uat/index.md` + lampiran bukti.  
+1) Jalankan UAT-A 01–19 (staging), isi `artifacts/paket-a/evidence-pack/02-uat/index.md` + lampiran bukti.  
 2) Kumpulkan bukti security/perf/a11y/ops (folder evidence pack masing-masing).  
 3) Minta approval Blueprint + UAT dan simpan buktinya di `artifacts/paket-a/evidence-pack/01-signoff/`.  
 
@@ -1000,94 +907,68 @@ Paket A dianggap **scope-frozen** bila:
 
 - Lead masuk harus memiliki owner (tim sales/BD)
 - SLA follow-up internal disarankan: < 24 jam
-- Jika jalur integrasi lead gagal: fallback manual (export inbox)
+- Jika jalur lead bermasalah: lakukan pengecekan log + verifikasi record Supabase + jalankan 1 submit lead test (staging/prod) sesuai runbook
 
-Operational minimum (Option B):
-- lead **wajib persisted** (durable)
-- admin export/inbox access-controlled
-- logging + indikator sederhana (success rate)
+Operational minimum:
+- server-side validation + anti-spam minimum
+- logging minimum untuk kegagalan insert Supabase / pengiriman email notifikasi / export
+
+### Email deliverability (SPF/DKIM/DMARC) — playbook minimal
+
+Tujuan: mengurangi risiko email notifikasi lead masuk **Spam/Junk/Quarantine**.
+
+Checklist:
+- [ ] Tentukan domain pengirim dan From address untuk email notifikasi.
+- [ ] Setup DNS: SPF, DKIM, DMARC (bersama PIC IT Perusahaan).
+- [ ] Lakukan test kirim dari staging dan verifikasi: inbox utama, spam/junk, dan quarantine (jika ada).
+
+Triage jika email tidak masuk (namun lead tersimpan):
+1) Verifikasi record Supabase (cek insert pada timestamp submit).
+2) Cek folder Spam/Junk/Quarantine pada mailbox internal.
+3) Cek log pengiriman email (reject/429/provider policy).
+4) Validasi DNS SPF/DKIM/DMARC masih aktif (tidak ada perubahan record).
+
+### Backup & restore Supabase — playbook minimal
+
+Tujuan: mitigasi risiko human error (mis. data terhapus tidak sengaja) dengan prosedur backup dan pemulihan yang jelas.
+
+Kebijakan minimum yang disiapkan:
+- jadwal backup (mis. harian),
+- lokasi penyimpanan backup (di luar Supabase),
+- retensi backup (mis. 14–30 hari),
+- prosedur restore ke environment staging untuk verifikasi.
+
+Triage jika data hilang/terhapus:
+1) Konfirmasi scope data yang hilang (range waktu, tabel terkait).
+2) Jika masih ada, lakukan restore parsial (tabel/row) atau full restore sesuai prosedur.
+3) Verifikasi hasil restore pada staging terlebih dahulu, lalu putuskan pemulihan produksi.
 
 ### Runbook (deploy/rollback/incident)
 
-**Deploy (staging/prod):** deploy via pipeline; smoke test Home/Products/Detail/WA CTA/Lead form.  
+**Deploy (staging/prod):** deploy via pipeline; smoke test Home/Products/Detail/WA CTA/Lead form + verifikasi lead persistence/email notif.  
 **Rollback:** lakukan bila SEV-1 atau error rate tinggi; rollback ke release known-good; ulangi smoke test + 1 submit lead valid.  
-**Lead pipeline health checks:** monitor success rate + error counts; jika drop dicurigai, submit lead test dan cek persistence/notification.
+**Lead health checks:** cek log error (Supabase insert/email); bila drop dicurigai, submit lead test, verifikasi record Supabase + email notifikasi.
 
 #### Alertability + triage (minimal, Paket A)
 
-File contoh alert rules: `docs-paket-a/prometheus_alerts_example.yml`.
-
 Prinsip triage:
-- **Mitigate first** (rollback / disable risky change) untuk SEV-1.
-- Gunakan **metrics** untuk melihat *scope* (berapa banyak, sejak kapan).
-- Gunakan **logs** untuk melihat *why*.
-- Gunakan **exemplars (trace_id)** untuk menghubungkan spike latency ke request representatif (tanpa menambah label/cardinality).
+- **Mitigate first** (rollback) untuk SEV-1.
+- Gunakan **logs** untuk melihat penyebab kegagalan pengiriman email.
 
-**Cara pakai exemplar `trace_id`:**
+Playbook: LeadPipelineFailing
 
-1) Buka panel latency (mis. `lead_api_http_request_duration_seconds`) di Grafana/Prometheus.
-2) Klik exemplar (jika tersedia) untuk mendapatkan `trace_id`.
-3) Cari di log server event `http_request` pada field `trace` yang berisi traceparent.
-  - `trace` adalah string W3C `traceparent`.
-  - `trace_id` adalah substring 32-hex (bagian ke-2 dari `traceparent`).
-
-> Catatan: exemplars biasanya tampil jika scraper menggunakan OpenMetrics. Endpoint `/metrics` mendukung negosiasi format via `Accept`.
-
-##### Playbook: LeadAPIHighErrorRate / LeadAPISubmitFailingContinuously
-
-1) Pastikan ada traffic (agar rasio bermakna):
-  - lihat `sum(rate(lead_api_http_requests_total{route="/api/v1/leads"}[5m]))`
-2) Periksa error burst (5xx):
-  - `sum(rate(lead_api_http_requests_total{route="/api/v1/leads",status_class="5xx"}[5m]))`
-3) Periksa hasil lead pipeline (OPS-02):
-  - `sum(rate(lead_api_lead_submissions_total[5m])) by (result)`
-4) Mitigasi cepat:
-  - rollback release terakhir (jika error muncul pasca deploy)
-  - jalankan 1 submit lead valid (smoke) dan verifikasi persistence + export
-
-##### Playbook: LeadNotificationBacklogStuck
-
-1) Lihat backlog (ready vs delayed):
-  - `lead_api_lead_notifications_pending_ready_total`
-  - `lead_api_lead_notifications_pending_delayed_total`
-2) Lihat usia oldest ready:
-  - `lead_api_lead_notifications_oldest_ready_pending_age_seconds`
-3) Cek endpoint admin stats (lebih informatif per status):
-  - `GET /api/v1/admin/lead-notifications/stats` (admin-only)
-4) Interpretasi cepat:
-  - `pending_ready_total` tinggi + `oldest_ready_pending_age_seconds` tinggi → worker/sender tidak jalan atau provider hard-fail
-  - `pending_delayed_total` tinggi → retry/backoff meningkat (provider flaky)
-
-##### Playbook: LeadAPISlowP95
-
-1) Konfirmasi p95 query sesuai route template (tidak pakai raw path):
-  - `histogram_quantile(0.95, sum(rate(lead_api_http_request_duration_seconds_bucket{route="/api/v1/leads"}[5m])) by (le))`
-2) Gunakan exemplars (trace_id) untuk mengambil contoh request lambat, lalu korelasikan ke log.
-3) Mitigasi cepat:
-  - jika lambat karena dependency (DB) → cek health DB / pool / timeouts
-  - rollback jika regresi pasca deploy
-
-##### Playbook: LeadAPIInternalLeadFailures
-
-1) Konfirmasi ada kenaikan result=internal:
-  - `sum(rate(lead_api_lead_submissions_total{result="internal"}[5m]))`
-2) Korelasikan dengan log event:
-  - `http_request` (status 5xx pada route leads)
-  - `lead_notification_enqueue_failed` (enqueue outbox gagal)
-3) Mitigasi:
-  - rollback / degrade mode (jika ada) / matikan channel notifikasi bermasalah bila memicu error (ops decision)
-
-Ops shortcut (admin-only):
-
-- `GET /api/v1/admin/lead-notifications/stats` → cek backlog outbox (counts per status + oldest ready pending age).
-  - Jika `pending_ready_count` tinggi dan `oldest_ready_pending_age_seconds` besar → worker/sender kemungkinan bermasalah.
-  - Jika `pending_delayed_count` tinggi → banyak retry/backoff (indikasi provider email/webhook flaky).
+1) Jalankan 1 submit lead test (staging/prod) dan catat timestamp.
+2) Pastikan record masuk di Supabase.
+3) Pastikan inbox internal menerima email notifikasi (cek spam/quarantine).
+4) Jika gagal:
+  - cek log error (Supabase/auth/reject/provider email)
+  - rollback release terakhir bila regresi pasca deploy
 
 ### Production checklist (summary)
 
-**Pre-launch:** DNS/SSL (primary `alfabeautycosmetica.com` + redirect `alfabeautycosmetica.co`), WA number + prefill message, robots/sitemap, analytics, OG/Twitter, JSON-LD, CWV RUM (non-blocking; payload dims), security headers snapshot.  
+**Pre-launch:** DNS/SSL (primary `alfabeautycosmetica.com` + redirect `alfabeautycosmetica.co`), WA number + prefill message, robots/sitemap, analytics, OG/Twitter, JSON-LD, security headers snapshot.  
 **Launch day:** smoke test flows, monitor logs, monitor success rate.  
-**Post-launch:** review CWV p75 from RUM, tuning rate limit.
+**Post-launch:** review performa via Lighthouse/PageSpeed (best effort), tuning rate limit.
 
 ---
 
@@ -1117,26 +998,25 @@ Ops shortcut (admin-only):
 
 6) Clickjacking:
 - utamakan CSP `frame-ancestors`
-- `X-Frame-Options: DENY` opsional (legacy)
+- `X-Frame-Options: DENY` legacy (jika dibutuhkan)
 
-#### Lead API responses (JSON)
+#### Lead submit endpoint responses (JSON)
 
 1) `Content-Type: application/json; charset=utf-8`
 2) `X-Content-Type-Options: nosniff`
-3) `Cache-Control: no-store` (khusus admin/export)
-4) `Referrer-Policy: no-referrer` (opsional)
+3) `Cache-Control: no-store`
+4) `Referrer-Policy: no-referrer` (jika diperlukan)
 
 ### Verification & evidence
 
 Evidence yang diterima:
-- Screenshot DevTools headers (Home + lead submit + admin/export), atau
+- Screenshot DevTools headers (Home + lead submit), atau
 - header snapshot via tooling (curl/HTTP client), atau
 - screenshot konfigurasi CDN/WAF + contoh HTTP response.
 
 Minimal evidence set:
 - 1 snapshot **Home (HTML)**
 - 1 snapshot **Lead submit (JSON)**
-- 1 snapshot **Admin/export**
 
 ### Exception policy
 
@@ -1151,30 +1031,27 @@ Jika baseline tidak bisa dipenuhi 100%:
 ## 16. OWASP ASVS v5.0.0 minimal traceability
 
 **Status:** PENDING (becomes PASS when evidence links are filled)  
-**Scope:** Option B Lead API + admin/export endpoint  
+**Scope:** Website + endpoint lead submit (delivery via email internal)  
 
 | ASVS ID | Requirement (excerpt/summary) | Applies to | Implementation notes | Evidence link |
 |---|---|---|---|---|
-| v5.0.0-V2.2.1 | Positive validation (allowlist/expected structure) for business/security decisions (L1) | lead submit | Schema constraints; reject invalid; log rejects safely | `internal/domain/lead/lead.go` (Validate) + `internal/service/lead_service.go` |
-| v5.0.0-V2.2.2 | Input validation enforced at trusted service layer (L1) | lead submit | Server-side validation; client validation not trusted | `internal/service/lead_service.go` (Create validates) |
-| v5.0.0-V1.2.4 | Parameterized queries/ORM protections against injection (L1) | persistence | Parameterized queries; no SQL concat | `internal/repository/postgres/lead_repository.go` + `internal/repository/postgres/lead_notification_repository.go` |
-| v5.0.0-V2.4.1 | Anti-automation controls (L2) | lead submit | Rate limiting; honeypot; 429 on abuse | `internal/handler/app.go` (limiter) + `internal/domain/lead/lead.go` (honeypot) |
-| v5.0.0-V8.3.1 | Authorization enforced at trusted service layer (L1) | admin/export | Auth token/basic auth/allowlist; server-side checks | `internal/handler/admin_leads.go` (requireAdminToken) + `internal/handler/app.go` |
-| v5.0.0-V1.2.10 | Protect against CSV/Formula Injection (L3) | export CSV | Escape dangerous leading chars (`=`,`+`,`-`,`@`, tab, null) | `internal/handler/admin_leads.go` (csvSafe) |
-| v5.0.0-V4.1.1 | Correct Content-Type incl. charset (L1) | API responses | Ensure JSON content-type w/ charset | `internal/handler/json.go` + evidence: `artifacts/paket-a/evidence-pack/03-security/2026-01-12_lead-api_headers_snapshot.md` |
-| v5.0.0-V3.4.4 | `X-Content-Type-Options: nosniff` (L2) | website/API | Enable header at edge/app | `internal/handler/app.go` + evidence: `artifacts/paket-a/evidence-pack/03-security/2026-01-12_lead-api_headers_snapshot.md` |
-| v5.0.0-V3.4.6 | CSP `frame-ancestors` prevents embedding by default (L2) | website | `frame-ancestors 'none'` unless allowlisted | Runbook: `artifacts/paket-a/evidence-pack/03-security/website_headers_verification_runbook.md` (evidence tracked in `artifacts/paket-a/evidence-pack/03-security/index.md`) |
-| v5.0.0-V3.4.3 | CSP baseline includes `object-src 'none'` and `base-uri 'none'` (L2) | website | Ensure directives present | Runbook: `artifacts/paket-a/evidence-pack/03-security/website_headers_verification_runbook.md` (evidence tracked in `artifacts/paket-a/evidence-pack/03-security/index.md`) |
+| v5.0.0-V2.2.1 | Positive validation (allowlist/expected structure) for business/security decisions (L1) | lead submit | Allowlist field + length limits; reject invalid; log rejects safely | _[link evidence]_ |
+| v5.0.0-V2.2.2 | Input validation enforced at trusted service layer (L1) | lead submit | Server-side validation; client validation tidak dipercaya | _[link evidence]_ |
+| v5.0.0-V2.4.1 | Anti-automation controls (L2) | lead submit | Rate limit/throttle + honeypot; 429 on abuse | _[link evidence]_ |
+| v5.0.0-V4.1.1 | Correct Content-Type incl. charset (L1) | lead submit response | Pastikan JSON content-type + charset | _[link evidence]_ |
+| v5.0.0-V3.4.4 | `X-Content-Type-Options: nosniff` (L2) | website/endpoint | Header aktif di response HTML + JSON | _[link evidence]_ |
+| v5.0.0-V3.4.6 | CSP `frame-ancestors` prevents embedding by default (L2) | website | `frame-ancestors 'none'` kecuali ada alasan bisnis | _[link evidence]_ |
+| v5.0.0-V3.4.3 | CSP baseline includes `object-src 'none'` and `base-uri 'none'` (L2) | website | Pastikan directives hadir | _[link evidence]_ |
 
 Acceptable evidence examples:
 - integration test logs
 - header snapshots
 - code pointers (file path + line range)
-- sample CSV export showing escaping
+- sample request/response untuk lead submit (valid/invalid) + bukti 429 saat abuse test
 
 ---
 
-## 17. AI workflow productivity (optional)
+## 17. AI workflow productivity (internal)
 
 Objective function:
 

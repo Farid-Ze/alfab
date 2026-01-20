@@ -1,115 +1,109 @@
 #!/usr/bin/env node
 /**
- * Category Card Design Freeze Lint
+ * Category Preview Design Freeze Lint
  * 
- * Enforces the minimalist professional card design:
- * - External hover indicator (outside card)
- * - Simple image reveal on hover
- * - Ring-based borders (not border-color)
- * - No shadows
- * - 1px icon strokes
- * - Clean transitions
+ * Validates the HeroImageStrip dropdown preview design:
+ * - Framer Motion transitions (ImageTransition, ContentTransition)
+ * - Direction-aware animations
+ * - Glass morphism container
+ * - Gradient overlay for text readability
+ * 
+ * Updated: 2026-01-19 for dropdown preview design
  */
 
 import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
 
 const COMPONENT_PATH = resolve("src/components/home/HeroImageStrip.tsx");
-const GLOBALS_PATH = resolve("src/app/globals.css");
+const TRANSITION_PATH = resolve("src/components/ui/ImageTransition.tsx");
 
 // ============================================================
 // Required Patterns (must exist)
 // ============================================================
 const REQUIRED_PATTERNS = [
     {
-        name: "External indicator outside card",
+        name: "ImageTransition component import",
         file: "component",
-        pattern: /absolute\s+-top-\d+|absolute.*-top-/,
-        reason: "Hover indicator must be positioned outside (above) the card",
+        pattern: /import.*ImageTransition.*from/,
+        reason: "Uses Framer Motion ImageTransition for smooth image swaps",
     },
     {
-        name: "Ring-based border (not border-color)",
+        name: "ContentTransition component import",
         file: "component",
-        pattern: /ring-1\s+ring-border/,
-        reason: "Use ring utility for reliable border hover effects",
+        pattern: /import.*ContentTransition.*from/,
+        reason: "Uses Framer Motion ContentTransition for text animations",
     },
     {
-        name: "Ring hover effect",
+        name: "CategoryPreviewDropdown component",
         file: "component",
-        pattern: /hover:ring-foreground|hover:ring-2/,
-        reason: "Border should thicken or change color on hover via ring",
+        pattern: /function\s+CategoryPreviewDropdown/,
+        reason: "Uses dropdown preview pattern for category hover",
     },
     {
-        name: "1px icon strokes",
+        name: "GradientOverlay component",
         file: "component",
-        pattern: /strokeWidth=["']1["']/,
-        reason: "Minimalist icons use 1px strokes",
+        pattern: /function\s+GradientOverlay/,
+        reason: "Uses gradient overlay for text readability on images",
     },
     {
-        name: "Image opacity transition on hover",
+        name: "Direction-aware transitions (previousIndex)",
         file: "component",
-        pattern: /opacity-0\s+group-hover:opacity-100/,
-        reason: "Image should fade in on hover",
+        pattern: /previousIndex/,
+        reason: "Tracks previous index for direction-aware slide animations",
     },
     {
-        name: "Clean overlay (40-50% black)",
+        name: "Debounced close for smooth UX",
         file: "component",
-        pattern: /bg-black\/4[0-9]|bg-black\/50/,
-        reason: "Image overlay should be subtle (40-50% opacity)",
+        pattern: /closeTimeoutRef|debounce.*close/i,
+        reason: "Uses debounced close to prevent flicker",
     },
     {
-        name: "Fade-in animation on cards",
+        name: "Visibility control for dropdown",
         file: "component",
-        pattern: /animate-fade-in-up/,
-        reason: "Cards should have staggered entrance animation",
-    },
-    {
-        name: "Transition duration 200-300ms",
-        file: "component",
-        pattern: /duration-2[0-9]{2}|duration-300/,
-        reason: "Transitions should be snappy (200-300ms)",
+        pattern: /isVisible.*visibility|visibility.*isVisible/,
+        reason: "Controls dropdown visibility to prevent ghost hover zones",
     },
 ];
 
 // ============================================================
-// Banned Patterns (must NOT exist)
+// ImageTransition.tsx Rules
+// ============================================================
+const TRANSITION_RULES = [
+    {
+        name: "Framer Motion AnimatePresence",
+        file: "transition",
+        pattern: /AnimatePresence/,
+        reason: "Uses AnimatePresence for enter/exit animations",
+    },
+    {
+        name: "Motion div for animation",
+        file: "transition",
+        pattern: /motion\.div/,
+        reason: "Uses motion.div for animated elements",
+    },
+    {
+        name: "Spring or fast transition",
+        file: "transition",
+        pattern: /spring|duration.*0\.[0-2]/,
+        reason: "Uses fast transitions (< 200ms) or spring physics",
+    },
+];
+
+// ============================================================
+// Banned Patterns (must NOT exist in new design)
 // ============================================================
 const BANNED_PATTERNS = [
     {
-        name: "Shadow effects on cards",
+        name: "Old CrossFadeImage usage",
         file: "component",
-        pattern: /shadow-lg|shadow-xl|shadow-2xl|shadow-\[/,
-        reason: "Minimalist design: no shadow effects on cards",
+        pattern: /<CrossFadeImage[^>]*isActive/,
+        reason: "CrossFadeImage is replaced by ImageTransition with Framer Motion",
     },
     {
-        name: "Complex slide animations",
+        name: "Old PreviewContent usage",
         file: "component",
-        pattern: /translate-y-full|translate-y-4\s+group-hover:translate-y-0/,
-        reason: "Keep hover animations simple (just opacity)",
-    },
-    {
-        name: "Internal corner indicators",
-        file: "component",
-        pattern: /absolute\s+top-0\s+right-0.*w-8|absolute\s+top-4\s+right-4/,
-        reason: "Indicator should be external (outside card), not internal corner",
-    },
-    {
-        name: "Border-color for hover (unreliable)",
-        file: "component",
-        pattern: /hover:border-foreground[^/]|border\s+border-.*hover:border-/,
-        reason: "Use ring utilities instead of border-color for reliable hover",
-    },
-    {
-        name: "Backdrop blur on cards",
-        file: "component",
-        pattern: /backdrop-blur/,
-        reason: "Minimalist design: no glassmorphism effects",
-    },
-    {
-        name: "Rounded corners on cards",
-        file: "component",
-        pattern: /rounded-2xl|rounded-xl|rounded-lg/,
-        reason: "CK-style: sharp corners (no rounded cards)",
+        pattern: /<PreviewContent[^>]*isActive/,
+        reason: "PreviewContent is replaced by ContentTransition with Framer Motion",
     },
 ];
 
@@ -117,24 +111,26 @@ const BANNED_PATTERNS = [
 // Runner
 // ============================================================
 function main() {
-    console.log("\n🎴 Category Card Design Freeze Lint\n");
+    console.log("\n🎴 Category Preview Design Freeze Lint\n");
     console.log("━".repeat(50));
 
     const errors = [];
-    const warnings = [];
 
     // Load files
     const files = {
         component: existsSync(COMPONENT_PATH) ? readFileSync(COMPONENT_PATH, "utf-8") : null,
-        globals: existsSync(GLOBALS_PATH) ? readFileSync(GLOBALS_PATH, "utf-8") : null,
+        transition: existsSync(TRANSITION_PATH) ? readFileSync(TRANSITION_PATH, "utf-8") : null,
     };
 
     if (!files.component) {
         errors.push("❌ HeroImageStrip.tsx not found");
     }
+    if (!files.transition) {
+        errors.push("❌ ImageTransition.tsx not found");
+    }
 
     // Check required patterns
-    for (const rule of REQUIRED_PATTERNS) {
+    for (const rule of [...REQUIRED_PATTERNS, ...TRANSITION_RULES]) {
         const content = files[rule.file];
         if (!content) continue;
 
@@ -158,11 +154,11 @@ function main() {
     // Results
     console.log("");
     if (errors.length === 0) {
-        console.log("✅ All checks passed! Category cards follow minimalist design freeze.\n");
+        console.log("✅ All checks passed! Category preview follows frozen design.\n");
         process.exit(0);
     } else {
         for (const e of errors) console.log(e);
-        console.log(`\n❌ ${errors.length / 2} issue(s) found.\n`);
+        console.log(`\n❌ ${Math.ceil(errors.length / 2)} issue(s) found.\n`);
         process.exit(1);
     }
 }

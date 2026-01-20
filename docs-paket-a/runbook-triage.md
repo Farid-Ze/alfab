@@ -1,107 +1,100 @@
-# Runbook Triage (Paket A) — Signals → Logs → Trace Correlation
+# Runbook Triage (Paket A) — Lead via Email Internal
 
-This runbook complements `docs-paket-a/paket-a.md` (§Ops/Runbook) with a single, fast procedure to go from:
+Dokumen ini melengkapi `docs-paket-a/paket-a.md` (scope final) dengan prosedur cepat untuk menangani keluhan:
 
-1) **Alert / metric spike**
-2) → **the right log events**
-3) → **trace correlation** (via `traceparent` and Prometheus exemplars)
+1) "Form sudah di-submit tapi lead tidak masuk ke email"
+2) "Submit error" / lonjakan 4xx/5xx
+3) "Lead masuk tapi tidak konsisten" (mis. sebagian nyangkut spam/quarantine)
 
-## Quick rules
+## Prinsip (supaya aman & audit-friendly)
 
-- Do not debug from request bodies. Logs must stay **PII-safe**.
-- Prefer **low-cardinality metrics** and event-style logs.
-- Trace correlation is via:
-  - HTTP middleware that ensures a `traceparent` header exists.
-  - Logs that include `fields.trace` (the traceparent string).
-  - Prometheus **exemplars** attached to selected histograms.
+- **Jangan debug dari request body.** Log harus tetap **PII-safe** (tanpa nama, email, nomor telepon, isi pesan).
+- Mulai dari luar ke dalam: **Browser → Endpoint submit → Email deliverability**.
+- Saat investigasi, gunakan **test lead** yang jelas ditandai (mis. subject/pesan berisi `[TEST]`).
 
-## 1) Lead intake issues
+---
 
-### Symptoms
-- Increased `lead_api_lead_submissions_total{result="invalid"}`
-- Increased `lead_api_lead_submissions_total{result="internal"}`
-- Increased HTTP 4xx/5xx (from `lead_api_http_requests_total`)
+## 1) Keluhan: "Lead tidak masuk ke email"
 
-### What to check
+### 1.1 Konfirmasi gejala (5 menit)
 
-1. **Errors by route**
-   - `sum by (route, status_class) (rate(lead_api_http_requests_total[5m]))`
+1) Minta timestamp perkiraan submit + halaman yang dipakai.
+2) Ulangi submit dengan data test.
+3) Pastikan user mendapat indikasi sukses (mis. toast/redirect) dan tidak ada error di browser.
 
-2. **Latency by route**
-   - P95 example:
-     - `histogram_quantile(0.95, sum by (le, route, method) (rate(lead_api_http_request_duration_seconds_bucket[5m])))`
+### 1.2 Cek sisi mailbox (paling sering penyebab)
 
-3. **Correlate spike to traces/logs**
-   - The histogram `lead_api_http_request_duration_seconds` may carry exemplars.
-   - In Prometheus UI (or Grafana Explore), click exemplar dots on the graph; copy `trace_id`.
+1) Cari di folder berikut:
+   - Inbox
+   - Spam/Junk
+   - Quarantine (jika ada security gateway)
+2) Jika masuk Spam/Junk, lakukan:
+   - mark as "Not Spam"
+   - allowlist domain/pengirim sesuai kebijakan internal Perusahaan
+3) Jika Perusahaan memakai group mailbox, pastikan semua anggota grup menerima.
 
-> Note: `trace_id` is attached as an *exemplar*, not as a metric label. Querying like `...{trace_id="..."}` will not work; use exemplar UI.
+### 1.3 Cek log server untuk submit (tanpa PII)
 
-4. **Find the corresponding log lines**
-   - Logs include `fields.trace` (the full `traceparent`).
-   - If you only have `trace_id` from exemplar, search logs for the trace id substring.
+Tujuan: memastikan request submit benar-benar sampai ke server dan tidak gagal.
 
-## 2) Notification/outbox pipeline issues
+- Cari log request untuk endpoint lead submit pada rentang waktu tersebut.
+- Klasifikasikan hasil:
+  - **2xx**: submit diterima (lanjut cek deliverability SMTP / mailbox)
+  - **4xx**: biasanya validation/rate limit
+  - **5xx**: error server / konfigurasi
 
-### Key metrics
+Jika tersedia metrik, lihat tren:
+- lonjakan 4xx/5xx pada endpoint lead submit
+- lonjakan invalid submissions atau rate limit rejects
 
-- Outbox backlog (gauges):
-  - `lead_api_lead_notifications_count{status="pending"|"processing"|"sent"|"failed"}`
-  - `lead_api_lead_notifications_pending_ready_total`
-  - `lead_api_lead_notifications_pending_delayed_total`
-  - `lead_api_lead_notifications_oldest_ready_pending_age_seconds`
+---
 
-- Enqueue performance (request-scoped):
-  - `lead_api_lead_notification_enqueue_total{channel,result}`
-  - `lead_api_lead_notification_enqueue_duration_seconds{channel,result}` (may carry exemplars)
+## 2) Keluhan: "Submit error" (4xx/5xx)
 
-- Worker send performance:
-  - `lead_api_lead_notification_send_total{channel,result}`
-  - `lead_api_lead_notification_send_duration_seconds{channel,result}`
+### 2.1 Jika 4xx (umum)
 
-### Log event mapping
+Kemungkinan:
+- Validasi input (format email/telepon, panjang field)
+- Content-Type bukan JSON
+- Rate limiting aktif (anti-spam)
 
-| Signal | Likely log events | Meaning |
-|---|---|---|
-| Enqueue failures rising (`...enqueue_total{result="error"}`) | `lead_notification_enqueue_failed` | Lead was persisted but enqueue failed; manual follow-up may be needed. |
-| Backlog stuck / claim errors | `notify_claim_batch_error` | Worker cannot claim jobs (DB issue / lock / permissions). |
-| Send errors rising (`...send_total{result="error"}`) | `notify_send_failed` | Provider failure (SMTP/webhook) or network/timeout. |
-| Sends with missing channel sender (`...send_total{result="no_sender"}`) | `notify_sender_missing` | Worker misconfigured vs notification rows. |
-| Lead lookup failures | `notify_load_lead_failed` | Data inconsistency or DB read issue. |
+Tindakan:
+- Pastikan payload sesuai kontrak (lihat `docs-paket-a/paket-a.md` bagian lead path).
+- Jika rate limit terlalu agresif untuk trafik normal, sesuaikan threshold (tetap menjaga anti-spam minimum).
 
-### Suggested triage flow
+### 2.2 Jika 5xx
 
-1) Confirm backlog health
-- If `oldest_ready_pending_age_seconds` increases steadily and `pending_ready_total` > 0, worker is not draining.
+Kemungkinan:
+- Konfigurasi email/SMTP tidak lengkap
+- Kegagalan koneksi SMTP (DNS, firewall, timeout)
+- Deploy/regresi (baru go-live)
 
-2) Check claim loop
-- Search logs for `notify_claim_batch_error`.
+Tindakan:
+- Cek error log paling dekat dengan timestamp.
+- Jika ada perubahan deploy terakhir, pertimbangkan rollback.
+- Verifikasi kredensial & konektivitas SMTP (host, port, auth, from/to).
 
-3) Check send loop
-- Search logs for `notify_send_failed` and cluster by `channel`.
+---
 
-4) If enqueue is failing (but lead intake is OK)
-- Inspect `lead_notification_enqueue_failed` logs.
-- Compare `...enqueue_total{result="error"}` with DB availability and permissions.
+## 3) Cek cepat konfigurasi email (tanpa membuka rahasia)
 
-### Trace correlation limits in async
+Tujuan: memastikan jalur pengiriman email tidak putus.
 
-- The worker runs outside the originating HTTP request context.
-- We persist request-origin `traceparent` into `lead_notifications.traceparent` at enqueue time.
-- The worker then derives a per-notification context so:
-  - worker logs include `fields.trace`
-  - worker send histograms can attach exemplars when the scraper supports them
-  - downstream webhook calls receive the `traceparent` header
+- Pastikan variabel/env yang dibutuhkan untuk SMTP terpasang di environment runtime.
+- Pastikan alamat tujuan (recipient) adalah mailbox internal Perusahaan yang benar.
 
-Operational note:
-- This requires applying DB migration `migrations/00008_add_lead_notifications_traceparent.sql` before rollout.
+Catatan: konfigurasi sensitif (password/token) **tidak** boleh ditaruh di repo; gunakan secret store.
 
-## 3) Where to look (files)
+---
 
-- HTTP trace injection: `internal/handler/traceparent.go`
-- HTTP metrics w/ trace: `internal/handler/http_metrics.go`, `pkg/metrics/metrics.go`
-- Enqueue metrics + logs: `internal/service/lead_service.go`
-- Worker logs + send metrics: `internal/notify/worker.go`
-- Admin ops views:
-  - `/api/v1/admin/lead-notifications` → `internal/handler/admin_notifications.go`
-  - `/api/v1/admin/lead-notifications/stats` → `internal/handler/admin_notifications_stats.go`
+## 4) Lokasi implementasi (untuk developer)
+
+- Routing endpoint lead submit: `internal/handler/app.go` (route `/api/v1/leads`)
+- Service handler lead submit: `internal/service/lead_service.go`
+- Pengiriman email SMTP: `internal/notify/email_sender.go`
+
+---
+
+## 5) Jika Perusahaan mengaktifkan scope tambahan (CR)
+
+Jika suatu saat Perusahaan menambah scope "lead tersimpan + export admin + RUM" (CR / bagian 9.5 pada proposal), gunakan dokumen arsip di `docs-paket-a/_deprecated/` sebagai referensi teknis tambahan.

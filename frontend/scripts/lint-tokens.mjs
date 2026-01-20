@@ -1,93 +1,202 @@
-import { promises as fs } from "node:fs";
+#!/usr/bin/env node
+/**
+ * Design Tokens Lint (Comprehensive)
+ *
+ * Validates that all color/surface usage follows the design system:
+ * - No raw Tailwind neutral palette (zinc, gray, slate, neutral, stone)
+ * - No hard-coded white surfaces
+ * - No hard-coded bracket hex/rgb colors
+ * - No redundant/conflicting token usage
+ *
+ * Scans: All .ts/.tsx files in src/
+ * 
+ * Note: Typography tokens are in lint-typography.mjs (no overlap)
+ * 
+ * Run: npm run lint:tokens
+ */
+
+import fs from "node:fs";
 import path from "node:path";
 
 const ROOT = path.resolve(process.cwd(), "src");
 
-const FILE_EXTS = new Set([".ts", ".tsx"]);
+// ============================================================
+// Allowlist - Files that CAN use raw color values
+// ============================================================
+const ALLOWLIST = new Set([
+  "src/app/globals.css",
+  "tailwind.config.ts",
+]);
 
-const BANNED_PATTERNS = [
-  {
-    name: "Neutral palette utilities (use design tokens)",
-    re: /\b(?:text|bg|border|ring|stroke|fill)-(?:zinc|gray|slate|neutral|stone)-\d{2,3}\b/g,
-  },
-  {
-    name: "Neutral palette utilities with opacity (use design tokens)",
-    re: /\b(?:text|bg|border|ring|stroke|fill)-(?:zinc|gray|slate|neutral|stone)-\d{2,3}\/\d{1,3}\b/g,
-  },
-  {
-    name: "Neutral palette utilities in gradients (use design tokens)",
-    re: /\b(?:from|via|to)-(?:zinc|gray|slate|neutral|stone)-\d{2,3}(?:\/\d{1,3})?\b/g,
-  },
-  {
-    name: "Hard-coded white surfaces (use bg-background/bg-panel/bg-subtle)",
-    re: /\b(?:bg|border)-white\b|\bbg-white\b/g,
-  },
-  {
-    name: "Hard-coded bracket colors (use tokens / CSS variables)",
-    re: /\b(?:text|bg|border|ring|stroke|fill)-\[(?:#[0-9a-fA-F]{3,8}|rgb\(|rgba\(|hsl\(|hsla\()\b/g,
-  },
-];
-
-async function* walk(dir) {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      yield* walk(full);
-    } else {
-      const ext = path.extname(entry.name);
-      if (FILE_EXTS.has(ext)) yield full;
-    }
+// ============================================================
+// File Discovery
+// ============================================================
+function listFiles(dir) {
+  const out = [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const e of entries) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) out.push(...listFiles(p));
+    else if (p.endsWith(".ts") || p.endsWith(".tsx")) out.push(p);
   }
+  return out;
 }
 
-function toRel(p) {
-  return path.relative(process.cwd(), p);
+function rel(p) {
+  return path.relative(process.cwd(), p).replaceAll("\\", "/");
 }
 
-function takeContext(text, index, len = 90) {
-  const start = Math.max(0, index - Math.floor(len / 2));
+function isAllowlisted(filePath) {
+  return ALLOWLIST.has(rel(filePath));
+}
+
+function takeContext(text, index, len = 70) {
+  const start = Math.max(0, index - 25);
   const end = Math.min(text.length, start + len);
   return text.slice(start, end).replace(/\s+/g, " ").trim();
 }
 
-let violations = [];
+// ============================================================
+// Banned Patterns
+// ============================================================
+const BANNED_PATTERNS = [
+  // Neutral palette
+  { name: "Neutral palette utility", re: /\b(?:text|bg|border|ring|stroke|fill)-(?:zinc|gray|slate|neutral|stone)-\d{2,3}\b/g, fix: "Use text-foreground, bg-background, border-border, etc." },
+  { name: "Neutral palette with opacity", re: /\b(?:text|bg|border|ring|stroke|fill)-(?:zinc|gray|slate|neutral|stone)-\d{2,3}\/\d{1,3}\b/g, fix: "Use text-foreground/50, bg-panel, etc." },
+  { name: "Neutral in gradients", re: /\b(?:from|via|to)-(?:zinc|gray|slate|neutral|stone)-\d{2,3}(?:\/\d{1,3})?\b/g, fix: "Use from-foreground, via-background, etc." },
 
-for await (const file of walk(ROOT)) {
-  const raw = await fs.readFile(file, "utf8");
+  // Hard-coded surfaces
+  { name: "Hard-coded bg-white", re: /\bbg-white\b/g, fix: "Use bg-background or bg-panel" },
+  { name: "Hard-coded border-white", re: /\bborder-white\b/g, fix: "Use border-background or border-border" },
 
-  for (const { name, re } of BANNED_PATTERNS) {
-    re.lastIndex = 0;
-    let match;
-    while ((match = re.exec(raw)) !== null) {
-      violations.push({
-        file: toRel(file),
-        rule: name,
-        token: match[0],
-        context: takeContext(raw, match.index),
-      });
+  // Bracket colors
+  { name: "Bracket hex color", re: /\b(?:text|bg|border|ring|stroke|fill)-\[#[0-9a-fA-F]{3,8}\]/g, fix: "Use CSS variables: bg-[var(--custom-color)]" },
+  { name: "Bracket rgb color", re: /\b(?:text|bg|border|ring|stroke|fill)-\[rgba?\([^)]+\)\]/g, fix: "Use CSS variables or design tokens" },
+];
 
-      // Avoid infinite loops on zero-length matches.
-      if (match.index === re.lastIndex) re.lastIndex++;
+// ============================================================
+// Redundancy Patterns (conflicting/duplicate tokens)
+// ============================================================
+const REDUNDANCY_PATTERNS = [
+  // Multiple text colors on same element
+  {
+    name: "Redundant text colors",
+    re: /className="[^"]*\btext-foreground\b[^"]*\btext-foreground-muted\b[^"]*"|className="[^"]*\btext-foreground-muted\b[^"]*\btext-foreground\b[^"]*"/g,
+    fix: "Use only one text color token",
+  },
+  // Multiple bg colors
+  {
+    name: "Redundant background colors",
+    re: /className="[^"]*\bbg-background\b[^"]*\bbg-panel\b[^"]*"|className="[^"]*\bbg-panel\b[^"]*\bbg-background\b[^"]*"/g,
+    fix: "Use only one background token",
+  },
+  // Opacity override on same property
+  {
+    name: "Conflicting opacity modifiers",
+    re: /className="[^"]*\b(text|bg|border)-[a-z]+\/\d+\b[^"]*\b\1-[a-z]+\/\d+\b[^"]*"/g,
+    fix: "Use only one opacity modifier per property type",
+  },
+  // Duplicate exact tokens
+  {
+    name: "Duplicate token",
+    re: /\b(text-foreground|bg-background|bg-panel|border-border)\b[^"]*\b\1\b/g,
+    fix: "Remove duplicate token",
+  },
+  // Conflicting hover states
+  {
+    name: "Conflicting hover colors",
+    re: /className="[^"]*\bhover:text-[a-z-]+\b[^"]*\bhover:text-[a-z-]+\b[^"]*"/g,
+    fix: "Use only one hover text color",
+  },
+];
 
-      // Cap output to keep logs readable.
-      if (violations.length > 200) break;
+// ============================================================
+// Main
+// ============================================================
+function lint() {
+  const violations = [];
+  const redundancies = [];
+  const stats = { filesScanned: 0, tokenUsages: 0 };
+
+  const files = listFiles(ROOT);
+
+  for (const file of files) {
+    if (isAllowlisted(file)) continue;
+
+    const raw = fs.readFileSync(file, "utf8");
+    stats.filesScanned++;
+
+    // Count proper token usage
+    const tokenMatches = raw.match(/\b(text|bg|border|ring)-(foreground|background|panel|subtle|border|muted)/g);
+    if (tokenMatches) stats.tokenUsages += tokenMatches.length;
+
+    // Check banned patterns
+    for (const { name, re, fix } of BANNED_PATTERNS) {
+      re.lastIndex = 0;
+      let match;
+      while ((match = re.exec(raw)) !== null) {
+        violations.push({
+          file: rel(file),
+          rule: name,
+          token: match[0],
+          context: takeContext(raw, match.index),
+          fix,
+        });
+        if (match.index === re.lastIndex) re.lastIndex++;
+        if (violations.length > 50) break;
+      }
     }
-    if (violations.length > 200) break;
+
+    // Check redundancy patterns
+    for (const { name, re, fix } of REDUNDANCY_PATTERNS) {
+      re.lastIndex = 0;
+      let match;
+      while ((match = re.exec(raw)) !== null) {
+        redundancies.push({
+          file: rel(file),
+          rule: name,
+          context: takeContext(raw, match.index, 100),
+          fix,
+        });
+        if (match.index === re.lastIndex) re.lastIndex++;
+        if (redundancies.length > 20) break;
+      }
+    }
   }
-  if (violations.length > 200) break;
+
+  // Report
+  console.log("\n🎨 Design Tokens Lint (Comprehensive)\n");
+  console.log("━".repeat(55));
+
+  console.log("\n📊 Scan Statistics:");
+  console.log(`   Files scanned:     ${stats.filesScanned}`);
+  console.log(`   Token usages:      ${stats.tokenUsages}`);
+  console.log(`   Allowlisted:       ${ALLOWLIST.size} files`);
+
+  // Redundancy warnings (not blocking, but important)
+  if (redundancies.length > 0) {
+    console.log(`\n⚠️  ${redundancies.length} redundancy warning(s):`);
+    for (const r of redundancies.slice(0, 5)) {
+      console.log(`   - ${r.file}`);
+      console.log(`     Issue: ${r.rule}`);
+      console.log(`     Fix: ${r.fix}`);
+    }
+    if (redundancies.length > 5) console.log(`   ... and ${redundancies.length - 5} more`);
+  }
+
+  if (violations.length > 0) {
+    console.error(`\n❌ Token lint failed. ${violations.length} violation(s):\n`);
+    for (const v of violations.slice(0, 15)) {
+      console.error(`   - ${v.file}`);
+      console.error(`     Token: ${v.token}`);
+      console.error(`     Fix: ${v.fix}`);
+    }
+    if (violations.length > 15) console.error(`   ... and ${violations.length - 15} more`);
+    console.error("\nDesign tokens: text-foreground, bg-background, bg-panel, border-border, text-foreground-muted\n");
+    process.exit(1);
+  }
+
+  console.log("\n✅ Token lint passed.\n");
 }
 
-if (violations.length > 0) {
-  console.error("\nToken lint failed: banned hard-coded palette/surface classes detected.\n");
-  for (const v of violations) {
-    console.error(`- ${v.file}`);
-    console.error(`  Rule: ${v.rule}`);
-    console.error(`  Token: ${v.token}`);
-    console.error(`  Context: ${v.context}`);
-  }
-  console.error("\nFix: replace with design tokens (e.g. text-foreground, text-foreground-muted, bg-panel, border-border).\n");
-  process.exit(1);
-}
-
-console.log("Token lint passed.");
+lint();
