@@ -16,8 +16,8 @@ Dokumen ini memuat ruang lingkup, deliverables, kriteria penerimaan (UAT), jadwa
 |---|---|
 | Paket | **Paket A** — Website B2B + Lead Capture |
 | Timeline delivery | **3 minggu kalender** |
-| Fixed Price (tanpa PPN) | **Rp 10.275.000** |
-| Total effort | **34,25 MD** (274 jam; 1 MD = 8 jam) |
+| Fixed Price (tanpa PPN) | **Rp 11.850.000** |
+| Total effort | **39,50 MD** (316 jam; 1 MD = 8 jam) |
 | Hosting | **Vercel Free/Hobby (Rp 0)** |
 | Penyimpanan lead | **Supabase (database)** |
 | Notifikasi lead | **Email internal Perusahaan** |
@@ -127,14 +127,16 @@ Timeline delivery: 3 minggu kalender.
 ## 7.1 Ringkasan harga
 | Paket | Fixed Price (tanpa PPN) | Timeline |
 |---|---:|---|
-| Paket A | **Rp 10.275.000** | 3 minggu |
+| Paket A | **Rp 11.850.000** | 3 minggu |
 
 ## 7.2 Base rate & effort
 - Base rate: Rp 300.000/MD (1 MD = 8 jam = Rp 37.500/jam)
-- Total effort: 34,25 MD = 274 jam
+- Total effort: 39,50 MD = 316 jam
 
-## 7.3 Rincian effort
-Asumsi:
+**Baseline yang digunakan di dokumen ini:** **Baseline (Likely)** (estimasi realistis untuk delivery in-scope + verifikasi UAT).
+
+## 7.3 Rincian effort (Baseline — Likely)
+Asumsi (Baseline — Likely):
 - 12 template halaman publik untuk delivery (Home, Products Overview, Product Detail, Education Listing, Education Event Detail, Education Article Detail, Partnership Landing, Become Partner, About, Contact, Legal bundle, 404).
 - Bilingual (ID/EN) berlaku untuk seluruh halaman in-scope.
 - Jalur kritikal yang diverifikasi pada UAT: WA CTA, submit lead (DB + email), export CSV, tracking events/GA4, i18n, SEO dasar.
@@ -152,7 +154,8 @@ Asumsi:
 | Lead pipeline (Supabase + email notif + export CSV + anti-spam) | 4,00 | 1.200.000 |
 | QA/UAT (evidence + bugfix minor) | 3,00 | 900.000 |
 | PM, koordinasi, handover & pelatihan | 3,00 | 900.000 |
-| **TOTAL** | **34,25** | **10.275.000** |
+| Kontinjensi risiko & iterasi UAT (Likely) | 5,25 | 1.575.000 |
+| **TOTAL** | **39,50** | **11.850.000** |
 
 ---
 
@@ -276,4 +279,4 @@ Dengan menandatangani bagian ini, Perusahaan menyetujui ruang lingkup, UAT, jadw
 | Approved by | Bapak Edy |
 | Approval date |  |
 | Approval method |  |
-| Notes |  |
+| Keterangan |  |

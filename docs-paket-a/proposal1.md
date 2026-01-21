@@ -17,8 +17,8 @@ Website ini berfungsi sebagai alat bantu sales/BD untuk meningkatkan trust, memp
 |---|---|
 | Paket | **Paket A** — Website B2B + Lead Capture |
 | Timeline delivery | **3 minggu kalender** |
-| Fixed Price (tanpa PPN) | **Rp 10.275.000** |
-| Total effort | **34,25 MD** (274 jam; 1 MD = 8 jam) |
+| Fixed Price (tanpa PPN) | **Rp 11.850.000** |
+| Total effort | **39,50 MD** (316 jam; 1 MD = 8 jam) |
 | Hosting | **Vercel Free/Hobby (Rp 0)** |
 | Penyimpanan lead | **Supabase (database)** |
 | Notifikasi lead | **Email internal Perusahaan** |
@@ -195,7 +195,7 @@ Timeline delivery: 3 minggu kalender.
 ## 9.1 Ringkasan harga (untuk persetujuan)
 | Paket | Cocok untuk | Fixed Price (tanpa PPN) | Timeline | Pembeda utama |
 |---|---|---:|---|---|
-| **Paket A** | ingin lead tervalidasi, **tersimpan**, dan bisa diekspor | **Rp 10.275.000** | 3 minggu | Supabase (DB) + export CSV + CMS (free tier) + GA4/GSC + bilingual + tracking |
+| **Paket A** | ingin lead tervalidasi, **tersimpan**, dan bisa diekspor | **Rp 11.850.000** | 3 minggu | Supabase (DB) + export CSV + CMS (free tier) + GA4/GSC + bilingual + tracking |
 
 Harga di atas **tidak termasuk PPN** (sesuai arahan).
 
@@ -210,15 +210,17 @@ Untuk menghindari perdebatan “tier” dan menjaga perhitungan mudah diaudit, p
 - Definisi 1 MD = **8 jam kerja**
 - Setara **Rp 37.500 / jam**
 
-### 9.3.2 Rekap effort & total biaya (baseline)
+### 9.3.2 Rekap effort & total biaya (Baseline — Likely)
 Total effort baseline pada proyek ini mengikuti rincian workstream di 9.3.5.
+
+**Penegasan baseline (final):** baseline yang digunakan pada dokumen ini adalah **Baseline (Likely)** yaitu estimasi realistis untuk menyelesaikan deliverables in-scope beserta verifikasi UAT.
 
 | Item | Nilai |
 |---|---:|
-| Total effort baseline | **34,25 MD** |
-| Konversi jam kerja (34,25 × 8) | **274 jam** |
+| Total effort baseline (Likely) | **39,50 MD** |
+| Konversi jam kerja (39,50 × 8) | **316 jam** |
 | Base rate | **Rp 300.000/MD** (Rp 37.500/jam) |
-| **Total biaya baseline (CapEx)** | **Rp 10.275.000** |
+| **Total biaya baseline (Likely, CapEx)** | **Rp 11.850.000** |
 
 ### 9.3.3 Prinsip Fixed Price
 Proposal ini memakai **Fixed Price**.
@@ -232,8 +234,8 @@ Bagian ini menutup pertanyaan paling penting: “Owner membayar berapa, dan angk
 
 | Item | Nilai (IDR) | Keterangan |
 |---|---:|---|
-| Biaya baseline (hasil perhitungan 9.3.5) | **Rp 10.275.000** | 34,25 MD × Rp 300.000/MD |
-| **Fixed Price — yang dibayar Owner** | **Rp 10.275.000** | scope & UAT tetap |
+| Biaya baseline (Likely; hasil perhitungan 9.3.5) | **Rp 11.850.000** | 39,50 MD × Rp 300.000/MD |
+| **Fixed Price — yang dibayar Owner** | **Rp 11.850.000** | scope & UAT tetap |
 
 ### 9.3.5 Rincian perhitungan (final untuk proyek ini)
 Tabel ini memfinalisasi rincian perhitungan **untuk proyek ini** agar transparan.
@@ -262,7 +264,8 @@ Tabel ini memfinalisasi rincian perhitungan **untuk proyek ini** agar transparan
 | Lead pipeline (Supabase + email notif + export CSV + anti-spam) | 4,00 | endpoint + validation + anti-spam + persistence DB + export + evidence | 300.000 | 1.200.000 |
 | QA/UAT readiness (regresi dasar + evidence jalur kritikal) | 3,00 | jalankan UAT + evidence + bugfix minor/polish | 300.000 | 900.000 |
 | PM, koordinasi, handover & pelatihan | 3,00 | kickoff + review staging + rilis + dokumentasi handover + 1 jam training | 300.000 | 900.000 |
-| **TOTAL baseline** | **34,25** |  |  | **10.275.000** |
+| Kontinjensi risiko & iterasi UAT (Likely) | 5,25 | buffer realistis untuk integrasi (Supabase/CMS/GA4/GSC), iterasi UAT, dan polishing sebelum go-live | 300.000 | 1.575.000 |
+| **TOTAL baseline (Likely)** | **39,50** |  |  | **11.850.000** |
 
 **Referensi singkat (untuk transparansi):**
 - Workstream di atas mencakup delivery + verifikasi (UAT evidence) untuk jalur kritikal (WA + lead tersimpan + export + analytics basic).
@@ -275,14 +278,14 @@ Tujuan bagian ini: memvalidasi bahwa Fixed Price selaras dengan base rate yang d
 - 1 MD = 8 jam
 - Rp 300.000/MD = Rp 37.500/jam
 
-**Perhitungan (berdasarkan baseline 9.3.5):**
-- Total jam kerja: **274 jam**
-- 274 jam × Rp 37.500/jam = **Rp 10.275.000**
+**Perhitungan (berdasarkan baseline (Likely) 9.3.5):**
+- Total jam kerja: **316 jam**
+- 316 jam × Rp 37.500/jam = **Rp 11.850.000**
 
 ---
 
 ## 9.5 Jika Perusahaan membutuhkan peningkatan di luar baseline (contoh)
-Pada proposal ini baseline sudah mencakup:
+Pada proposal ini baseline (**Likely**) sudah mencakup:
 - lead tersimpan (Supabase),
 - export CSV sederhana,
 - analytics basic (GA4 + GSC),
@@ -301,7 +304,7 @@ Contoh kebutuhan yang biasanya termasuk peningkatan di luar baseline dan diprose
 Sesuai arahan:
 - **Domain/email tidak dihitung** dalam proposal ini (diasumsikan sudah tersedia/ditangani internal).
 
-OpEx yang relevan (baseline):
+OpEx yang relevan (Baseline — Likely):
 1) Hosting website: **Vercel Free/Hobby (Rp 0)**
 2) Supabase (database): **menggunakan Free tier** (selama masih dalam batas penggunaan)
 3) Headless CMS: **menggunakan Free tier** (sesuai pilihan yang disepakati)
@@ -435,7 +438,7 @@ Dengan menandatangani bagian ini, Perusahaan menyetujui ruang lingkup, UAT, jadw
 | Approved by | Bapak Edy |
 | Approval date |  |
 | Approval method |  |
-| Notes |  |
+| Keterangan |  |
 
 ---
 

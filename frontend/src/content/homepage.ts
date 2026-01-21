@@ -42,40 +42,49 @@ export const categories = [
     {
         key: "shampoo",
         image: "/images/categories/shampoo.jpg",
+        exploreBanner: "/images/categories/banner-haircare.png",
         audience: ["salon", "barber"] as const,
         productCount: 45,
     },
     {
         key: "styling",
         image: "/images/categories/styling.jpg",
+        exploreBanner: "/images/categories/banner-styling.png",
         audience: ["barber", "salon"] as const,
         productCount: 62,
     },
     {
         key: "color",
         image: "/images/categories/color.jpg",
+        exploreBanner: "/images/categories/banner-color.png",
         audience: ["salon"] as const,
         productCount: 120,
     },
     {
         key: "treatment",
         image: "/images/categories/treatment.jpg",
+        exploreBanner: "/images/categories/banner-treatment.png",
         audience: ["salon"] as const,
         productCount: 38,
     },
     {
         key: "tools",
         image: "/images/categories/styling.jpg",
+        exploreBanner: "/images/categories/banner-tools.png",
         audience: ["salon", "barber"] as const,
         productCount: 85,
     },
     {
         key: "accessories",
         image: "/images/categories/treatment.jpg",
+        exploreBanner: "/images/categories/banner-accessories.png",
         audience: ["salon", "barber"] as const,
         productCount: 56,
     },
 ] as const;
+
+// Default explore banner (all categories)
+export const defaultExploreBanner = "/images/categories/banner-default.png";
 
 export const categoryLabels = {
     en: {
