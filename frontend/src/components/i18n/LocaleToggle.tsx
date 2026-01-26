@@ -14,12 +14,11 @@ export default function LocaleToggle({ tone = "default" }: { tone?: LocaleToggle
   function navigate(nextLocale: "en" | "id") {
     if (nextLocale === locale) return;
 
-    // Update state first (persists to storage/cookie), then navigate.
     setLocale(nextLocale);
 
     const qs = typeof window !== "undefined" ? window.location.search.replace(/^\?/, "") : "";
-    const current = pathname || "/";
-    let nextPath = current;
+    let current = pathname || "/";
+    let nextPath: string;
 
     if (current === "/en" || current.startsWith("/en/")) {
       nextPath = current.replace(/^\/en(?=\/|$)/, `/${nextLocale}`);

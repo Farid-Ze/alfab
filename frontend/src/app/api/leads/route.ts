@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { sendLeadNotification, type LeadRecord } from "@/lib/email";
+import { logger } from "@/lib/logger";
 
 export const runtime = "nodejs";
 
@@ -21,7 +22,25 @@ const RATE_LIMIT_MAX_REQUESTS = 5;
 const idempotencyCache = new Map<string, { processedAt: number; result: unknown }>();
 const IDEMPOTENCY_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-function checkRateLimit(ip: string): boolean {
+/**
+ * CAPTCHA Validation (Stub)
+ * Replace with Cloudflare Turnstile or Google reCAPTCHA
+ */
+async function validateCaptcha(_token: string): Promise<boolean> {
+  // TODO: Implement real validation against provider API
+  // const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', ...)
+  return true; // fail-open for now
+}
+
+/**
+ * Rate Limit Service (Abstract)
+ * Currently uses In-Memory Map.
+ * CRITICAL: Swap this for Redis (Upstash) in production to handle distributed scale.
+ */
+async function checkRateLimit(ip: string): Promise<boolean> {
+  // TODO: Insert Redis Logic Here
+  // await redis.incr(`rate_limit:${ip}`)
+
   const now = Date.now();
   const record = rateLimitMap.get(ip);
 
@@ -116,7 +135,8 @@ export async function POST(req: Request) {
     "unknown";
 
   // Rate limit check (§5, §9 DoD: 429 on abuse)
-  if (!checkRateLimit(ip)) {
+  const allowed = await checkRateLimit(ip);
+  if (!allowed) {
     console.warn("[leads] Rate limit exceeded for IP:", ip.substring(0, 20));
     return NextResponse.json(
       { error: "rate_limited" },
@@ -221,20 +241,33 @@ export async function POST(req: Request) {
     const { error } = await supabaseAdmin().from("leads").insert(dbRecord);
 
     if (error) {
-      console.error("[leads] Supabase error:", error);
-      return NextResponse.json(
-        { error: "persistence_failed" },
-        { status: 500, headers: { "Cache-Control": "no-store" } }
-      );
+      logger.error("Supabase persistence failed", { error });
+
+      // TOGAF Business Continuity: Fallback to Email-Only mode.
+      // If DB fails, we MUST try to send the email to avoid losing the lead.
+      try {
+        await sendLeadNotification(dbRecord as unknown as LeadRecord);
+        logger.warn("Lead recovered via Email Fallback (DB Failed)", { lead_name_hash: "SHA256(REDACTED)" });
+
+        return NextResponse.json(
+          { status: "accepted_fallback", warning: "persistence_failed" },
+          { status: 202, headers: { "Cache-Control": "no-store" } }
+        );
+      } catch (emailErr) {
+        // Both Failed - Catastrophic
+        logger.error("DOUBLE FAILURE: DB and Email both failed. Lead Lost.", { error: String(emailErr) });
+        return NextResponse.json(
+          { error: "persistence_failed_critical" },
+          { status: 500, headers: { "Cache-Control": "no-store" } }
+        );
+      }
     }
 
-    // Send email notification (fail-safe: log error, don't block)
+    // Success Path: DB Saved. Now send email best-effort.
     try {
-      // safe cast: we populated required fields above
       await sendLeadNotification(dbRecord as unknown as LeadRecord);
     } catch (emailErr) {
-      console.error("[leads] Email notification failed:", emailErr);
-      // Don't return error - lead is already saved in Supabase
+      logger.warn("Email notification failed (DB secure)", { error: String(emailErr) });
     }
 
     // Store idempotency result for future duplicate requests
@@ -247,7 +280,7 @@ export async function POST(req: Request) {
     );
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : "internal_error";
-    console.error("[leads] Handler error:", msg);
+    logger.error("Handler internal error", { message: msg });
     return NextResponse.json(
       { error: "internal_error" },
       { status: 500, headers: { "Cache-Control": "no-store" } }

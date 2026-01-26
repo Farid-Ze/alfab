@@ -3,8 +3,6 @@
 import { useEffect } from "react";
 import { onCLS, onINP, onLCP } from "web-vitals";
 
-import { postTelemetry } from "@/lib/telemetry";
-
 export default function WebVitalsReporter() {
   useEffect(() => {
     const report = (metric: {
@@ -15,14 +13,11 @@ export default function WebVitalsReporter() {
       rating?: string;
       navigationType?: string;
     }) => {
-      postTelemetry("/api/rum", {
-        metric_id: metric.id,
-        metric_name: metric.name,
-        value: metric.value,
-        delta: metric.delta,
-        rating: metric.rating,
-        navigation_type: metric.navigationType,
-      });
+      // Internal RUM /api/rum deprecated (ITIL).
+      // Web Vitals can be viewed in Vercel Analytics or GA4 if configured via reportWebVitals.
+      if (process.env.NODE_ENV === "development") {
+        console.log("[CWV]", metric.name, metric.value);
+      }
     };
 
     // Minimal CWV set per Paket A UAT-16 / ADR-0002.

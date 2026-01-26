@@ -28,6 +28,12 @@ export default function TextLink({
 }: TextLinkProps) {
     const colorClass = onDark ? "ui-hero-on-media" : "text-foreground";
 
+    // We assume the href is providing the abstract path (e.g. /products)
+    // In a real app, we'd wrap next/link with a smart LocalizedLink component.
+    // For this refactor, we are just ensuring TextLink doesn't break.
+    // IMPORTANT: The caller is responsible for passing the correct path.
+    // If we wanted to enforce it here, we'd need the current locale context.
+
     return (
         <Link
             href={href}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import CookieConsent from "@/components/site/CookieConsent";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -53,6 +54,7 @@ export default async function RootLayout({
     <html lang={lang} suppressHydrationWarning>
       <body className="antialiased">
         {children}
+        <CookieConsent />
       </body>
       <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? ""} />
     </html>

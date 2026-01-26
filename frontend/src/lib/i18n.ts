@@ -20,3 +20,5 @@ const dict: Record<Locale, LocaleDict> = {
 export function t(locale: Locale): LocaleDict {
   return dict[locale];
 }
+
+// getLocalizedPath removed (Revert to Standard Sub-path Strategy)

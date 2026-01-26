@@ -14,7 +14,9 @@ export const runtime = "nodejs";
  * See Paket A UAT-12: Owner/PIC dapat mengunduh data lead sebagai file CSV
  */
 
-const ADMIN_TOKEN = process.env.LEAD_API_ADMIN_TOKEN || "";
+import { env } from "@/lib/env";
+
+const ADMIN_TOKEN = env.LEAD_API_ADMIN_TOKEN || "";
 const EXPORT_LIMIT = 1000; // Pagination limit to prevent timeout
 
 export async function GET(req: Request) {

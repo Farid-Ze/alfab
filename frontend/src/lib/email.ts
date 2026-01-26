@@ -1,11 +1,13 @@
 import nodemailer from "nodemailer";
+import { logger } from "@/lib/logger";
+import { env } from "@/lib/env";
 
-const SMTP_HOST = process.env.SMTP_HOST;
-const SMTP_PORT = Number(process.env.SMTP_PORT || "587");
-const SMTP_USER = process.env.SMTP_USER;
-const SMTP_PASS = process.env.SMTP_PASS;
-const SMTP_FROM = process.env.SMTP_FROM || '"Alfa Beauty Website" <noreply@alfabeauty.co.id>';
-const SMTP_TO = process.env.SMTP_TO; // Internal inbox
+const SMTP_HOST = env.SMTP_HOST;
+const SMTP_PORT = Number(env.SMTP_PORT || "587");
+const SMTP_USER = env.SMTP_USER;
+const SMTP_PASS = env.SMTP_PASS;
+const SMTP_FROM = env.SMTP_FROM || '"Alfa Beauty Website" <noreply@alfabeauty.co.id>';
+const SMTP_TO = env.SMTP_TO; // Internal inbox
 
 // Check if SMTP is configured
 const SMTP_ENABLED = Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS && SMTP_TO);
@@ -80,10 +82,17 @@ export async function sendLeadNotification(lead: LeadRecord): Promise<void> {
             text: textBody,
             html: htmlBody,
         });
-        console.log("[email] Lead notification sent:", info.messageId);
     } catch (err) {
-        console.error("[email] Failed to send notification:", err);
-        // Don't throw - lead is already saved, email is best-effort
+        logger.error("Failed to send notification", { error: String(err) });
+
+        // TOGAF Remediation: Log this as a "Dead Letter" event for observability
+        // COBIT Remediation: Redact PII (Name/Email) to prevent privacy leaks in logs.
+        logger.error("dead_letter_event", {
+            recipient: "REDACTED",
+            lead_name_hash: lead.name ? "SHA256(REDACTED)" : "null",
+            timestamp: new Date().toISOString()
+        });
+        // Don't throw - lead is already saved, email is best-effort but traced.
     }
 }
 

@@ -1,5 +1,7 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
+import { env } from "@/lib/env";
+
 /**
  * Supabase Client Configuration
  * 
@@ -7,9 +9,9 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
  * to prevent build failures. Runtime calls will throw if unconfigured.
  */
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "";
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL || "";
+const SUPABASE_ANON_KEY = env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const SUPABASE_SERVICE_KEY = env.SUPABASE_SERVICE_ROLE_KEY || "";
 
 // Client for public access (auth, realtime, public schemas)
 // Only create if URL and key are available

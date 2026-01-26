@@ -138,19 +138,7 @@ function ensureFlushListener(): void {
   });
 }
 
-/**
- * Post telemetry data to the server.
- * 
- * NOTE: Internal telemetry endpoints (/api/rum, /api/events) were removed
- * as they forwarded to a non-existent Go backend.
- * This function is now a no-op. Events are sent to GA4 via trackEvent().
- * 
- * @deprecated Use trackEvent() which sends to GA4 directly.
- */
-export function postTelemetry(_path: "/api/rum" | "/api/events", _payload: Record<string, unknown>): void {
-  // No-op: Internal telemetry endpoints removed.
-  // Events are tracked via GA4 in trackEvent().
-}
+// postTelemetry removed (ITIL Remediation)
 
 // Re-export analytics event types for convenience
 export type AnalyticsEventName =
@@ -168,11 +156,7 @@ import { sendGAEvent } from "@next/third-parties/google";
  * Also sends to Google Analytics 4 via @next/third-parties.
  */
 export function trackEvent(name: AnalyticsEventName, data?: Record<string, unknown>): void {
-  // 1. Send to internal telemetry API (RUM/Events)
-  postTelemetry("/api/events", {
-    event_name: name,
-    ...(data ?? {}),
-  });
+  // 1. Send to internal telemetry API (RUM/Events) -> REMOVED (ITIL)
 
   // 2. Send to Google Analytics 4
   // sendGAEvent uses window.gtag internally if initialized
