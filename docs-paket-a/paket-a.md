@@ -8,9 +8,9 @@
 Dokumen ini adalah **spesifikasi implementasi + kontrak penerimaan (UAT/DoD)** untuk Paket A.
 
 **Aturan konsistensi dokumen:**
-- `docs-paket-a/proposal1.md` adalah acuan komersial (scope, UAT, biaya, OpEx).
+- `docs-paket-a/proposal.md` adalah acuan komersial (scope, UAT, biaya, OpEx).
 - Dokumen ini adalah acuan teknis untuk cara implementasi dan evidence.
-- Jika ada konflik, yang menang adalah: **proposal1.md untuk scope/UAT/angka**, dokumen ini untuk **detail teknis**.
+- Jika ada konflik, yang menang adalah: **proposal.md untuk scope/UAT/angka**, dokumen ini untuk **detail teknis**.
 
 ---
 
@@ -793,7 +793,7 @@ Effort expressed as **MD** (1 MD = 8 hours focused work).
 | A5-04 | Bugfix & polish wave | 2.0 | B | Includes retest |
 | A5-05 | Production readiness review + handover | 0.75 | B | Checklist + owner handoff |
 
-Catatan: angka komersial final (MD dan Fixed Price) mengacu ke `docs-paket-a/proposal1.md` agar tidak terjadi duplikasi angka yang berisiko beda versi.
+Catatan: angka komersial final (MD dan Fixed Price) mengacu ke `docs-paket-a/proposal.md` agar tidak terjadi duplikasi angka yang berisiko beda versi.
 
 ---
 
@@ -872,11 +872,35 @@ Evidence & execution artifacts (dipakai saat implementasi):
 
 #### RAB & procurement (ringkas)
 
-Angka CapEx/OpEx final mengacu ke `docs-paket-a/proposal1.md` agar Owner/Finance mengaudit **1 sumber angka**.
+Angka CapEx/OpEx final mengacu ke `docs-paket-a/proposal.md` agar Owner/Finance mengaudit **1 sumber angka**.
 
 **Domain (untuk DNS):**
 - Primary domain: `alfabeautycosmetica.com`
 - Redirect/defensive domain: `alfabeautycosmetica.co` (redirect ke `.com`)
+
+**Garansi bug fix pasca go-live:**
+- **90 hari kalender (3 bulan)** sejak tanggal go-live: Vendor melakukan bug fix untuk defect yang terverifikasi berasal dari implementasi Vendor pada scope Paket A.
+- Garansi ini tidak mencakup perubahan scope/fitur baru, perubahan konten besar, atau perubahan akibat kebijakan/platform pihak ketiga.
+
+**Maintenance (pasca garansi):**
+- Tersedia **Paket M2 Light** (Rp 100.000/bulan): hingga 4× perubahan konten kecil, perbaikan bug minor, kuota 1 jam/bulan, SLA next business day.
+- Detail lihat `docs-paket-a/proposal.md` §10.
+
+**Kepemilikan aset digital:**
+- Kode sumber: diserahkan ke Perusahaan pada saat handover.
+- Aset desain (Figma): diserahkan ke Perusahaan.
+- Akun Vercel/Supabase/CMS/GA4/GSC: berada di pihak Perusahaan; Vendor sebagai collaborator selama implementasi.
+- Detail lihat `docs-paket-a/proposal.md` §4.1.
+
+**Backup Supabase:**
+- Vendor menyiapkan skrip backup terjadwal (atau instruksi manual yang jelas) dan langkah restore yang terdokumentasi.
+- Detail playbook lihat §14 "Backup & restore Supabase — playbook minimal".
+
+**Termin pembayaran:**
+- **35%** saat ruang lingkup dan UAT disepakati.
+- **35%** saat staging siap UAT.
+- **30%** saat go-live.
+- Detail lihat `docs-paket-a/proposal.md` §11.
 
 ### Parameter yang harus diputuskan sebelum go-live
 

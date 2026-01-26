@@ -1,7 +1,34 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { sendLeadNotification } from "@/lib/email";
 
 export const runtime = "nodejs";
+
+/**
+ * Simple in-memory rate limiter
+ * Limits: 5 requests per minute per IP
+ */
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 5;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (!record || now > record.resetTime) {
+    // New window
+    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+
+  if (record.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return false; // Rate limited
+  }
+
+  record.count++;
+  return true;
+}
 
 /**
  * Lead API (Option B) accepts the Partner Profiling payload (preferred) and a
@@ -49,6 +76,27 @@ function isPartnerPayload(p: LeadRequest): p is LeadRequestPartnerProfiling {
 }
 
 export async function POST(req: Request) {
+  // Get IP for rate limiting
+  const ip =
+    req.headers.get("x-real-ip") ||
+    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+    "unknown";
+
+  // Rate limit check (§5, §9 DoD: 429 on abuse)
+  if (!checkRateLimit(ip)) {
+    console.warn("[leads] Rate limit exceeded for IP:", ip.substring(0, 20));
+    return NextResponse.json(
+      { error: "rate_limited" },
+      {
+        status: 429,
+        headers: {
+          "Cache-Control": "no-store",
+          "Retry-After": "60",
+        },
+      }
+    );
+  }
+
   const ct = req.headers.get("content-type") ?? "";
   if (!ct.toLowerCase().startsWith("application/json")) {
     return NextResponse.json(
@@ -80,12 +128,9 @@ export async function POST(req: Request) {
     );
   }
 
-  // Prepare DB record
-  const ip =
-    req.headers.get("x-real-ip") || req.headers.get("x-forwarded-for") || "";
   const ua = req.headers.get("user-agent") || "";
 
-  const dbRecord: any = {
+  const dbRecord: Record<string, unknown> = {
     ip_address: ip.substring(0, 45), // IPv6 max length
     user_agent: ua.substring(0, 255),
     raw: payload,
@@ -119,8 +164,13 @@ export async function POST(req: Request) {
       );
     }
 
-    // TODO: Send Email Notification (via SMTP or Supabase Edge Function)
-    // For now, we rely on persistence.
+    // Send email notification (fail-safe: log error, don't block)
+    try {
+      await sendLeadNotification(dbRecord);
+    } catch (emailErr) {
+      console.error("[leads] Email notification failed:", emailErr);
+      // Don't return error - lead is already saved in Supabase
+    }
 
     return NextResponse.json(
       { status: "ok" },
