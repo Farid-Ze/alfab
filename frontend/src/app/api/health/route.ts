@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { logger } from "@/lib/logger";
 import { supabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
 
 export const runtime = "nodejs";
@@ -42,7 +43,7 @@ export async function GET() {
         }, { status: 200 });
 
     } catch (err) {
-        console.error("[health] DB Check Failed:", err);
+        logger.error("[health] DB Check Failed", { error: err });
         return NextResponse.json({
             status: "unhealthy",
             services: {

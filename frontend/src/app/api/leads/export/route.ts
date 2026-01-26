@@ -15,6 +15,7 @@ export const runtime = "nodejs";
  */
 
 import { env } from "@/lib/env";
+import { logger } from "@/lib/logger";
 
 const ADMIN_TOKEN = env.LEAD_API_ADMIN_TOKEN || "";
 const EXPORT_LIMIT = 1000; // Pagination limit to prevent timeout
@@ -27,7 +28,7 @@ export async function GET(req: Request) {
 
     // Security: Require ADMIN_TOKEN to be configured AND non-empty
     if (!ADMIN_TOKEN || ADMIN_TOKEN.length < 8) {
-        console.error("[leads/export] LEAD_API_ADMIN_TOKEN not configured or too short");
+        logger.error("[leads/export] LEAD_API_ADMIN_TOKEN not configured or too short");
         return NextResponse.json(
             { error: "service_not_configured" },
             { status: 503, headers: { "Cache-Control": "no-store" } }
@@ -50,7 +51,7 @@ export async function GET(req: Request) {
             .limit(EXPORT_LIMIT);
 
         if (error) {
-            console.error("[leads/export] Supabase error:", error);
+            logger.error("[leads/export] Supabase error", { error });
             return NextResponse.json(
                 { error: "fetch_failed" },
                 { status: 500, headers: { "Cache-Control": "no-store" } }
@@ -71,7 +72,7 @@ export async function GET(req: Request) {
         });
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "internal_error";
-        console.error("[leads/export] Handler error:", msg);
+        logger.error("[leads/export] Handler error", { error: msg });
         return NextResponse.json(
             { error: "internal_error" },
             { status: 500, headers: { "Cache-Control": "no-store" } }

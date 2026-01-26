@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Hardening (Phase 16)
+  poweredByHeader: false, // Security: Hide Next.js version header
+  compress: true, // Performance: Enable Gzip/Brotli
+  reactStrictMode: true, // Quality: Catch double-renders
+
   async headers() {
     // Paket A §15 — Website (HTML) security headers baseline.
     // Note: CSP here is intentionally minimal to avoid breaking Next.js runtime.

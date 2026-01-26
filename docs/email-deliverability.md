@@ -53,10 +53,10 @@ Untuk website, pastikan environment variables diatur dengan benar di Vercel:
 ```bash
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=notifications@alfabeauty.co.id
-SMTP_PASS=kunci-aplikasi-anda
-SMTP_FROM='"Alfa Beauty Website" <notifications@alfabeauty.co.id>'
-SMTP_TO=sales@alfabeauty.co.id
+SMTP_USER=notifications@yourdomain.com
+SMTP_PASS=<your-app-password>
+SMTP_FROM='"Alfa Beauty Website" <notifications@yourdomain.com>'
+SMTP_TO=sales@yourdomain.com
 ```
 
 > **Peming:** Jangan gunakan password email pribadi. Gunakan **App Password** jika menggunakan Gmail/Google Workspace.

@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 
+import { logger } from "@/lib/logger";
+
 /**
  * Global Error Boundary (App Router)
  * Catches errors thrown in the Root Layout.
@@ -15,8 +17,11 @@ export default function GlobalError({
     reset: () => void;
 }) {
     useEffect(() => {
-        // Log to console (or Sentry in production)
-        console.error("[GlobalError] Root layout failure:", error);
+        // Log to logger (hooks to Sentry)
+        logger.error("[GlobalError] Root layout failure", {
+            message: error.message,
+            digest: error.digest
+        });
     }, [error]);
 
     return (

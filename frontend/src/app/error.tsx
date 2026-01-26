@@ -20,20 +20,28 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
-      <h1 className="type-h2">Something went wrong</h1>
-      <p className="type-body">Please try again. If the issue persists, contact us.</p>
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <Button type="button" onClick={() => reset()}>
-          Try again
-        </Button>
-        <ButtonLink href="/" variant="secondary">
-          Go home
-        </ButtonLink>
+    <div className="flex h-[50vh] flex-col items-center justify-center p-6 text-center">
+      <div className="max-w-md space-y-6">
+        <div className="space-y-2">
+          <h2 className="type-h2">Something went wrong!</h2>
+          <p className="type-body text-muted-strong">
+            Please try again. If the issue persists, contact technical support.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Button type="button" onClick={() => reset()} variant="primary">
+            Try again
+          </Button>
+          <ButtonLink href="/" variant="secondary">
+            Go home
+          </ButtonLink>
+        </div>
+
+        {error?.digest ? (
+          <p className="type-data text-muted mt-4">Ref: {error.digest}</p>
+        ) : null}
       </div>
-      {error?.digest ? (
-        <p className="type-data text-muted-soft">Ref: {error.digest}</p>
-      ) : null}
     </div>
   );
 }

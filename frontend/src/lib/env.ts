@@ -21,6 +21,9 @@ const envSchema = z.object({
     // Features / Security
     LEAD_API_ADMIN_TOKEN: z.string().optional(),
     NEXT_PUBLIC_GA_ID: z.string().optional(),
+
+    // Observability (OPS-01 ITIL4)
+    NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
 });
 
 // Parse and validate process.env

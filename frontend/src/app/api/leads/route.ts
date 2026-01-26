@@ -82,49 +82,48 @@ function storeIdempotency(key: string | null, result: unknown): void {
   idempotencyCache.set(key, { processedAt: Date.now(), result });
 }
 
+import { z } from "zod";
+
 /**
- * Lead API (Option B) accepts the Partner Profiling payload (preferred) and a
- * limited legacy shape (for transition).
- *
- * See Paket A §4 IDD for payload contract.
+ * Zod Schemas for Strict Payload Validation (Phase 23)
+ * Replaces manual if/else checks with robust schema parsing.
  */
-type LeadRequestPartnerProfiling = {
-  business_name: string;
-  contact_name: string;
-  phone_whatsapp: string;
-  city: string;
-  salon_type: "SALON" | "BARBER" | "BRIDAL" | "UNISEX" | "OTHER";
-  consent: boolean;
-  chair_count?: number;
-  specialization?: string;
-  current_brands_used?: string;
-  monthly_spend_range?: string;
+const partnerSchema = z.object({
+  business_name: z.string().min(2).max(255),
+  contact_name: z.string().min(2).max(255),
+  phone_whatsapp: z.string().min(5).max(20),
+  city: z.string().min(2).max(80),
+  salon_type: z.enum(["SALON", "BARBER", "BRIDAL", "UNISEX", "OTHER"]),
+  consent: z.literal(true), // Must be true
+  chair_count: z.union([z.string(), z.number()]).optional(),
+  specialization: z.string().max(200).optional(),
+  current_brands_used: z.string().max(200).optional(),
+  monthly_spend_range: z.string().max(80).optional(),
+  email: z.string().email().max(254).optional().or(z.literal("")),
+  message: z.string().max(2000).optional(),
+  page_url_initial: z.string().optional(),
+  page_url_current: z.string().optional(),
+  company: z.string().optional(), // Honeypot
+}).strict();
 
-  email?: string;
-  message?: string;
-  page_url_initial?: string;
-  page_url_current?: string;
-  company?: string; // honeypot
-};
+const legacySchema = z.object({
+  name: z.string().min(2).max(255),
+  phone: z.string().min(5).max(20).optional(),
+  email: z.string().email().max(254).optional().or(z.literal("")),
+  message: z.string().max(2000).optional(),
+  page_url_initial: z.string().optional(),
+  page_url_current: z.string().optional(),
+  company: z.string().optional(), // Honeypot
+}).strict();
 
-type LeadRequestLegacy = {
-  name: string;
-  phone?: string;
-  email?: string;
-  message?: string;
-  page_url_initial?: string;
-  page_url_current?: string;
-  company?: string; // honeypot
-};
+const leadSchema = z.union([partnerSchema, legacySchema]);
 
-type LeadRequest = LeadRequestPartnerProfiling | LeadRequestLegacy;
+type LeadRequestPartner = z.infer<typeof partnerSchema>;
+type LeadRequestLegacy = z.infer<typeof legacySchema>;
+type LeadRequest = z.infer<typeof leadSchema>;
 
-function isPlainObject(v: unknown): v is Record<string, unknown> {
-  return typeof v === "object" && v !== null && !Array.isArray(v);
-}
-
-function isPartnerPayload(p: LeadRequest): p is LeadRequestPartnerProfiling {
-  return "business_name" in p && "contact_name" in p;
+function isPartnerPayload(p: LeadRequest): p is LeadRequestPartner {
+  return "business_name" in p;
 }
 
 export async function POST(req: Request) {
@@ -134,23 +133,17 @@ export async function POST(req: Request) {
     req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
     "unknown";
 
-  // Rate limit check (§5, §9 DoD: 429 on abuse)
+  // Rate limit check
   const allowed = await checkRateLimit(ip);
   if (!allowed) {
-    console.warn("[leads] Rate limit exceeded for IP:", ip.substring(0, 20));
+    logger.warn("[leads] Rate limit exceeded", { ip: ip.substring(0, 20) });
     return NextResponse.json(
       { error: "rate_limited" },
-      {
-        status: 429,
-        headers: {
-          "Cache-Control": "no-store",
-          "Retry-After": "60",
-        },
-      }
+      { status: 429, headers: { "Cache-Control": "no-store", "Retry-After": "60" } }
     );
   }
 
-  // Idempotency check - return cached result if already processed
+  // Idempotency check
   const idempotencyKey = req.headers.get("idempotency-key");
   const idempotencyResult = checkIdempotency(idempotencyKey);
   if (idempotencyResult.cached) {
@@ -160,6 +153,7 @@ export async function POST(req: Request) {
     );
   }
 
+  // Content-Type Check
   const ct = req.headers.get("content-type") ?? "";
   if (!ct.toLowerCase().startsWith("application/json")) {
     return NextResponse.json(
@@ -168,13 +162,21 @@ export async function POST(req: Request) {
     );
   }
 
-  let payload: LeadRequest;
+  let payload: z.infer<typeof leadSchema>;
+
   try {
-    const parsed: unknown = await req.json();
-    if (!isPlainObject(parsed)) {
-      throw new Error("Invalid object");
+    const json = await req.json();
+    const result = leadSchema.safeParse(json);
+
+    if (!result.success) {
+      const flattened = result.error.flatten();
+      logger.warn("Validation failed", { errors: flattened.fieldErrors });
+      return NextResponse.json(
+        { error: "validation_error", details: flattened.fieldErrors },
+        { status: 400, headers: { "Cache-Control": "no-store" } }
+      );
     }
-    payload = parsed as LeadRequest;
+    payload = result.data;
   } catch {
     return NextResponse.json(
       { error: "invalid_json" },
@@ -184,38 +186,16 @@ export async function POST(req: Request) {
 
   // Anti-spam: Honeypot check
   if (payload.company) {
-    // Silent success for bots
     return NextResponse.json(
       { status: "ok" },
       { status: 200, headers: { "Cache-Control": "no-store" } }
     );
   }
 
-  // SEC-01 Server-side validation (Length limits)
-  const MAX_TEXT_LEN = 255;
-  const MAX_MSG_LEN = 2000;
-
-  if (isPartnerPayload(payload)) {
-    if (payload.business_name.length > MAX_TEXT_LEN) {
-      return NextResponse.json({ error: "business_name_too_long" }, { status: 400 });
-    }
-    if (payload.contact_name.length > MAX_TEXT_LEN) {
-      return NextResponse.json({ error: "contact_name_too_long" }, { status: 400 });
-    }
-  } else {
-    if (payload.name.length > MAX_TEXT_LEN) {
-      return NextResponse.json({ error: "name_too_long" }, { status: 400 });
-    }
-  }
-
-  if (payload.message && payload.message.length > MAX_MSG_LEN) {
-    return NextResponse.json({ error: "message_too_long" }, { status: 400 });
-  }
-
+  // Determine payload type safely
   const ua = req.headers.get("user-agent") || "";
-
   const dbRecord: Record<string, unknown> = {
-    ip_address: ip.substring(0, 45), // IPv6 max length
+    ip_address: ip.substring(0, 45),
     user_agent: ua.substring(0, 255),
     raw: payload,
   };

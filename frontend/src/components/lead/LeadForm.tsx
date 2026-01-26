@@ -100,6 +100,7 @@ export default function LeadForm() {
           onBlur={() => markTouched("businessName")}
           error={!!shouldShowError("businessName")}
           aria-describedby={shouldShowError("businessName") ? "business_name_error" : undefined}
+          autoComplete="organization"
           required
           minLength={2}
           maxLength={120}
@@ -125,6 +126,7 @@ export default function LeadForm() {
           onBlur={() => markTouched("contactName")}
           error={!!shouldShowError("contactName")}
           aria-describedby={shouldShowError("contactName") ? "contact_name_error" : undefined}
+          autoComplete="name"
           required
           minLength={2}
           maxLength={80}
@@ -149,6 +151,7 @@ export default function LeadForm() {
             className="w-full"
             value={values.email}
             onChange={(e) => setField("email", e.target.value)}
+            autoComplete="email"
             maxLength={254}
           />
         </div>
@@ -164,6 +167,7 @@ export default function LeadForm() {
             onBlur={() => markTouched("phoneWhatsApp")}
             error={!!shouldShowError("phoneWhatsApp")}
             aria-describedby={shouldShowError("phoneWhatsApp") ? "phone_whatsapp_error" : undefined}
+            autoComplete="tel"
             required
             maxLength={20}
           />
@@ -190,6 +194,7 @@ export default function LeadForm() {
             onBlur={() => markTouched("city")}
             error={!!shouldShowError("city")}
             aria-describedby={shouldShowError("city") ? "city_error" : undefined}
+            autoComplete="address-level2"
             required
             minLength={2}
             maxLength={80}
