@@ -88,13 +88,17 @@ function useSwipeGesture(
     const [touchStart, setTouchStart] = useState<number | null>(null);
 
     const onTouchStart = useCallback((e: React.TouchEvent) => {
-        setTouchStart(e.touches[0].clientX);
+        const touch = e.touches[0];
+        if (touch) setTouchStart(touch.clientX);
     }, []);
 
     const onTouchEnd = useCallback((e: React.TouchEvent) => {
         if (touchStart === null) return;
 
-        const touchEnd = e.changedTouches[0].clientX;
+        const touch = e.changedTouches[0];
+        if (!touch) return;
+
+        const touchEnd = touch.clientX;
         const diff = touchStart - touchEnd;
         const threshold = 50;
 
@@ -175,8 +179,9 @@ function useInView(ref: React.RefObject<HTMLElement | null>): boolean {
         if (!element) return;
 
         const observer = new IntersectionObserver(
-            ([entry]) => {
-                setIsInView(entry.isIntersecting);
+            (entries) => {
+                const entry = entries[0];
+                if (entry) setIsInView(entry.isIntersecting);
             },
             { threshold: 0.5 }
         );
@@ -222,6 +227,9 @@ export function ServicesExperience({
             setHasEnteredView(true);
         }
     }, [isInView, hasEnteredView]);
+
+    // Safety check for activeService (Strict Mode)
+    if (!activeService) return null;
 
     // ==========================================================================
     // Navigation Handlers

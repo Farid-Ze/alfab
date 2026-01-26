@@ -179,8 +179,9 @@ export const VideoPlayer = forwardRef(function VideoPlayer(
         if (!video || !container || !autoPlay) return;
 
         const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
+            (entries) => {
+                const entry = entries[0];
+                if (entry?.isIntersecting) {
                     video.play().catch(() => {
                         // Autoplay blocked - this is fine, show poster
                     });

@@ -105,12 +105,12 @@ export default function HeaderPromo() {
       if (e.shiftKey) {
         if (active === first || active === modalRef.current) {
           e.preventDefault();
-          last.focus();
+          last?.focus();
         }
       } else {
         if (active === last) {
           e.preventDefault();
-          first.focus();
+          first?.focus();
         }
       }
     }

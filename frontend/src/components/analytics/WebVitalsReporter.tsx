@@ -16,7 +16,7 @@ export default function WebVitalsReporter() {
       // Internal RUM /api/rum deprecated (ITIL).
       // Web Vitals can be viewed in Vercel Analytics or GA4 if configured via reportWebVitals.
       if (process.env.NODE_ENV === "development") {
-        console.log("[CWV]", metric.name, metric.value);
+        
       }
     };
 

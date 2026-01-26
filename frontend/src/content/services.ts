@@ -154,8 +154,8 @@ export function getAdjacentServices(currentId: ServiceId): {
 } {
     const index = getServiceIndex(currentId);
     return {
-        prev: index > 0 ? services[index - 1] : null,
-        next: index < services.length - 1 ? services[index + 1] : null,
+        prev: index > 0 ? (services[index - 1] ?? null) : null,
+        next: index < services.length - 1 ? (services[index + 1] ?? null) : null,
     };
 }
 

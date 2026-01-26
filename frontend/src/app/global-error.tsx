@@ -1,43 +1,41 @@
 "use client";
 
 import { useEffect } from "react";
+import "./globals.css";
 
-import { logger } from "@/lib/logger";
+// Note: We avoid next/font/google here to prevent build-time fetch timeouts (BLD-03/04).
+// Instead, we rely on the manual CSS import in globals.css.
 
-/**
- * Global Error Boundary (App Router)
- * Catches errors thrown in the Root Layout.
- * MUST include <html> and <body> tags as it replaces the root layout.
- */
 export default function GlobalError({
-    error,
-    reset,
+  error,
+  reset,
 }: {
-    error: Error & { digest?: string };
-    reset: () => void;
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
-    useEffect(() => {
-        // Log to logger (hooks to Sentry)
-        logger.error("[GlobalError] Root layout failure", {
-            message: error.message,
-            digest: error.digest
-        });
-    }, [error]);
+  useEffect(() => {
+    // Log validity of error to error service (e.g. Sentry)
+    console.error(error);
+  }, [error]);
 
-    return (
-        <html>
-            <body className="flex min-h-screen flex-col items-center justify-center p-4 text-center">
-                <h1 className="text-4xl font-bold mb-4">Something went wrong!</h1>
-                <p className="mb-8 text-gray-500">
-                    Critical application failure. Please try refreshing.
-                </p>
-                <button
-                    onClick={() => reset()}
-                    className="px-6 py-3 bg-black text-white rounded font-medium disabled:opacity-50"
-                >
-                    Try Again
-                </button>
-            </body>
-        </html>
-    );
+  return (
+    <html lang="en">
+      <body className="antialiased bg-background text-foreground flex min-h-screen flex-col items-center justify-center p-4 text-center font-sans" style={{ fontFamily: 'var(--font-inter)' }}>
+        <div className="max-w-md space-y-6">
+          <div className="space-y-2">
+            <h1 className="type-h2">Something went wrong</h1>
+            <p className="type-body text-muted-strong">
+              A critical error occurred. We apologize for the inconvenience.
+            </p>
+          </div>
+          <button
+            onClick={() => reset()}
+            className="ui-btn-primary ui-radius-tight px-6 py-2.5"
+          >
+            Try again
+          </button>
+        </div>
+      </body>
+    </html>
+  );
 }

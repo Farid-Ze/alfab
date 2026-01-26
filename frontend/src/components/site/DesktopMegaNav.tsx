@@ -136,7 +136,8 @@ export default function DesktopMegaNav({
     const idx = items.findIndex((it) => it.key === currentKey);
     if (idx < 0) return;
     const nextIdx = (idx + direction + items.length) % items.length;
-    focusTriggerLink(items[nextIdx].key);
+    const nextItem = items[nextIdx];
+    if (nextItem) focusTriggerLink(nextItem.key);
   };
 
   useEffect(() => {

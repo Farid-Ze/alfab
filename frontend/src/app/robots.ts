@@ -15,7 +15,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/private/", "/_next/"],
+        disallow: ["/api/", "/private/", "/_next/", "/api/leads/export"],
       },
       {
         userAgent: ["GPTBot", "CCBot", "ChatGPT-User"],

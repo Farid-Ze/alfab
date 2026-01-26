@@ -2,6 +2,9 @@
 
 :root {
   /* Design language: monochrome + flat + sharp (B2B Professional) */
+  --font-inter: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Design language: monochrome + flat + sharp (B2B Professional) */
   --background: #ffffff;
   --panel: #fafafa;
   /* zinc-50 */

@@ -14,7 +14,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Best-effort console logging for local debugging.
+    
     // Server-side logging is handled by the Lead API / infra.
     console.error(error);
   }, [error]);

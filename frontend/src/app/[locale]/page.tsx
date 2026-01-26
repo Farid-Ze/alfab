@@ -54,7 +54,7 @@ export default async function LocalizedHome({
         description={productsSection.description}
         variant="dark"
         ctaHref={`${base}/products`}
-        ctaLabel={locale === "id" ? "Lihat semua produk" : "View all products"}
+        ctaLabel={getEditorialSection(locale, "products").title ? (locale === "id" ? "Lihat semua produk" : "View all products") : ""} 
       />
 
       {/* === TRUST & VALUE REINFORCEMENT ZONE === */}

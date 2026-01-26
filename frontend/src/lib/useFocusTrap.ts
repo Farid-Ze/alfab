@@ -58,7 +58,7 @@ export function useFocusTrap<T extends HTMLElement>(
                 // Focus first focusable in container
                 const focusables = getFocusable(containerRef.current);
                 if (focusables.length > 0) {
-                    focusables[0].focus();
+                    focusables[0]?.focus();
                 }
             }
         }, 0);
@@ -85,13 +85,13 @@ export function useFocusTrap<T extends HTMLElement>(
                 // Shift+Tab at first element -> go to last
                 if (active === first || active === containerRef.current) {
                     e.preventDefault();
-                    last.focus();
+                    last?.focus();
                 }
             } else {
                 // Tab at last element -> go to first
                 if (active === last) {
                     e.preventDefault();
-                    first.focus();
+                    first?.focus();
                 }
             }
         }

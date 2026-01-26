@@ -62,8 +62,7 @@ const nextConfig: NextConfig = {
             : []),
           { key: "Permissions-Policy", value: "geolocation=(), microphone=(), camera=()" },
           { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
-          // Legacy/defense-in-depth (optional per spec).
-          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Frame-Options", value: "DENY" }, // Clickjacking protection (SEC-06)
         ],
       },
     ];

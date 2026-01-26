@@ -1,4 +1,3 @@
-import { Inter } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -8,13 +7,6 @@ import ServiceWorkerRegister from "@/components/site/ServiceWorkerRegister";
 import JsonLd from "@/components/site/JsonLd";
 import { env } from "@/lib/env";
 import "./globals.css";
-
-// Optimize Font Loading (Phase 23)
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -76,7 +68,7 @@ export default async function RootLayout({
   const lang = localeHeader === "id" || localeHeader === "en" ? localeHeader : "en";
 
   return (
-    <html lang={lang} suppressHydrationWarning className={`${inter.variable}`}>
+    <html lang={lang} suppressHydrationWarning>
       <body className="antialiased">
         {/* Offline Indicator (ITIL/UX) */}
         <OfflineIndicator />
