@@ -26,7 +26,12 @@ npm install
 npm run dev      # Start development server
 npm run build    # Build production
 npm run lint     # Run linting
+npm run test:unit # Run unit tests
+npm run type-check # Run TypeScript check
 ```
+
+## Contributing
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 **Domain:**
 - Primary: `alfabeautycosmetica.com`

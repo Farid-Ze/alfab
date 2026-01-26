@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { brands, getBrandPortfolioContent } from "@/content/homepage";
 import { ScrollProgressBar } from "@/components/ui/ScrollIndicators";
@@ -29,13 +30,15 @@ function BrandLogo({ name, logo }: BrandLogoProps) {
                 className="flex h-full w-full items-center justify-center px-4 py-2"
                 title={name}
             >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                    src={logo}
-                    alt={name}
-                    className="h-8 sm:h-10 lg:h-12 w-auto max-w-[120px] sm:max-w-[140px] object-contain transition-cinematic hover:scale-105"
-                    loading="lazy"
-                />
+                <div className="relative h-8 sm:h-10 lg:h-12 w-full max-w-[120px] sm:max-w-[140px]">
+                    <Image
+                        src={logo}
+                        alt={name}
+                        fill
+                        className="object-contain transition-cinematic hover:scale-105"
+                        sizes="(max-width: 640px) 120px, 140px"
+                    />
+                </div>
             </div>
         );
     }
