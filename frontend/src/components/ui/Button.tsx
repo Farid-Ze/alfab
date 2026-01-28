@@ -1,10 +1,8 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "inverted";
 export type ButtonSize = "sm" | "md" | "lg";
-
-const base =
-  "type-ui-sm-strong ui-focus-ring ui-radius-none relative inline-flex items-center justify-center gap-2 border select-none disabled:cursor-not-allowed disabled:opacity-50";
 
 const variantClass: Record<ButtonVariant, string> = {
   primary: "ui-btn-primary",
@@ -19,16 +17,24 @@ const sizeClass: Record<ButtonSize, string> = {
   lg: "h-14 px-7",
 };
 
+/**
+ * Generates button classes for non-button elements (links, etc.)
+ */
 export function getButtonClassName({
-  variant,
-  size,
-  className = "",
+  variant = "primary",
+  size = "md",
+  className,
 }: {
-  variant: ButtonVariant;
-  size: ButtonSize;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   className?: string;
 }) {
-  return `${base} ${variantClass[variant]} ${sizeClass[size]} ${className}`.trim();
+  return cn(
+    "type-ui-sm-strong ui-focus-ring ui-radius-none relative inline-flex items-center justify-center gap-2 border select-none disabled:cursor-not-allowed disabled:opacity-50",
+    variantClass[variant],
+    sizeClass[size],
+    className
+  );
 }
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -65,6 +71,7 @@ export default function Button({
       aria-busy={loading}
       className={getButtonClassName({ variant, size, className })}
     >
+
       {loading ? (
         <Spinner />
       ) : leftIcon ? (
@@ -82,3 +89,4 @@ export default function Button({
     </button>
   );
 }
+

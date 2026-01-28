@@ -28,9 +28,9 @@ export default function GlobalError({
               A critical error occurred. We apologize for the inconvenience.
             </p>
             {error.digest && (
-              <div className="mt-4 p-3 bg-subtle rounded text-xs font-mono text-muted text-left">
-                <p>Error ID: <span className="select-all">{error.digest}</span></p>
-                <p>Please quote this ID when contacting support.</p>
+              <div className="mt-4 p-3 bg-subtle rounded text-left">
+                <p className="type-ui-xs font-mono text-muted">Error ID: <span className="select-all">{error.digest}</span></p>
+                <p className="type-ui-xs font-mono text-muted">Please quote this ID when contacting support.</p>
               </div>
             )}
           </div>
@@ -43,7 +43,7 @@ export default function GlobalError({
             </button>
             <a
               href={`mailto:support@alfabeauty.co.id?subject=System%20Error%20Report&body=Error%20ID:%20${error.digest}%0D%0ATimestamp:%20${new Date().toISOString()}%0D%0A%0D%0APlease%20describe%20what%20you%20were%20doing:`}
-              className="px-6 py-2.5 text-sm font-medium text-muted-strong hover:text-foreground transition-colors"
+              className="px-6 py-2.5 type-ui-sm-strong text-muted-strong hover:text-foreground transition-colors"
             >
               Contact Support
             </a>

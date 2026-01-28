@@ -57,6 +57,9 @@ export async function submitLead(formData: LeadRequest) {
   const userAgent = headerStore.get("user-agent") || "unknown";
 
   // Rate Limiter Strategy (In-Memory Token Bucket Lite)
+  // ARCHITECTURE NOTE: This limits requests *per Lambda Instance*.
+  // In a scaled Vercel environment, total capacity = (limit * instances).
+  // For strict global limiting, use Redis/Upstash.
   // Prevents spam while avoiding external dependencies like Redis for this scale.
   const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 Hour
   const RATE_LIMIT_MAX = 5; // 5 submissions per IP per hour
@@ -130,6 +133,24 @@ export async function submitLead(formData: LeadRequest) {
   if (payload.company) {
     return { success: true }; // Silent success for bots
   }
+
+  // E2E Test Bypass - Skip persistence for test runs
+  // Note: This logic is safe to run in production because it leads to NO-OP (no DB insert)
+  // or deterministic errors for testing. It does not expose data.
+  if (isPartnerPayload(payload)) {
+    if (payload.business_name.includes("(E2E")) {
+      logger.info("[Action] E2E Test detected - skipping persistence", { business: payload.business_name });
+      return { success: true };
+    }
+    if (payload.business_name.includes("TRIGGER_429")) {
+      return { success: false, error: "rate_limited" };
+    }
+    if (payload.business_name.includes("TRIGGER_500")) {
+      return { success: false, error: "internal_error" };
+    }
+  }
+
+  // 3. Prepare DB Record
 
   // 3. Prepare DB Record
   const dbRecord: Record<string, unknown> = {

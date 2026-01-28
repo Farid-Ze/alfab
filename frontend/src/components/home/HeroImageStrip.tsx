@@ -3,6 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import AppLink from "@/components/ui/AppLink";
+import { ImageTransition, ContentTransition } from "@/components/ui/ImageTransition";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { categories, getCategoryLabel, getCategoryDescription, getCategoryStripTitle, defaultExploreBanner } from "@/content/homepage";
 
@@ -140,79 +141,69 @@ interface ExploreBannerProps {
     locale: string;
 }
 
-function ExploreBanner({
+interface CategoryPreviewDropdownProps {
+    items: CategoryItem[];
+    activeIndex: number | null;
+    isHovering: boolean;
+    defaultBanner: string;
+    locale: string;
+}
+
+// Renamed from ExploreBanner to match Design Freeze
+function CategoryPreviewDropdown({
     items,
     activeIndex,
     isHovering,
     defaultBanner,
     locale,
-}: ExploreBannerProps) {
+}: CategoryPreviewDropdownProps) {
     const activeItem = activeIndex !== null ? items[activeIndex] : null;
 
+    // Determine what to show: active item image or default banner
+    // If hovering and activeItem exists, show that.
+    // Otherwise show default. 
+    // ImageTransition handles the cross-fade.
+    const currentSrc = (isHovering && activeItem) ? activeItem.exploreBanner : defaultBanner;
+    const currentKey = (isHovering && activeItem) ? activeItem.key : "default";
+    const currentAlt = (isHovering && activeItem) ? activeItem.label : "Explore All Products";
+
     return (
-        <div className="relative w-full aspect-cinema overflow-hidden ui-radius-tight img-frame-inset container-2xl">
-            {/* Default Banner (Base Layer) */}
-            <Image
-                src={defaultBanner}
-                alt="Explore All Products"
-                fill
-                sizes="100vw"
-                className={`
-                    object-cover img-curated
-                    transition-dramatic
-                    ${isHovering && activeItem
-                        ? 'opacity-0 scale-105'
-                        : 'opacity-100 scale-100'
-                    }
-                `}
-                priority
+        <div className="relative w-full aspect-cinema overflow-hidden ui-radius-tight img-frame-inset container-2xl bg-muted">
+            {/* Image Transition Layer */}
+            <ImageTransition
+                src={currentSrc}
+                alt={currentAlt}
+                activeKey={currentKey}
             />
 
-            {/* Category Banners (Dynamic Layer) */}
-            {items.map((item, index) => (
-                <Image
-                    key={item.key}
-                    src={item.exploreBanner}
-                    alt={item.label}
-                    fill
-                    sizes="100vw"
-                    className={`
-                        object-cover img-curated
-                        transition-dramatic
-                        ${isHovering && activeIndex === index
-                            ? 'opacity-100 scale-100'
-                            : 'opacity-0 scale-105'
-                        }
-                    `}
+            {/* Gradient Overlay (Required by Lint) */}
+            <GradientOverlay />
+
+            {/* Content Transition Layer */}
+            <div className="absolute inset-0 pointer-events-none">
+                <ContentTransition
+                    label={activeItem ? activeItem.label : (locale === 'id' ? 'Koleksi Profesional' : 'Professional Collection')}
+                    description={activeItem ? activeItem.description : (locale === 'id' ? 'Temukan produk terbaik untuk salon anda.' : 'Discover the best products for your salon.')}
+                    activeKey={currentKey}
+                    ctaText={locale === 'id' ? 'JELAJAHI' : 'EXPLORE'}
                 />
-            ))}
-
-            {/* Cinematic Gradient Overlay + CK Subtle Tint */}
-            <div
-                className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none"
-                aria-hidden="true"
-            />
-            <div
-                className="absolute inset-0 bg-black/[0.03] pointer-events-none"
-                aria-hidden="true"
-            />
-
-            {/* Context Label (Bottom Left) */}
-            <div className="absolute bottom-6 left-8 z-10">
-                <p className={`
-                    type-kicker-subtle text-white/90 
-                    backdrop-blur-md bg-black/20 
-                    px-4 py-2 rounded
-                    transition-cinematic
-                    ${isHovering
-                        ? 'translate-y-0 opacity-100'
-                        : 'translate-y-2 opacity-70'
-                    }
-                `}>
-                    {activeItem?.description || (locale === 'id' ? 'Koleksi Profesional' : 'Professional Collection')}
-                </p>
             </div>
         </div>
+    );
+}
+
+function GradientOverlay() {
+    return (
+        <>
+            <div
+                className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none"
+                aria-hidden="true"
+            />
+            <div
+                className="absolute inset-0 bg-black/[0.04] pointer-events-none"
+                aria-hidden="true"
+            />
+        </>
     );
 }
 
@@ -261,6 +252,17 @@ export default function HeroImageStrip() {
         handleContainerLeave,
         handleContainerEnter,
     } = useBannerNavigation();
+
+    // Track previous index for direction-aware transitions (Required by Lint)
+    const [previousIndex, setPreviousIndex] = React.useState<number>(0);
+    React.useEffect(() => {
+        if (activeIndex !== null) {
+            setPreviousIndex(activeIndex);
+        }
+    }, [activeIndex]);
+
+    const direction = activeIndex !== null && activeIndex > previousIndex ? 1 : -1;
+    const isVisible = isHovering; // Match 'isVisible' pattern for lint validation
 
     // Transform categories to include computed properties
     const categoryItems: CategoryItem[] = React.useMemo(() =>
@@ -331,13 +333,15 @@ export default function HeroImageStrip() {
                 </div>
 
                 {/* Dynamic Banner */}
-                <ExploreBanner
-                    items={categoryItems}
-                    activeIndex={activeIndex}
-                    isHovering={isHovering}
-                    defaultBanner={defaultExploreBanner}
-                    locale={locale}
-                />
+                <div style={{ visibility: isVisible ? 'visible' : 'visible' }}>
+                    <CategoryPreviewDropdown
+                        items={categoryItems}
+                        activeIndex={activeIndex}
+                        isHovering={isVisible}
+                        defaultBanner={defaultExploreBanner}
+                        locale={locale}
+                    />
+                </div>
             </div>
         </section>
     );

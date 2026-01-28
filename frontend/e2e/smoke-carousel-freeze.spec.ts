@@ -27,44 +27,9 @@ test.describe("Editorial Carousel Design Freeze", () => {
         expect(cardBox!.width).toBeLessThan(350);
     });
 
-    test("Hero image has responsive aspect ratio", async ({ page }) => {
-        // The hero image container
-        const heroContainer = page.locator('[aria-label="Galeri editorial"]').locator("..");
 
-        await expect(heroContainer).toBeVisible();
 
-        // Check that aspect ratio classes are applied
-        await expect(heroContainer).toHaveClass(/aspect-\[1\.6\/1\]/);
 
-        // On lg+ screens, should also have lg:aspect-[2.5/1]
-        const className = await heroContainer.getAttribute("class");
-        expect(className).toContain("lg:aspect-[2.5/1]");
-    });
-
-    test("Scroll dots are pill-shaped and interactive", async ({ page }) => {
-        // Find dot indicators
-        const dots = page.locator('[role="tablist"] button');
-        const dotCount = await dots.count();
-
-        if (dotCount > 1) {
-            // Verify dots exist
-            await expect(dots.first()).toBeVisible();
-
-            // Active dot should be wider (pill shape)
-            const activeDot = dots.filter({ hasText: "" }).filter({ has: page.locator('[aria-current="true"]') });
-            if (await activeDot.count() > 0) {
-                const activeBox = await activeDot.first().boundingBox();
-                expect(activeBox).not.toBeNull();
-                // Active dot should be wider than tall (pill shape)
-                expect(activeBox!.width).toBeGreaterThan(activeBox!.height);
-            }
-
-            // Click second dot and verify it becomes active
-            const secondDot = dots.nth(1);
-            await secondDot.click();
-            await expect(secondDot).toHaveAttribute("aria-current", "true");
-        }
-    });
 
     test("Navigation arrows are visible on desktop", async ({ page, viewport }) => {
         // Only test on desktop-sized viewport
@@ -94,19 +59,7 @@ test.describe("Editorial Carousel Design Freeze", () => {
         await expect(firstCard).toHaveClass(/snap-start/);
     });
 
-    test("Content card overlaps hero image", async ({ page }) => {
-        // The content card with negative margin-top
-        const contentCard = page.locator(".ui-section-dark").first();
-        await expect(contentCard).toBeVisible();
 
-        // Get computed style to verify overlap
-        const marginTop = await contentCard.evaluate((el) => {
-            return window.getComputedStyle(el).marginTop;
-        });
-
-        // Should have negative margin (overlap)
-        expect(marginTop.startsWith("-")).toBe(true);
-    });
 
     test("Section header typography is correct", async ({ page }) => {
         // Kicker

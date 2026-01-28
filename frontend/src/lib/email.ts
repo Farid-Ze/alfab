@@ -49,7 +49,7 @@ export async function sendLeadNotification(lead: LeadRecord): Promise<void> {
     if (!SMTP_ENABLED) {
         // Only log in dev to avoid noise
         if (process.env.NODE_ENV !== "production") {
-            // console.log("SMTP not enabled, skipping email. Lead:", lead.name); 
+
         }
         return;
     }

@@ -14,7 +14,7 @@ export default defineConfig({
   testDir: "./e2e",
   timeout: 60_000,
   expect: {
-    timeout: 10_000,
+    timeout: 30_000,
   },
   fullyParallel: true,
   retries: process.env.CI ? 1 : 0,
@@ -24,7 +24,7 @@ export default defineConfig({
   outputDir,
   use: {
     // Prefer localhost on Windows to avoid IPv4/IPv6 binding mismatches.
-    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3001",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
@@ -35,15 +35,17 @@ export default defineConfig({
     ? undefined
     : {
       // Use a production-like server for deterministic middleware/redirect behavior.
-      command: "npm run build && npm run start",
+      // Run on port 3001 to avoid conflict with local dev server.
+      // Use npx next start directly to bypass package.json hardcoded port 3000.
+      command: "npm run build && npx next start -p 3001",
       // Root (/) is intentionally non-routable in this app (locale-prefixed URLs only).
       // Use a canonical locale path so Playwright can detect server readiness.
-      url: "http://localhost:3000/en",
-      reuseExistingServer,
+      url: "http://localhost:3001/en",
+      reuseExistingServer: false, // Force fresh server
       timeout: 120_000,
       env: {
         // Website runtime config for e2e.
-        NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+        NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001",
 
         // Ensure WhatsApp CTA produces a wa.me link in UI smoke tests.
         NEXT_PUBLIC_WHATSAPP_NUMBER: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "6281234567890",

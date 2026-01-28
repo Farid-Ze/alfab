@@ -2,7 +2,6 @@
 
 :root {
   /* Design language: monochrome + flat + sharp (B2B Professional) */
-  --font-inter: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
   /* Design language: monochrome + flat + sharp (B2B Professional) */
   --background: #ffffff;
@@ -116,10 +115,10 @@
 
 
 :root {
-  /* Font variables (overridable). Keep builds deterministic when Google Fonts are unavailable. */
-  --font-body: ui-sans-serif;
-  --font-display: ui-serif;
-  --font-geist-mono: ui-monospace;
+  /* Font variables (overridden by next/font injection in layout.tsx) */
+  --font-body: var(--font-body);
+  --font-display: var(--font-display);
+  --font-geist-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* 
     Section spacing tokens (intermediate-level consistency)

@@ -1,0 +1,18 @@
+# COBIT Governance - Ownership Rules
+
+# Core Architecture
+/src/app/          @tech-lead
+/src/lib/          @tech-lead
+
+# Components
+/src/components/   @frontend-team
+
+# DevOps & Config
+/.github/          @devops
+/next.config.ts    @devops
+/package.json      @tech-lead
+/SECURITY.md       @security-officer
+
+# Documentation
+/docs/             @tech-writer
+/README.md         @tech-writer
