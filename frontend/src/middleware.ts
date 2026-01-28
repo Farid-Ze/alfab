@@ -25,6 +25,13 @@ export function middleware(request: NextRequest) {
     // We do NOT use suffix rewriting (.en) as it fights the framework.
     // Logic extracted to lib/i18n-middleware.ts (TOGAF Decoupling)
 
+    // 0. ITIL 4: Maintenance Mode Check (High Priority)
+    // Bypasses all routing if enabled.
+    if (process.env.MAINTENANCE_MODE === "true" && !pathname.startsWith("/maintenance")) {
+        // Allow access to static assets even in maintenance mode
+        return NextResponse.redirect(new URL("/maintenance", request.url));
+    }
+
     // 1. & 2. Handle I18n Routing
     const i18nResponse = handleI18nRouting(request);
     if (i18nResponse) return i18nResponse;

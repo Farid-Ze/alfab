@@ -20,6 +20,9 @@ jobs:
         run: npm ci
       - name: Lint (Governance)
         run: npm run lint
+      - name: Lint Hero Component Freeze (Business Critical)
+        run: npm run lint:hero-freeze
+
       - name: Type Check
         run: npm run type-check
       - name: Unit Tests

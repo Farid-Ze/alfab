@@ -212,8 +212,7 @@ export function ServicesExperience({
         }
     }, [isInView, hasEnteredView]);
 
-    // Safety check for activeService (Strict Mode)
-    if (!activeService) return null;
+    // Safety check moved to render phase to avoid Hook Rules violation
 
     // ==========================================================================
     // Navigation Handlers
@@ -319,6 +318,8 @@ export function ServicesExperience({
     // ==========================================================================
     // Render
     // ==========================================================================
+
+    if (!activeService) return null;
 
     return (
         <motion.section

@@ -23,6 +23,14 @@ const envSchema = z.object({
     LEAD_API_ADMIN_TOKEN: z.string().min(12, "Admin token must be at least 12 characters").optional(),
     NEXT_PUBLIC_GA_ID: z.string().optional(),
 
+    // ITIL 4: Service Management
+    MAINTENANCE_MODE: z.enum(["true", "false"]).optional(),
+
+    // Contact / Business (Critical B2B)
+    NEXT_PUBLIC_WHATSAPP_NUMBER: z.string().optional(),
+    NEXT_PUBLIC_WHATSAPP_PREFILL: z.string().optional(),
+    NEXT_PUBLIC_FALLBACK_EMAIL: z.string().email().optional(),
+
     // Observability (OPS-01 ITIL4)
     NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
 });

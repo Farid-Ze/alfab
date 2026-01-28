@@ -23,8 +23,13 @@ const ROOT = path.resolve(process.cwd());
 // ============================================================
 // Core Files
 // ============================================================
+// ============================================================
+// Core Files
+// ============================================================
 const CORE_FILES = {
     hero: path.join(ROOT, "src/components/home/HomeHero.tsx"),
+    heroContent: path.join(ROOT, "src/components/home/HeroContent.tsx"), // New Split
+    heroVideo: path.join(ROOT, "src/components/home/HeroVideo.tsx"),     // New Split
     textLink: path.join(ROOT, "src/components/ui/TextLink.tsx"),
     globals: path.join(ROOT, "src/app/globals.css"),
 };
@@ -36,21 +41,28 @@ function rel(p) {
 // ============================================================
 // Hero Required Patterns
 // ============================================================
+// Logic split between Parent, Video, and Content
 const HERO_RULES = [
-    { name: "Hero section with aria-label", pattern: /aria-label.*Hero/ },
-    { name: "Responsive height (h-[70vh] mobile)", pattern: /h-\[70vh\]/ },
-    { name: "Responsive aspect (sm:aspect-[16/9])", pattern: /sm:.*aspect-\[16\/9\]/ },
-    { name: "Max height constraint (85vh)", pattern: /max-h-\[85vh\]/ },
-    { name: "Video with autoplay/muted/loop", pattern: /<video[^>]*autoPlay[^>]*muted[^>]*loop/s },
-    { name: "Right-to-left gradient overlay", pattern: /bg-gradient-to-r.*from-foreground\/(80|70)/ },
-    { name: "Bottom-to-top gradient overlay", pattern: /bg-gradient-to-t.*from-foreground\/(30|40)/ },
-    { name: "Bottom positioning (items-end)", pattern: /items-end.*pb-12/ },
-    { name: "Content max-width (120rem)", pattern: /max-w-\[120rem\]/ },
-    { name: "type-hero-kicker typography", pattern: /type-hero-kicker.*ui-hero-on-media/ },
-    { name: "type-hero headline", pattern: /type-hero\s+ui-hero-on-media|type-hero.*ui-hero-on-media/ },
-    { name: "type-hero-body description", pattern: /type-hero-body.*ui-hero-on-media-muted/ },
-    { name: "type-hero-note supporting text", pattern: /type-hero-note.*ui-hero-on-media-subtle/ },
-    { name: "TextLink with onDark", pattern: /TextLink[^>]*onDark/ },
+    { name: "Hero section with aria-label", file: "hero", pattern: /aria-label.*Hero/ },
+    { name: "Responsive height (h-[70vh] mobile)", file: "hero", pattern: /h-\[70vh\]/ },
+    { name: "Responsive aspect (sm:aspect-[16/9])", file: "hero", pattern: /sm:.*aspect-\[16\/9\]/ },
+    { name: "Max height constraint (85vh)", file: "hero", pattern: /max-h-\[85vh\]/ },
+
+    // Video Component logic
+    { name: "Video with autoplay/muted/loop", file: "heroVideo", pattern: /<video[^>]*autoPlay[^>]*muted[^>]*loop/s },
+
+    // Parent logic (Gradients are in HomeHero.tsx)
+    { name: "Right-to-left gradient overlay", file: "hero", pattern: /bg-gradient-to-r.*from-foreground\/(80|70)/ },
+    { name: "Bottom-to-top gradient overlay", file: "hero", pattern: /bg-gradient-to-t.*from-foreground\/(30|40)/ },
+
+    // Content Component logic
+    { name: "Bottom positioning (items-end)", file: "heroContent", pattern: /items-end.*pb-12/ },
+    { name: "Content max-width (120rem)", file: "heroContent", pattern: /max-w-\[120rem\]/ },
+    { name: "type-hero-kicker typography", file: "heroContent", pattern: /type-hero-kicker.*ui-hero-on-media/ },
+    { name: "type-hero headline", file: "heroContent", pattern: /type-hero\s+ui-hero-on-media|type-hero.*ui-hero-on-media/ },
+    { name: "type-hero-body description", file: "heroContent", pattern: /type-hero-body.*ui-hero-on-media-muted/ },
+    { name: "type-hero-note supporting text", file: "heroContent", pattern: /type-hero-note.*ui-hero-on-media-subtle/ },
+    { name: "TextLink with onDark", file: "heroContent", pattern: /TextLink[^>]*onDark/ },
 ];
 
 // ============================================================
@@ -115,27 +127,37 @@ function lint() {
     }
 
     // Check hero rules
-    const heroContent = contents.hero;
-    if (heroContent) {
-        for (const rule of HERO_RULES) {
+    // Updated loop to check specific file per rule
+    for (const rule of HERO_RULES) {
+        // Fallback to 'hero' if file not specified (legacy rules)
+        const targetFile = rule.file || "hero";
+        const content = contents[targetFile];
+
+        if (content) {
             stats.rulesChecked++;
-            if (!rule.pattern.test(heroContent)) {
-                errors.push(`❌ [hero] Missing: ${rule.name}`);
+            if (!rule.pattern.test(content)) {
+                errors.push(`❌ [${targetFile}] Missing: ${rule.name}`);
             }
         }
+    }
 
-        // Check banned patterns in hero
+    // Check banned patterns (Scan ALL Hero files)
+    const heroFiles = ["hero", "heroContent", "heroVideo"];
+    for (const key of heroFiles) {
+        const content = contents[key];
+        if (!content) continue;
+
         for (const banned of BANNED_PATTERNS) {
-            if (banned.pattern.test(heroContent)) {
-                errors.push(`❌ [hero] BANNED: ${banned.name}`);
+            if (banned.pattern.test(content)) {
+                errors.push(`❌ [${key}] BANNED: ${banned.name}`);
                 errors.push(`   → ${banned.reason}`);
             }
         }
 
-        // Check redundancy in hero
+        // Check redundancy
         for (const r of REDUNDANCY_PATTERNS) {
-            if (r.pattern.test(heroContent)) {
-                redundancies.push({ file: "hero", rule: r.name, reason: r.reason });
+            if (r.pattern.test(content)) {
+                redundancies.push({ file: key, rule: r.name, reason: r.reason });
             }
         }
     }

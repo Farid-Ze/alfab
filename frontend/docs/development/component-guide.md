@@ -7,9 +7,10 @@ This guide outlines the standards for creating and modifying UI components in th
 We structure our components based on Atomic Design:
 
 - **Atoms** (`src/components/ui`): Indivisible elements (Button, Input, Icon).
-- **Molecules** (`src/components/modules`): Simple groups (SearchInput, Card).
-- **Organisms** (`src/components/features`): Complex sections (ProductList, Hero).
-- **Templates/Pages** (`src/app`): Layouts.
+- **Atoms** (`src/components/ui`): Indivisible elements (Button, Input, Icon).
+- **Domain Modules** (`src/components/lead`, `src/components/products`): Feature-specific groups.
+- **Site Layouts** (`src/components/site`): Global layout elements (Header, Footer).
+- **Pages** (`src/app`): Route definitions.
 
 ## 2. Component Structure
 

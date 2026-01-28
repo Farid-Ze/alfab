@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 
+// JAMSTACK: Incremental Static Regeneration (Task 98)
+// Revalidate individual product pages every hour.
+export const revalidate = 3600;
+
 import ProductDetailContent from "@/components/products/ProductDetailContent";
 import ProductSchema from "@/components/seo/ProductSchema";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";

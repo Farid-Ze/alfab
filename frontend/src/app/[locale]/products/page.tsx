@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import { env } from "@/lib/env";
+
+// JAMSTACK: Incremental Static Regeneration (Task 98)
+// Revalidate product listing every hour.
+export const revalidate = 3600;
 
 import ProductFilters from "@/components/products/ProductFilters";
 import ProductsHeader from "@/components/products/ProductsHeader";

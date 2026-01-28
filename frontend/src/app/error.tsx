@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import Button from "@/components/ui/Button";
-import ButtonLink from "@/components/ui/ButtonLink";
+import ErrorState from "@/components/ui/ErrorState";
 
 // Global error boundary page (Next.js App Router).
 // Paket A UX hardening: provide a friendly fallback instead of a blank screen.
-export default function GlobalError({
+export default function ErrorPage({
   error,
   reset,
 }: {
@@ -14,34 +13,23 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    
-    // Server-side logging is handled by the Lead API / infra.
+    // Server-side logging is handled by infra/Sentry
     console.error(error);
   }, [error]);
 
   return (
-    <div className="flex h-[50vh] flex-col items-center justify-center p-6 text-center">
-      <div className="max-w-md space-y-6">
-        <div className="space-y-2">
-          <h2 className="type-h2">Something went wrong!</h2>
-          <p className="type-body text-muted-strong">
-            Please try again. If the issue persists, contact technical support.
-          </p>
+    <div className="flex min-h-[50vh] items-center justify-center">
+      <ErrorState
+        title="Something went wrong!"
+        description="Please try again. If the issue persists, contact technical support."
+        retry={reset}
+        showHome={true}
+      />
+      {error?.digest && (
+        <div className="fixed bottom-4 right-4 text-xs text-muted opacity-50 font-mono">
+          Ref: {error.digest}
         </div>
-
-        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Button type="button" onClick={() => reset()} variant="primary">
-            Try again
-          </Button>
-          <ButtonLink href="/" variant="secondary">
-            Go home
-          </ButtonLink>
-        </div>
-
-        {error?.digest ? (
-          <p className="type-data text-muted mt-4">Ref: {error.digest}</p>
-        ) : null}
-      </div>
+      )}
     </div>
   );
 }

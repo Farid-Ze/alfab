@@ -10,7 +10,7 @@ export type Product = {
    * High-level catalog grouping used by the homepage "Shop by Category" strip.
    * Examples: "shampoo", "styling", "color", "treatment".
    */
-  categories?: string[];
+  categories?: ("shampoo" | "styling" | "treatment" | "color" | "grooming")[];
   summary: string;
   benefits: string[];
   howToUse: string;

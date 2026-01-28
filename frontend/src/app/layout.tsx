@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
+import { Analytics } from "@vercel/analytics/react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import OfflineIndicator from "@/components/site/OfflineIndicator";
 import ServiceWorkerRegister from "@/components/site/ServiceWorkerRegister";
@@ -29,6 +30,7 @@ export default async function RootLayout({
         {/* Skip Link moved to [locale]/layout.tsx for localization */}
         {children}
         <ServiceWorkerRegister />
+        <Analytics />
       </body>
       <GoogleAnalytics gaId={env.NEXT_PUBLIC_GA_ID ?? ""} />
     </html>

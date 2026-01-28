@@ -2,8 +2,8 @@
 
 import { useState, useActionState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import AppLink from "@/components/ui/AppLink";
 import WhatsAppLink from "@/components/site/WhatsAppLink";
+import { AppLink } from "@/components/ui";
 import { t } from "@/lib/i18n";
 import { subscribe } from "@/actions/subscribe";
 import {

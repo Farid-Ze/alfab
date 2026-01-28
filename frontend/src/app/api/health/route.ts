@@ -3,10 +3,8 @@ import { headers } from "next/headers";
 
 import { logger } from "@/lib/logger";
 import { supabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
-declare global {
-    var healthRateLimiter: Map<string, { count: number; expires: number }> | undefined;
-}
 
 export const runtime = "nodejs";
 
@@ -19,37 +17,10 @@ export async function GET() {
 
     // Rate Limiter (COBIT Security): Prevent DoS on this deep-check endpoint
     // Strategy: 100 requests per minute per IP.
-    if (!globalThis.healthRateLimiter) {
-        globalThis.healthRateLimiter = new Map();
-    }
+    const limiter = rateLimit(ip, { limit: 100, windowMs: 60000 });
 
-    const now = Date.now();
-    const windowMs = 60 * 1000;
-    const limit = 100;
-
-    // Memory Leak Protection (ITIL 4)
-    // If map grows too large (e.g. DDOS), clear it to prevent OOM.
-    // In serverless, this is less likely to persist long, but safety first.
-    if (globalThis.healthRateLimiter.size > 5000) {
-        globalThis.healthRateLimiter.clear();
-    }
-
-    const record = globalThis.healthRateLimiter.get(ip) || { count: 0, expires: now + windowMs };
-
-    if (now > record.expires) {
-        record.count = 1;
-        record.expires = now + windowMs;
-    } else {
-        record.count++;
-    }
-
-    globalThis.healthRateLimiter.set(ip, record);
-
-    if (record.count > limit) {
-        return NextResponse.json({
-            status: "error",
-            message: "Too Many Requests"
-        }, { status: 429 });
+    if (!limiter.success) {
+        return rateLimitResponse(limiter);
     }
 
     const timestamp = new Date().toISOString();
