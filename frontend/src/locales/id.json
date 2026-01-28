@@ -211,6 +211,7 @@
         },
         "filters": {
             "title": "Filter",
+            "searchPlaceholder": "Cari produk...",
             "button": "Filter",
             "clear": "Reset",
             "groups": {

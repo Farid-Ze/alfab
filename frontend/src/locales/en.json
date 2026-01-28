@@ -211,6 +211,7 @@
         },
         "filters": {
             "title": "Filters",
+            "searchPlaceholder": "Search products...",
             "button": "Filters",
             "clear": "Clear",
             "groups": {

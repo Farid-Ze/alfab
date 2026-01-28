@@ -28,7 +28,7 @@ export function ImageTransition({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.1 }}
-                className="absolute inset-0"
+                className="absolute inset-0 z-0"
             >
                 <Image
                     src={src}
@@ -76,7 +76,7 @@ export function ContentTransition({
                         damping: 35,
                     },
                 }}
-                className="absolute inset-x-0 bottom-0 p-5 sm:p-6"
+                className="absolute inset-x-0 bottom-0 p-5 sm:p-6 z-10"
             >
                 {/* Eyebrow */}
                 <p className="text-[10px] uppercase tracking-[0.2em] text-white/50 mb-2">

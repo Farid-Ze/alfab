@@ -54,7 +54,11 @@ export default function EducationArticleDetailClient({ slug }: { slug: string })
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
           <header className="space-y-4">
-            <p className="type-kicker">{article.date}</p>
+            <div className="flex items-center gap-3 type-data text-muted">
+              <span>{article.date}</span>
+              <span>•</span>
+              <span>{article.readTime} min read</span>
+            </div>
             <h1 className="type-h1">{article.title}</h1>
             <p className="type-body text-muted-strong">{article.excerpt}</p>
           </header>

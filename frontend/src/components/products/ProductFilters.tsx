@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { t } from "@/lib/i18n";
@@ -18,21 +18,58 @@ export default function ProductFilters() {
   const searchParams = useSearchParams();
 
   // Use the extracted hook for filter logic
+  /* Search Debounce Logic */
   const {
     filters,
+    searchQuery,
     filtered,
     hasFilters,
     availableBrands,
     availableCategories,
     availableFunctions,
     toggle,
+    setSearch,
     clear,
   } = useProductFilters();
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(searchQuery);
+
+  // Sync internal state with URL state (in case URL changes externally)
+  // But avoid race conditions if user is typing
+  // Simple approach: Only sync if URL changes and is different from local, OR init.
+  // actually, if we debounce, we just push.
+
+  // Hand-rolled debounce effect
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setSearch(searchTerm);
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [searchTerm, setSearch]);
+
+  // Sync URL -> Local (e.g. Back button)
+  useEffect(() => {
+    setSearchTerm(searchQuery);
+  }, [searchQuery]);
 
   return (
     <section>
+      {/* Search Bar */}
+      <div className="max-w-md mx-auto mb-8 relative">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <IconSearch className="h-5 w-5 text-muted" aria-hidden="true" />
+        </div>
+        <input
+          type="text"
+          className="type-ui ui-focus-ring ui-radius-tight block w-full border border-border-strong bg-panel pl-10 pr-4 py-3 text-foreground placeholder:text-muted-soft transition-colors"
+          placeholder={tx.products.filters.searchPlaceholder ?? "Search products..."}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          aria-label="Search products" // Accessible name
+        />
+      </div>
+
       {/* Brand Filter Pills - Quick filter bar (Desktop) */}
       <div className="hidden md:block mb-8 border-b border-border pb-6">
         <div className="flex flex-wrap items-center gap-2">
@@ -54,7 +91,7 @@ export default function ProductFilters() {
 
       {/* Mobile Filter Toggle Button */}
       <div className="md:hidden mb-6 flex items-center justify-between">
-        <p className="type-data text-muted">
+        <p className="type-data text-muted" aria-live="polite" aria-atomic="true">
           {filtered.length} {filtered.length === 1 ? "product" : "products"}
         </p>
         <button
@@ -240,7 +277,7 @@ export default function ProductFilters() {
         <div className="md:col-span-3">
           {/* Results count */}
           {hasFilters && (
-            <p className="type-data text-muted mb-4 hidden md:block">
+            <p className="type-data text-muted mb-4 hidden md:block" aria-live="polite" aria-atomic="true">
               {filtered.length} {filtered.length === 1 ? "product" : "products"}
             </p>
           )}

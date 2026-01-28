@@ -19,7 +19,8 @@ const envSchema = z.object({
     SMTP_TO: z.string().optional(),
 
     // Features / Security
-    LEAD_API_ADMIN_TOKEN: z.string().optional(),
+    // COBIT DSS05.04: Admin Token must be strong (min 12 chars) if configured
+    LEAD_API_ADMIN_TOKEN: z.string().min(12, "Admin token must be at least 12 characters").optional(),
     NEXT_PUBLIC_GA_ID: z.string().optional(),
 
     // Observability (OPS-01 ITIL4)

@@ -70,16 +70,62 @@ Ensure these keys are present in the Production Environment:
     1. Check `x-forwarded-for` in logs.
     2. If legitimate traffic (NAT/Office), consider whitelisting in `src/app/api/health/route.ts`.
 
-### Scenario D: System Error with Correlation ID
+### Scenario D: API/Database Outage (Supabase)
+
+- **Trigger**: Sentry alerts `500` on `submit-lead` or users report "Cannot submit form".
+- **Diagnosis**:
+    1. Check [Supabase Status](https://status.supabase.com/).
+    2. Attempt to log in to Supabase Dashboard.
+- **Resolution**:
+  - **Step 1**: Enable "Maintenance Mode" if the outage is prolonged (via Environment Variable `NEXT_PUBLIC_MAINTENANCE_MODE=true`).
+  - **Step 2**: If the `leads` table is locked, check Supabase "Usage" for Disk/CPU limits.
+  - **Step 3 (Planned)**: Activate SMTP fallback (Email-only lead capture) if implemented.
+
+### Scenario E: CMS Content Outage
+
+- **Trigger**: Build fails with `Error: Cannot read properties of undefined` (processing `products.json`).
+- **Diagnosis**:
+  - Corrupted JSON file in `src/content`.
+  - Git merge conflict markers in the file.
+- **Resolution**:
+    1. Revert the last commit to `src/content`.
+    2. Run `npm run dev` locally to validate the JSON structure.
+
+### Scenario F: System Error with Correlation ID
 
 - **Trigger**: User reports error code `digest: <ID>`.
 - **Diagnosis**: Search logs for `requestId: <ID>` or `digest: <ID>`.
 - **Action**: The ID correlates the User UI error to the specific Backend Log entry.
 
-### Scenario C: CI/CD Build Failure
+### Scenario G: CI/CD Build Failure
 
 - **Trigger**: GitHub Action fails on `build` job.
 - **Fix**:
     1. Check `eslint` errors in **Quality Gate**.
     2. Check `sentry-upload` failures (Auth Token missing?).
     3. Run `npm run build` locally to reproduce.
+
+## 4. Data Privacy Operations (APO12 Risk Management)
+
+### Data Deletion Procedure (Right to Erasure)
+
+**Regulation**: UU PDP (Indonesia) / GDPR.
+
+1. **Request Receipt**:
+    - Channel: Email to `privacy@alfabeauty.co.id` or Support Ticket.
+    - Verification: Verify identity via Email Confirmation loop.
+
+2. **Execution (Supabase)**:
+    - **Dashboard**:
+        1. Go to `leads` table.
+        2. Filter by `email` or `phone`.
+        3. Select row -> `Delete 1 row`.
+    - **SQL (Bulk)**:
+
+        ```sql
+        DELETE FROM leads WHERE email = 'target@example.com';
+        ```
+
+3. **Confirmation**:
+    - Reply to user confirming deletion within 72 hours.
+    - Log the deletion event (without PII) in the Privacy Log.

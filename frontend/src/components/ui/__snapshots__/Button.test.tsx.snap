@@ -1,0 +1,69 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Button > renders disabled state 1`] = `
+<DocumentFragment>
+  <button
+    aria-busy="false"
+    class="type-ui-sm-strong ui-focus-ring ui-radius-none relative inline-flex items-center justify-center gap-3 border select-none disabled:cursor-not-allowed disabled:opacity-50 uppercase tracking-widest transition-all duration-300 ui-btn-primary h-12 px-5"
+    disabled=""
+  >
+    <span>
+      Disabled
+    </span>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`Button > renders loading state 1`] = `
+<DocumentFragment>
+  <button
+    aria-busy="true"
+    class="type-ui-sm-strong ui-focus-ring ui-radius-none relative inline-flex items-center justify-center gap-3 border select-none disabled:cursor-not-allowed disabled:opacity-50 uppercase tracking-widest transition-all duration-300 ui-btn-primary h-12 px-5"
+    disabled=""
+  >
+    <span
+      aria-hidden="true"
+      class="ui-spinner"
+    />
+    <span
+      class="opacity-0"
+    >
+      Loading...
+    </span>
+    <span
+      class="absolute inset-0 flex items-center justify-center"
+    >
+      <span
+        aria-hidden="true"
+        class="ui-spinner"
+      />
+    </span>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`Button > renders primary variant correctly 1`] = `
+<DocumentFragment>
+  <button
+    aria-busy="false"
+    class="type-ui-sm-strong ui-focus-ring ui-radius-none relative inline-flex items-center justify-center gap-3 border select-none disabled:cursor-not-allowed disabled:opacity-50 uppercase tracking-widest transition-all duration-300 ui-btn-primary h-12 px-5"
+  >
+    <span>
+      Primary Action
+    </span>
+  </button>
+</DocumentFragment>
+`;
+
+exports[`Button > renders secondary variant correctly 1`] = `
+<DocumentFragment>
+  <button
+    aria-busy="false"
+    class="type-ui-sm-strong ui-focus-ring ui-radius-none relative inline-flex items-center justify-center gap-3 border select-none disabled:cursor-not-allowed disabled:opacity-50 uppercase tracking-widest transition-all duration-300 ui-btn-secondary h-12 px-5"
+  >
+    <span>
+      Secondary Action
+    </span>
+  </button>
+</DocumentFragment>
+`;

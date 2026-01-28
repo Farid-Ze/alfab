@@ -8,7 +8,7 @@ type CardProps = HTMLAttributes<HTMLDivElement> & {
   as?: "div" | "article" | "section";
 };
 
-const baseClass = "ui-radius-tight";
+const baseClass = "ui-radius-none";
 
 const variantClass: Record<CardVariant, string> = {
   default: "border border-border bg-panel",

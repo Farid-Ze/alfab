@@ -103,6 +103,8 @@ export function useProductFilters() {
         };
     }, [searchParams]);
 
+    const searchQuery = searchParams.get("q") ?? "";
+
     // Toggle a filter value by updating URL
     const toggle = useCallback((key: keyof ProductFilters, value: string) => {
         const current = new URLSearchParams(searchParams.toString());
@@ -129,6 +131,16 @@ export function useProductFilters() {
         router.replace(`${pathname}?${current.toString()}`, { scroll: false });
     }, [searchParams, router, pathname]);
 
+    const setSearch = useCallback((query: string) => {
+        const current = new URLSearchParams(searchParams.toString());
+        if (query) {
+            current.set("q", query);
+        } else {
+            current.delete("q");
+        }
+        router.replace(`${pathname}?${current.toString()}`, { scroll: false });
+    }, [searchParams, router, pathname]);
+
     // Clear all filters
     const clear = useCallback(() => {
         router.replace(pathname, { scroll: false });
@@ -136,8 +148,19 @@ export function useProductFilters() {
 
     // Filtered product list
     const filtered = useMemo(
-        () => allProducts.filter((p) => matchesFilters(p, filters)),
-        [allProducts, filters]
+        () => allProducts.filter((p) => {
+            if (!matchesFilters(p, filters)) return false;
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                const textMatch =
+                    p.name.toLowerCase().includes(q) ||
+                    p.summary.toLowerCase().includes(q) ||
+                    p.brand.toLowerCase().includes(q);
+                if (!textMatch) return false;
+            }
+            return true;
+        }),
+        [allProducts, filters, searchQuery]
     );
 
     // Check if any filters are active
@@ -146,13 +169,15 @@ export function useProductFilters() {
             filters.brands.size > 0 ||
             filters.categories.size > 0 ||
             filters.functions.size > 0 ||
-            filters.audiences.size > 0,
-        [filters]
+            filters.audiences.size > 0 ||
+            searchQuery.length > 0,
+        [filters, searchQuery]
     );
 
     return {
         // State
         filters,
+        searchQuery,
         allProducts,
         filtered,
         hasFilters,
@@ -164,6 +189,7 @@ export function useProductFilters() {
 
         // Actions
         toggle,
+        setSearch,
         clear,
 
         // Counts

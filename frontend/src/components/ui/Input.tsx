@@ -7,7 +7,7 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 
 // Enhanced mobile support with better touch targets and type sizing to prevent iOS zoom
 const base =
-  "type-ui ui-focus-ring ui-radius-tight block w-full border bg-panel px-4 py-3 text-foreground placeholder:text-muted-soft transition-colors disabled:cursor-not-allowed disabled:opacity-50";
+  "type-ui ui-focus-ring ui-radius-none block w-full border bg-panel px-4 py-3 text-foreground placeholder:text-muted-soft transition-colors disabled:cursor-not-allowed disabled:opacity-50";
 
 // Mobile keyboard support: ensures inputs aren't covered by mobile keyboard
 // Minimum touch target: 44x44px (WCAG 2.1 Level AAA)

@@ -1,7 +1,7 @@
 "use client";
 
 import { getEventBySlug } from "@/lib/education";
-import { t } from "@/lib/i18n";
+import { t, formatDate } from "@/lib/i18n";
 
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import AppLink from "@/components/ui/AppLink";
@@ -61,7 +61,7 @@ export default function EducationEventDetailClient({ slug }: { slug: string }) {
               </span>
               <span className="inline-flex items-center gap-1">
                 <IconCalendar className="h-4 w-4" />
-                {event.date}
+                {formatDate(event.date, locale)}
               </span>
             </div>
             <h1 className="type-h1">{event.title}</h1>

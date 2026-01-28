@@ -1,7 +1,7 @@
 "use client";
 
 import { t } from "@/lib/i18n";
-import { useLeadForm, type SalonType } from "@/lib/useLeadForm";
+import { useLeadForm, type SalonType } from "./useLeadForm";
 
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import Button from "@/components/ui/Button";

@@ -22,3 +22,17 @@ export function t(locale: Locale): LocaleDict {
 }
 
 // getLocalizedPath removed (Revert to Standard Sub-path Strategy)
+
+export function formatDate(dateStr: string, locale: Locale): string {
+  if (!dateStr) return "";
+  try {
+    const date = new Date(dateStr);
+    return new Intl.DateTimeFormat(locale === "id" ? "id-ID" : "en-US", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  } catch (e) {
+    return dateStr;
+  }
+}

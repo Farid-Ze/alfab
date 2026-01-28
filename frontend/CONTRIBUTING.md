@@ -36,3 +36,27 @@ A PR is merged only when:
 2. `npm run type-check` passes (TS).
 3. `npm run test:unit` passes (Logic).
 4. `npm run test:e2e` passes (Smoke).
+
+## 🧪 Testing Environment
+
+### Unit Testing (Vitest)
+
+Used for business logic, hooks, and utility functions.
+
+```bash
+npm run test:unit
+```
+
+### E2E Testing (Playwright)
+
+Used for critical user journeys (Smoke Tests).
+**Prerequisites**:
+
+1. Install browsers: `npx playwright install`
+2. Run tests:
+
+```bash
+npm run test:e2e
+```
+
+3. View report: `npm run test:e2e:report`

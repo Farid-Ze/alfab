@@ -366,15 +366,26 @@ html {
   --color-info: #1e40af;
   --color-info-bg: #dbeafe;
 
-  --radius: var(--radius);
-  --radius-tight: var(--radius-tight);
-  --radius-soft: var(--radius-soft);
+  --radius: 0px;
+  /* Sharp for architectural feel */
+  --radius-tight: 0px;
+  --radius-soft: 0px;
 
   /* Shadows */
-  --shadow-sm: var(--shadow-sm);
-  --shadow-md: var(--shadow-md);
-  --shadow-lg: var(--shadow-lg);
-  --shadow-focus: var(--shadow-focus);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-focus: 0 0 0 2px rgba(24, 24, 27, 1);
+  /* Solid sharp focus ring */
+
+  /* Motion tokens (reduced motion respected) */
+  --transition-fast: 150ms ease-out;
+  /* Slightly slower for weight */
+  --transition-base: 200ms ease-out;
+  --transition-slow: 350ms ease-out;
+  --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-cinematic: 800ms cubic-bezier(0.19, 1, 0.22, 1);
+  /* Slower, luxurious ease */
 
   /* Typography: Inter for body, Instrument Serif for headings/display */
   --font-sans: var(--font-body);
@@ -443,6 +454,16 @@ body {
     Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
+:root {
+  --font-print: var(--font-print);
+}
+
+@media print {
+  body {
+    font-family: var(--font-print), Georgia, serif !important;
+  }
+}
+
 /* Typography system (hybrid): fluid headings, fixed/breakpoint body & data */
 .type-kicker {
   font-size: 0.75rem;
@@ -452,14 +473,16 @@ body {
   color: var(--muted-strong);
 }
 
-/* Hero headline - larger than H1, designed to stay on one line */
+/* Hero headline - Montserrat: Geometric, impactful. needs tight tracking at large sizes. */
 .type-hero {
-  font-family: var(--font-display), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   /* clamp(min, preferred, max) - max value IS the upper bound */
   font-size: clamp(2.25rem, 6vw, 4.5rem);
   line-height: 1.05;
-  font-weight: 400;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  /* Bold looks more premium/editorial for San Serif Display */
+  letter-spacing: -0.04em;
+  /* Tighten significantly for graphic impact */
   font-synthesis: none;
   white-space: nowrap;
 }
@@ -480,52 +503,56 @@ body {
   letter-spacing: 0.15em;
 }
 
-/* Hero body - description text */
+/* Hero body */
 .type-hero-body {
   font-size: clamp(0.9375rem, 1.5vw, 1.125rem);
   line-height: 1.6;
+  font-weight: 400;
+  /* Regular for readability */
 }
 
-/* Hero note - small supporting text */
+/* Hero note */
 .type-hero-note {
   font-size: clamp(0.8125rem, 1.2vw, 0.875rem);
   line-height: 1.5;
 }
 
+/* Headings: Tuned for Montserrat */
 .type-h1 {
-  font-family: var(--font-display), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   font-size: clamp(2rem, 5vw, 3.5rem);
-  line-height: 1.08;
-  /* Instrument Serif is designed primarily in regular weight; avoid synthesized bold. */
-  font-weight: 400;
-  letter-spacing: 0;
+  line-height: 1.1;
+  font-weight: 600;
+  /* SemiBold */
+  letter-spacing: -0.03em;
+  /* Tight tracking */
   font-synthesis: none;
 }
 
 .type-h2 {
-  font-family: var(--font-display), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   font-size: clamp(1.25rem, 2.6vw, 1.75rem);
-  line-height: 1.15;
-  font-weight: 400;
-  letter-spacing: 0;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.025em;
   font-synthesis: none;
 }
 
 .type-h3 {
-  font-family: var(--font-display), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   font-size: clamp(1.05rem, 2vw, 1.25rem);
   line-height: 1.2;
-  font-weight: 400;
-  letter-spacing: 0;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   font-synthesis: none;
 }
 
 .type-h4 {
-  font-family: var(--font-display), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   font-size: clamp(0.9375rem, 1.5vw, 1.125rem);
   line-height: 1.25;
-  font-weight: 400;
-  letter-spacing: 0;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   font-synthesis: none;
 }
 
@@ -644,10 +671,11 @@ body {
 }
 
 .type-brand {
-  font-size: 1rem;
+  font-size: 1.125rem;
   line-height: 1.25;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
   color: inherit;
 }
 
@@ -1759,4 +1787,44 @@ a {
 
 .aspect-editorial {
   aspect-ratio: 16 / 6;
+}
+
+/* Skeleton Animation (High Performance) */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.ui-skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--subtle);
+  /* Fallback */
+}
+
+.ui-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 100%);
+  animation: shimmer 1.5s infinite;
+  will-change: transform;
+  /* Performance optimization */
+}
+
+@media (prefers-color-scheme: dark) {
+  .ui-skeleton::after {
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        transparent 100%);
+  }
 }

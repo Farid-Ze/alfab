@@ -65,13 +65,24 @@ cp .env.example .env.local
 npm run dev
 ```
 
+### Environment Configuration
+
+| Variable | Description | Required | Source |
+| :--- | :--- | :--- | :--- |
+| `NEXT_PUBLIC_SITE_URL` | Canonical URL (e.g. <https://alfabeauty.co.id>) | Yes | Vercel |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase API URL | Yes | Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public Client Key | Yes | Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | Admin Key (Server Actions only) | No (Admin) | Supabase |
+| `SMTP_HOST` | Mail Server for Lead Fallback | No | Mailtrap |
+
 ### Key Scripts
 
 | Command | Description | Phase |
 | :--- | :--- | :--- |
 | `npm run analyze` | Visualize JS bundle topology | Phase 11 (DevX) |
 | `npm run test:all`| Run Lint, Types, Unit, and E2E tests | Phase 8 (CI/CD) |
-| `npm run lint:tokens` | Audit CSS for unauthorized colors | Phase 5 (Governance) |
+| `npm run lint` | Run **Unified Governance** (8+ Architecture Checks) | Phase 2 (Structure) |
+| `node scripts/governance.mjs` | Manual Trigger for Governance Suite | Phase 2 (Modularity) |
 
 ### Automation
 

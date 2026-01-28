@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 import "./globals.css";
 
 // Note: We avoid next/font/google here to prevent build-time fetch timeouts (BLD-03/04).
@@ -15,7 +16,8 @@ export default function GlobalError({
 }) {
   useEffect(() => {
     // Log validity of error to error service (e.g. Sentry)
-    console.error(error);
+    // console.error(error); // Keep console log for local dev if needed, or rely on Sentry's console integration
+    Sentry.captureException(error);
   }, [error]);
 
   return (

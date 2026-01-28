@@ -27,11 +27,11 @@ export async function GET() {
     const windowMs = 60 * 1000;
     const limit = 100;
 
-    // Simple cleanup
-    if (Math.random() > 0.9) {
-        for (const [key, val] of globalThis.healthRateLimiter.entries()) {
-            if (now > val.expires) globalThis.healthRateLimiter.delete(key);
-        }
+    // Memory Leak Protection (ITIL 4)
+    // If map grows too large (e.g. DDOS), clear it to prevent OOM.
+    // In serverless, this is less likely to persist long, but safety first.
+    if (globalThis.healthRateLimiter.size > 5000) {
+        globalThis.healthRateLimiter.clear();
     }
 
     const record = globalThis.healthRateLimiter.get(ip) || { count: 0, expires: now + windowMs };
