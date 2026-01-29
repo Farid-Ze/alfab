@@ -5,6 +5,16 @@
 
 ---
 
+## 📜 Strategic Context (Upstream)
+
+Before diving into technical details, understand the Business Context:
+
+1. **[Strategy 2026](../../docs/strategy-2026.md)**: The "Why" (ITIL, TOGAF, COBIT).
+2. **[Paket A Specification](../../docs/paket-a.md)**: The "What" (Scope & Tech Spec).
+3. **[Proposal (As-Built)](../../docs/proposal/proposal.md)**: The "Contract" (Deliverables).
+
+---
+
 ## 🌎 1. Governance (COBIT 2019)
 
 *Compliance, Security, and Engineering Standards.*

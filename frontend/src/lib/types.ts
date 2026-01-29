@@ -14,6 +14,11 @@ export type Product = {
   summary: string;
   benefits: string[];
   howToUse: string;
+  image?: {
+    url: string;
+    alt: string;
+    caption?: string;
+  };
 };
 
 export type LeadRecord = {

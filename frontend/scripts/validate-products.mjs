@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { existsSync } from "node:fs"; // Fix for sync check
 import path from "node:path";
 import { z } from "zod";
 
@@ -18,6 +19,11 @@ const ProductSchema = z.object({
         "color",
         "grooming"
     ])).optional(),
+    image: z.object({
+        url: z.string(), // Local paths allowed
+        alt: z.string().min(5),
+        caption: z.string().optional()
+    }),
     summary: z.string().min(10),
     benefits: z.array(z.string()),
     howToUse: z.string(),
@@ -26,7 +32,7 @@ const ProductSchema = z.object({
 const CatalogSchema = z.array(ProductSchema);
 
 async function validate() {
-    const filePath = path.resolve(process.cwd(), "src/content/products.json");
+    const filePath = path.resolve(process.cwd(), "src/content/data/products.json");
     console.log(`🔍 Validating Data Architecture: ${filePath}`);
 
     try {
@@ -40,6 +46,31 @@ async function validate() {
             result.error.errors.forEach((err) => {
                 console.error(`   - Path: [${err.path.join(" > ")}] : ${err.message}`);
             });
+            process.exit(1);
+        }
+
+        // COBIT: Data Integrity Check (Phase 5.1)
+        // Verify local asset existence
+        console.log("🔍 Verifying Asset Integrity...");
+        let assetErrors = 0;
+
+        result.data.forEach((product) => {
+            const imgUrl = product.image.url;
+            if (imgUrl.startsWith("/")) {
+                // Remove query params if any
+                const cleanPath = imgUrl.split('?')[0];
+                const publicPath = path.join(process.cwd(), "public", cleanPath);
+
+                // Allow SVG/JPG/PNG
+                if (!existsSync(publicPath)) {
+                    console.error(`❌ Broken Asset Link: Product '${product.slug}' references '${cleanPath}' which does not exist.`);
+                    assetErrors++;
+                }
+            }
+        });
+
+        if (assetErrors > 0) {
+            console.error(`\n❌ Validation Failed: ${assetErrors} broken asset links found.`);
             process.exit(1);
         }
 

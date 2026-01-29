@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import EducationArticleDetailClient from "@/components/education/EducationArticleDetailClient";
 import { getArticleBySlug, listArticles } from "@/lib/education";
@@ -35,12 +36,22 @@ export async function generateMetadata({
   };
 }
 
+
+
 export default async function EducationArticleDetailPage({
   params,
 }: {
   params: Promise<{ locale: Locale; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+
+  // Verify existence (Server-Side 404)
+  const article = getArticleBySlug(locale, slug) ?? getArticleBySlug(locale === "en" ? "id" : "en", slug);
+
+  if (!article) {
+    notFound();
+  }
+
   return (
     <div className="mx-auto max-w-[80rem] px-4 sm:px-6 lg:px-10 py-12">
       <EducationArticleDetailClient slug={slug} />

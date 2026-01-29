@@ -13,6 +13,11 @@
     "categories": [
       "shampoo"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Professional Shampoo Bottle on Salon Shelf",
+      "caption": "Gentle daily cleansing for all hair types."
+    },
     "summary": "A professional-grade cleansing shampoo designed for consistent results in salon routines.",
     "benefits": [
       "Balanced cleansing suitable for daily salon use",
@@ -35,6 +40,11 @@
     "categories": [
       "styling"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Barber Styling Pomade Open Tin",
+      "caption": "Strong hold with a classic matte finish."
+    },
     "summary": "A professional pomade for barbershops seeking controlled hold and clean finish.",
     "benefits": [
       "Controlled hold for structured styles",
@@ -58,6 +68,11 @@
     "categories": [
       "treatment"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Hair Treatment Mask Jar",
+      "caption": "Deep hydration for damaged hair."
+    },
     "summary": "An in-salon treatment mask for hydration and improved manageability.",
     "benefits": [
       "Improves manageability",
@@ -80,6 +95,11 @@
     "categories": [
       "treatment"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Keratin Smoothing Treatment Application",
+      "caption": "Long-lasting smoothness and frizz control."
+    },
     "summary": "Professional keratin treatment for long-lasting smoothness and frizz control.",
     "benefits": [
       "Reduces frizz for up to 12 weeks",
@@ -102,6 +122,11 @@
     "categories": [
       "color"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Color Protection Serum Bottle",
+      "caption": "Protects vibrancy and enhances shine."
+    },
     "summary": "Lightweight serum that extends color vibrancy and protects against fade.",
     "benefits": [
       "Extends color life up to 40%",
@@ -124,6 +149,11 @@
     "categories": [
       "styling"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Matte Clay Wax Texture",
+      "caption": "High hold with a natural matte look."
+    },
     "summary": "High-hold matte clay for textured, modern styles in barbershops.",
     "benefits": [
       "Strong hold with matte finish",
@@ -147,6 +177,11 @@
     "categories": [
       "treatment"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Scalp Tonic Pipette Application",
+      "caption": "Refreshes and revitalizes the scalp."
+    },
     "summary": "Professional scalp treatment that promotes healthy scalp environment.",
     "benefits": [
       "Soothes and refreshes scalp",
@@ -169,6 +204,11 @@
     "categories": [
       "styling"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Volumizing Hair Mousse Foam",
+      "caption": "Weightless volume for fine to normal hair."
+    },
     "summary": "Lightweight mousse for lasting volume and body without stiffness.",
     "benefits": [
       "Boosts root volume",
@@ -192,6 +232,11 @@
     "categories": [
       "treatment"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Golden Argan Oil Drop",
+      "caption": "Instant shine and frizz control with Argan Oil."
+    },
     "summary": "Lightweight argan-based oil for instant shine and frizz control.",
     "benefits": [
       "Instant shine without heaviness",
@@ -214,6 +259,11 @@
     "categories": [
       "grooming"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Beard Oil Application",
+      "caption": "Softens beard and moisturizes skin."
+    },
     "summary": "Premium beard oil for softening and conditioning facial hair.",
     "benefits": [
       "Softens coarse beard hair",
@@ -236,6 +286,11 @@
     "categories": [
       "color"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Bleaching Powder Bowl",
+      "caption": "High-performance lightening up to 9 levels."
+    },
     "summary": "High-performance bleach powder for professional lightening services.",
     "benefits": [
       "Up to 9 levels of lift",
@@ -258,6 +313,11 @@
     "categories": [
       "color"
     ],
+    "image": {
+      "url": "/images/products/placeholder.svg",
+      "alt": "Developer Bottle 30 Vol",
+      "caption": "Stable consistency for precise color mixing."
+    },
     "summary": "Professional-grade hydrogen peroxide developer for color and lightening.",
     "benefits": [
       "Consistent viscosity for even application",

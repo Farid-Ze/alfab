@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import products from "@/content/products.json";
+import products from "@/content/data/products.json";
 
-export const runtime = "edge"; // fast response
+export const runtime = "nodejs"; // Strict adherence to "Hybrid Node.js" Arch (Paket A)
 
 /**
  * Product API (Task 15)
@@ -16,9 +16,11 @@ export async function GET() {
         status: 200,
         headers: {
             "Content-Type": "application/json",
-            "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
-            "CDN-Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
-            "Vercel-CDN-Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+            // TOGAF: Vendor-Agnostic Caching + Vercel Optimization
+            // Reduced to 60s for CMS updates, but kept Vercel headers for Edge performance.
+            "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+            "CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+            "Vercel-CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
         },
     });
 }

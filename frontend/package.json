@@ -18,6 +18,7 @@
     "lint:summary": "node scripts/lint-summary.mjs",
     "lint:hero-freeze": "node scripts/lint-hero-freeze.mjs",
     "validate:products": "node scripts/validate-products.mjs",
+    "validate:content": "node scripts/validate-content.js",
     "lint:button-freeze": "node scripts/lint-button-freeze.mjs",
     "lint:carousel-freeze": "node scripts/lint-carousel-freeze.mjs",
     "lint:category-card-freeze": "node scripts/lint-category-card-freeze.mjs",
@@ -28,7 +29,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
-    "test:all": "npm run lint && npm run type-check && npm run test:unit && npm run test:e2e",
+    "test:all": "npm run validate:content && npm run lint && npm run type-check && npm run test:unit && npm run test:e2e",
     "prepare": "husky"
   },
   "dependencies": {

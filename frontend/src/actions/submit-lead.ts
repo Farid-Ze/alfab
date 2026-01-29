@@ -2,7 +2,9 @@
 
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
-import { sendLeadNotification, type LeadRecord } from "@/lib/email";
+import { sendLeadNotification } from "@/lib/email";
+import { rateLimit } from "@/lib/rate-limit"; // Shared Logic
+import type { LeadRecord } from "@/lib/types"; // Shared Type
 import { logger } from "@/lib/logger";
 import { headers } from "next/headers";
 
@@ -56,64 +58,11 @@ export async function submitLead(formData: LeadRequest) {
   const ip = headerStore.get("x-real-ip") || headerStore.get("x-forwarded-for") || "unknown";
   const userAgent = headerStore.get("user-agent") || "unknown";
 
-  // Rate Limiter Strategy (In-Memory Token Bucket Lite)
-  // ARCHITECTURE NOTE: This limits requests *per Lambda Instance*.
-  // In a scaled Vercel environment, total capacity = (limit * instances).
-  // For strict global limiting, use Redis/Upstash.
-  // Prevents spam while avoiding external dependencies like Redis for this scale.
-  const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 Hour
-  const RATE_LIMIT_MAX = 5; // 5 submissions per IP per hour
+  // 1. Rate Check (Shared Logic)
+  // Limit: 5 requests per hour (3600000 ms) per IP
+  const limiter = rateLimit(ip, { limit: 5, windowMs: 60 * 60 * 1000 });
 
-  class RateLimiter {
-    private hits = new Map<string, { count: number; expires: number }>();
-    private cleanupInterval: NodeJS.Timeout;
-
-    constructor() {
-      // Auto-cleanup every hour to prevent memory leaks
-      this.cleanupInterval = setInterval(() => this.cleanup(), RATE_LIMIT_WINDOW);
-    }
-
-    check(ip: string): boolean {
-      const now = Date.now();
-      const record = this.hits.get(ip);
-
-      if (record) {
-        if (now > record.expires) {
-          // Expired, reset
-          this.hits.set(ip, { count: 1, expires: now + RATE_LIMIT_WINDOW });
-          return true;
-        }
-        if (record.count >= RATE_LIMIT_MAX) {
-          return false; // Limit exceeded
-        }
-        // Increment
-        record.count++;
-        return true;
-      }
-
-      // New IP
-      this.hits.set(ip, { count: 1, expires: now + RATE_LIMIT_WINDOW });
-      return true;
-    }
-
-    private cleanup() {
-      const now = Date.now();
-      for (const [ip, record] of this.hits.entries()) {
-        if (now > record.expires) {
-          this.hits.delete(ip);
-        }
-      }
-    }
-  }
-
-  // Singleton instance
-  const limiter = new RateLimiter();
-
-  // ... inside submitLead function ...
-  // check(ip) implementation follows
-
-  // 1. Rate Check
-  if (!limiter.check(ip)) {
+  if (!limiter.success) {
     logger.warn("[Action] Rate limit exceeded", { ip });
     return { success: false, error: "rate_limited" };
   }
@@ -129,14 +78,12 @@ export async function submitLead(formData: LeadRequest) {
 
   const payload = result.data;
 
-  // 2. Honeypot Check
+  // 3. Honeypot Check
   if (payload.company) {
     return { success: true }; // Silent success for bots
   }
 
-  // E2E Test Bypass - Skip persistence for test runs
-  // Note: This logic is safe to run in production because it leads to NO-OP (no DB insert)
-  // or deterministic errors for testing. It does not expose data.
+  // E2E Test Bypass
   if (isPartnerPayload(payload)) {
     if (payload.business_name.includes("(E2E")) {
       logger.info("[Action] E2E Test detected - skipping persistence", { business: payload.business_name });
@@ -150,41 +97,52 @@ export async function submitLead(formData: LeadRequest) {
     }
   }
 
-  // 3. Prepare DB Record
-
-  // 3. Prepare DB Record
-  const dbRecord: Record<string, unknown> = {
-    ip_address: ip.substring(0, 45),
-    user_agent: userAgent.substring(0, 255),
-    raw: payload,
-  };
+  // 4. Prepare Lead Record (Strictly Typed)
+  let leadRecord: LeadRecord;
 
   if (isPartnerPayload(payload)) {
-    dbRecord.name = payload.contact_name;
-    dbRecord.phone = payload.phone_whatsapp;
-    dbRecord.email = payload.email || "";
-    dbRecord.message = payload.message || "";
-    dbRecord.page_url_initial = payload.page_url_initial || "";
-    dbRecord.page_url_current = payload.page_url_current || "";
+    leadRecord = {
+      name: payload.contact_name,
+      phone: payload.phone_whatsapp,
+      email: payload.email || "",
+      message: payload.message || "",
+      ip_address: ip.substring(0, 45),
+      page_url_initial: payload.page_url_initial || "",
+      page_url_current: payload.page_url_current || "",
+      raw: {
+        ...payload,
+        userAgent: userAgent.substring(0, 255),
+        type: "PARTNER"
+      }
+    };
   } else {
-    dbRecord.name = payload.name;
-    dbRecord.phone = payload.phone || "";
-    dbRecord.email = payload.email || "";
-    dbRecord.message = payload.message || "";
-    dbRecord.page_url_initial = payload.page_url_initial || "";
-    dbRecord.page_url_current = payload.page_url_current || "";
+    leadRecord = {
+      name: payload.name,
+      phone: payload.phone || "",
+      email: payload.email || "",
+      message: payload.message || "",
+      ip_address: ip.substring(0, 45),
+      page_url_initial: payload.page_url_initial || "",
+      page_url_current: payload.page_url_current || "",
+      raw: {
+        ...payload,
+        userAgent: userAgent.substring(0, 255),
+        type: "LEGACY"
+      }
+    };
   }
 
   try {
-    // 4. Persistence (Supabase)
-    const { error } = await supabaseAdmin().from("leads").insert(dbRecord);
+    // 5. Persistence (Supabase)
+    // We insert 'raw' JSONB for flexibility, mapped fields for queries.
+    const { error } = await supabaseAdmin().from("leads").insert(leadRecord);
 
     if (error) {
       logger.error("[Action] Supabase persistence failed", { error });
 
       // Fallback: Email only
       try {
-        await sendLeadNotification(dbRecord as unknown as LeadRecord);
+        await sendLeadNotification(leadRecord);
         logger.warn("[Action] Lead recovered via Email Fallback (DB Failed)");
         return { success: true, warning: "persistence_failed" };
       } catch (emailErr) {
@@ -193,9 +151,9 @@ export async function submitLead(formData: LeadRequest) {
       }
     }
 
-    // 5. Notification (Email) - Best Effort
+    // 6. Notification (Email) - Best Effort
     try {
-      await sendLeadNotification(dbRecord as unknown as LeadRecord);
+      await sendLeadNotification(leadRecord);
     } catch (emailErr) {
       logger.warn("[Action] Email notification failed (DB secure)", { error: String(emailErr) });
     }

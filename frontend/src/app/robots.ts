@@ -8,7 +8,9 @@ import { env } from "@/lib/env";
  * - Blocks: GPTBot, CCBot (AI Scrapers - IP Protection)
  */
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = env.NEXT_PUBLIC_SITE_URL || "https://alfabeauty.co.id";
+  // TOGAF: Centralized Configuration (Phase 2)
+  // URL is strictly derived from env.ts (which handles Vercel preview URLs logic)
+  const baseUrl = env.NEXT_PUBLIC_SITE_URL;
 
   return {
     rules: [

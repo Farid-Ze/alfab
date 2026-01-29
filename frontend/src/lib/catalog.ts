@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { Product } from "@/lib/types";
 import { logger } from "@/lib/logger";
-import productsRaw from "@/content/products.json";
+import productsRaw from "@/content/data/products.json";
 
 // Validation Schema (Runtime Safety)
 const productSchema = z.object({

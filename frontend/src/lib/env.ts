@@ -3,7 +3,10 @@ import { z } from "zod";
 const envSchema = z.object({
     // Core
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-    NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000"),
+    // Vercel / Core
+    // Vercel auto-sets NEXT_PUBLIC_VERCEL_URL. We prefer NEXT_PUBLIC_SITE_URL if set (Canonical).
+    NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
+    NEXT_PUBLIC_VERCEL_URL: z.string().optional(), // Vercel Preview URL (no protocol)
 
     // Supabase (Service Role is optional for client, mandatory for admin)
     NEXT_PUBLIC_SUPABASE_URL: z.string().optional(),
@@ -46,4 +49,13 @@ if (!_env.success) {
     throw new Error("Invalid environment variables");
 }
 
-export const env = _env.data;
+// TOGAF: Dynamic Environment Resolution
+// Vercel previews don't have SITE_URL set, but provide VERCEL_URL (without https://)
+const raw = _env.data;
+const siteUrl = raw.NEXT_PUBLIC_SITE_URL ??
+    (raw.NEXT_PUBLIC_VERCEL_URL ? `https://${raw.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000");
+
+export const env = {
+    ...raw,
+    NEXT_PUBLIC_SITE_URL: siteUrl
+};

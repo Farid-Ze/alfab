@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { notFound } from "next/navigation";
 // JAMSTACK: Incremental Static Regeneration (Task 98)
 // Revalidate individual product pages every hour.
 export const revalidate = 3600;
@@ -70,6 +71,11 @@ export default async function ProductDetailPage({
 }) {
   const { slug, locale } = await params;
   const p = getProductBySlug(slug);
+
+  if (!p) {
+    notFound();
+  }
+
   const tx = t(locale);
 
   const breadcrumbs = [

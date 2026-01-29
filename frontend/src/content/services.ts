@@ -4,13 +4,26 @@
  * @module content/services
  * @description Centralized content for the Immersive Services Experience section.
  * All service definitions, video paths, and localized content.
+ * Loads from JSON (CMS Layer) and validates via Zod (Governance Layer).
  */
 
+import { servicesPageSchema, type ServicesPageData } from "./schemas/services.schema";
+import servicesJson from "./data/services.json";
 import type {
     Service,
     ServiceId,
     Locale
 } from '@/types/services.types';
+
+// 1. Validation Layer (Build-Time Guard)
+const parsedContent = servicesPageSchema.safeParse(servicesJson);
+
+if (!parsedContent.success) {
+    console.error("FATAL: Services Content Validation Failed", parsedContent.error.format());
+    throw new Error("Services content validation failed. Check src/content/data/services.json");
+}
+
+const content: ServicesPageData = parsedContent.data;
 
 // =============================================================================
 // Services Data
@@ -22,102 +35,7 @@ import type {
  * Video assets should be placed in /public/videos/services/
  * Format: WebM (VP9) + MP4 (H.264) + JPG poster
  */
-export const services: readonly Service[] = [
-    {
-        id: 'products',
-        slug: 'products',
-        number: '01',
-        name: {
-            en: 'Products',
-            id: 'Produk',
-        },
-        tagline: {
-            en: 'Professional-Grade Excellence',
-            id: 'Keunggulan Profesional',
-        },
-        description: {
-            en: 'Curated selection of premium salon products from world-renowned brands. Every formula backed by science, every result speaks for itself.',
-            id: 'Koleksi produk salon premium dari brand ternama dunia. Setiap formula didukung sains, setiap hasil berbicara sendiri.',
-        },
-        cta: {
-            label: {
-                en: 'Explore Products',
-                id: 'Jelajahi Produk',
-            },
-            href: '/products',
-        },
-        video: {
-            // Using hero video as placeholder until real service videos are provided
-            webm: '/videos/hero-salon.mp4', // Will be WebM when available
-            mp4: '/videos/hero-salon.mp4',
-            poster: '/images/hero/hero-poster.jpg',
-            duration: 10,
-        },
-        accentColor: 'hsl(220, 25%, 20%)',
-    },
-    {
-        id: 'education',
-        slug: 'education',
-        number: '02',
-        name: {
-            en: 'Education',
-            id: 'Edukasi',
-        },
-        tagline: {
-            en: 'Elevate Your Craft',
-            id: 'Tingkatkan Keahlian Anda',
-        },
-        description: {
-            en: 'Comprehensive training programs led by industry masters. From foundational techniques to advanced artistry — grow with every session.',
-            id: 'Program pelatihan lengkap dipimpin master industri. Dari teknik dasar hingga seni tingkat lanjut — berkembang di setiap sesi.',
-        },
-        cta: {
-            label: {
-                en: 'Discover Programs',
-                id: 'Temukan Program',
-            },
-            href: '/education',
-        },
-        video: {
-            webm: '/videos/hero-salon.mp4',
-            mp4: '/videos/hero-salon.mp4',
-            poster: '/images/hero/hero-poster.jpg',
-            duration: 10,
-        },
-        accentColor: 'hsl(200, 30%, 22%)',
-    },
-    {
-        id: 'partnership',
-        slug: 'partnership',
-        number: '03',
-        name: {
-            en: 'Partnership',
-            id: 'Kemitraan',
-        },
-        tagline: {
-            en: 'Grow Together',
-            id: 'Bertumbuh Bersama',
-        },
-        description: {
-            en: 'Strategic partnership opportunities designed for mutual success. Access exclusive pricing, priority support, and growth resources.',
-            id: 'Peluang kemitraan strategis dirancang untuk kesuksesan bersama. Akses harga eksklusif, dukungan prioritas, dan sumber daya pertumbuhan.',
-        },
-        cta: {
-            label: {
-                en: 'Become Partner',
-                id: 'Jadi Partner',
-            },
-            href: '/partnership/become-partner',
-        },
-        video: {
-            webm: '/videos/hero-salon.mp4',
-            mp4: '/videos/hero-salon.mp4',
-            poster: '/images/hero/hero-poster.jpg',
-            duration: 10,
-        },
-        accentColor: 'hsl(180, 20%, 18%)',
-    },
-] as const;
+export const services: readonly Service[] = content.services as unknown as readonly Service[];
 
 // =============================================================================
 // Helper Functions
@@ -183,21 +101,6 @@ export function getLocalizedService(
 // Section Content (for header text)
 // =============================================================================
 
-export const servicesExperienceContent = {
-    en: {
-        kicker: 'Our Services',
-        title: 'Complete Solutions for Your Salon Business',
-        ariaLabel: 'Services showcase',
-        keyboardHint: 'Use arrow keys to navigate',
-    },
-    id: {
-        kicker: 'Layanan Kami',
-        title: 'Solusi Lengkap untuk Bisnis Salon Anda',
-        ariaLabel: 'Showcase layanan',
-        keyboardHint: 'Gunakan tombol panah untuk navigasi',
-    },
-} as const;
-
 export function getServicesExperienceContent(locale: Locale) {
-    return servicesExperienceContent[locale];
+    return content.meta[locale];
 }
