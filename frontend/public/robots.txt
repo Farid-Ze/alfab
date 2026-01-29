@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Governance: Block API crawling to prevent massive scanning
+Disallow: /api/
+
+# Governance: Block Private routes
+Disallow: /admin/
+Disallow: /dashboard/
+
+Sitemap: https://alfabeauty.co.id/sitemap.xml

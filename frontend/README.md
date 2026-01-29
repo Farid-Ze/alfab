@@ -13,12 +13,12 @@ The following documents govern the operation and maintenance of this platform:
 
 | Category | Document | Framework / Standard |
 | :--- | :--- | :--- |
-| **Operations** | **[Runbook](./docs/runbook.md)** | ITIL v4 (Service Operation) |
-| **Continuity** | **[Disaster Recovery](./docs/drp.md)** | ISO 22301 (Business Continuity) |
-| **Observability**| **[Monitoring Guide](./docs/monitoring.md)** | ITIL v4 (Event Management) |
-| **Governance** | **[Code Standards](./docs/governance.md)** | COBIT 2019 (DSS06) |
-| **Quality** | **[Testing Strategy](./docs/testing.md)** | ISO 29119 |
-| **Community** | **[Contributing](./CONTRIBUTING.md)** | Scrum / Trunk-Based Dev |
+| **Operations** | **[Runbooks](./docs/operations/runbooks)** | ITIL v4 (Service Operation) |
+| **Continuity** | **[Disaster Recovery](./docs/operations/drp.md)** | ISO 22301 (Business Continuity) |
+| **Observability**| **[Monitoring Guide](./docs/operations/monitoring.md)** | ITIL v4 (Event Management) |
+| **Governance** | **[Code Standards](./docs/governance/governance.md)** | COBIT 2019 (DSS06) |
+| **Quality** | **[Testing Strategy](./docs/development/testing.md)** | ISO 29119 |
+| **Community** | **[Contributing](./docs/development/component-guide.md)** | Scrum / Trunk-Based Dev |
 
 ---
 

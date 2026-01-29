@@ -4,6 +4,9 @@
   "description": "Professional beauty distribution for salons and barbershops in Indonesia.",
   "license": "UNLICENSED",
   "private": true,
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
@@ -18,6 +21,7 @@
     "lint:button-freeze": "node scripts/lint-button-freeze.mjs",
     "lint:carousel-freeze": "node scripts/lint-carousel-freeze.mjs",
     "lint:category-card-freeze": "node scripts/lint-category-card-freeze.mjs",
+    "license-check": "npx license-checker --summary --failOn 'GPL;AGPL;LGPL'",
     "lint": "npm run lint:typography && npm run lint:links && npm run lint:tokens && npm run lint:hero-freeze && npm run lint:button-freeze && npm run lint:carousel-freeze && npm run lint:category-card-freeze && eslint",
     "type-check": "tsc --noEmit",
     "test:unit": "vitest run",
