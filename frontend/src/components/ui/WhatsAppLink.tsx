@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { buildWhatsAppHref } from "@/lib/whatsapp";
 
 interface WhatsAppLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
     phone?: string;
@@ -11,7 +12,7 @@ interface WhatsAppLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement
 }
 
 export default function WhatsAppLink({
-    phone = "6281234567890", // Default number if not provided
+    phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "",
     message,
     prefill,
     className,
@@ -19,20 +20,18 @@ export default function WhatsAppLink({
     href, // Allow overriding href if needed
     ...props
 }: WhatsAppLinkProps) {
-    // Use provided phone or default env var/constant
-    // Sanitize phone number to digits only
-    const cleanPhone = phone.replace(/\D/g, "");
-
     const text = message || prefill || "";
 
     // Construct URL
     // Using universal link which works on both mobile and desktop
     const url = useMemo(() => {
         if (href) return href;
-        const baseUrl = "https://wa.me/";
-        const encodedText = text ? `?text=${encodeURIComponent(text)}` : "";
-        return `${baseUrl}${cleanPhone}${encodedText}`;
-    }, [href, cleanPhone, text]);
+        if (!phone) return "";
+        const generated = buildWhatsAppHref({ number: phone, message: text });
+        return generated === "#" ? "" : generated;
+    }, [href, phone, text]);
+
+    if (!url) return null;
 
     return (
         <a

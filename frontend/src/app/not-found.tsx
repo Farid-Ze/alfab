@@ -2,7 +2,7 @@ import ButtonLink from "@/components/ui/ButtonLink";
 
 /**
  * Global 404 fallback (outside locale routes).
- * Redirects to / so middleware handles locale detection.
+ * Routes to default locale for reliable navigation.
  */
 export default function NotFound() {
   return (
@@ -16,10 +16,10 @@ export default function NotFound() {
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-4">
-        <ButtonLink href="/" variant="primary">
+        <ButtonLink href="/id" variant="primary">
           Back to Home
         </ButtonLink>
-        <ButtonLink href="/contact" variant="secondary">
+        <ButtonLink href="/id/contact" variant="secondary">
           Contact Support
         </ButtonLink>
       </div>

@@ -29,6 +29,8 @@ import {
     useImperativeHandle,
     type ForwardedRef,
 } from 'react';
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 // =============================================================================
 // Types
@@ -99,6 +101,8 @@ export const VideoPlayer = forwardRef(function VideoPlayer(
     const [hasError, setHasError] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
+    const { locale } = useLocale();
+    const tx = t(locale);
 
     // ==========================================================================
     // Imperative Handle (expose play/pause methods)
@@ -206,7 +210,7 @@ export const VideoPlayer = forwardRef(function VideoPlayer(
                 ref={containerRef}
                 className={`relative overflow-hidden ${className}`}
                 role="img"
-                aria-label="Service background"
+                aria-label={tx.ui.serviceBackground}
             >
                 <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat"

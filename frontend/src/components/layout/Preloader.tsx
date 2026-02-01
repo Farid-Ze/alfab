@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useReducedMotion } from "@/components/a11y/ReducedMotionProvider";
 
 /**
  * Preloader: Curtain reveal animation on initial load.
@@ -10,6 +11,7 @@ import { useEffect, useState } from "react";
 export default function Preloader() {
     const [isLoading, setIsLoading] = useState(true);
     const [isVisible, setIsVisible] = useState(true);
+    const { prefersReducedMotion } = useReducedMotion();
 
     useEffect(() => {
         // Simulate minimum loading time for effect
@@ -30,7 +32,7 @@ export default function Preloader() {
         }
     }, [isLoading]);
 
-    if (!isVisible) return null;
+    if (prefersReducedMotion || !isVisible) return null;
 
     return (
         <motion.div

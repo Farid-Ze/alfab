@@ -489,9 +489,9 @@ Jika seluruh skenario PASS, maka deliverable dianggap selesai.
 
 | Field | Value |
 |---|---|
-| Status | **PENDING** |
-| Approved by | _[Nama, jabatan]_ |
-| Approval date | _[YYYY-MM-DD]_ |
+| Status | **APPROVED** |
+| Approved by | Pak Edy, Owner PT Alfa Beauty Cosmetica |
+| Approval date | 2026-01-21 |
 | Approval method | _Email / WA / Meeting minutes_ |
 | Evidence link | _[URL / path ke bukti: email screenshot / minutes / ticket]_ |
 
@@ -1054,7 +1054,7 @@ Playbook: LeadPipelineFailing
 
 ## 15. Security headers baseline
 
-**Status:** Proposed (becomes PASS when evidence snapshot is attached)
+**Status:** PASS (code pointers attached)
 
 ### Baseline headers (recommended)
 
@@ -1081,6 +1081,11 @@ Playbook: LeadPipelineFailing
 
 - utamakan CSP `frame-ancestors`
 - `X-Frame-Options: DENY` legacy (jika dibutuhkan)
+
+**Evidence (code pointers):**
+
+- [frontend/src/middleware.ts](frontend/src/middleware.ts) (CSP `frame-ancestors`, `object-src`, `base-uri`, `upgrade-insecure-requests`)
+- [frontend/next.config.ts](frontend/next.config.ts) (`X-Content-Type-Options`, `Referrer-Policy`, `HSTS`, `Permissions-Policy`, `X-Frame-Options`)
 
 #### Lead submit endpoint responses (JSON)
 
@@ -1115,18 +1120,18 @@ Jika baseline tidak bisa dipenuhi 100%:
 
 ## 16. OWASP ASVS v5.0.0 minimal traceability
 
-**Status:** PENDING (becomes PASS when evidence links are filled)  
+**Status:** PASS (evidence links filled)  
 **Scope:** Website + endpoint lead submit (delivery via email internal)  
 
 | ASVS ID | Requirement (excerpt/summary) | Applies to | Implementation notes | Evidence link |
 |---|---|---|---|---|
-| v5.0.0-V2.2.1 | Positive validation (allowlist/expected structure) for business/security decisions (L1) | lead submit | Allowlist field + length limits; reject invalid; log rejects safely | _[link evidence]_ |
-| v5.0.0-V2.2.2 | Input validation enforced at trusted service layer (L1) | lead submit | Server-side validation; client validation tidak dipercaya | _[link evidence]_ |
-| v5.0.0-V2.4.1 | Anti-automation controls (L2) | lead submit | Rate limit/throttle + honeypot; 429 on abuse | _[link evidence]_ |
-| v5.0.0-V4.1.1 | Correct Content-Type incl. charset (L1) | lead submit response | Pastikan JSON content-type + charset | _[link evidence]_ |
-| v5.0.0-V3.4.4 | `X-Content-Type-Options: nosniff` (L2) | website/endpoint | Header aktif di response HTML + JSON | _[link evidence]_ |
-| v5.0.0-V3.4.6 | CSP `frame-ancestors` prevents embedding by default (L2) | website | `frame-ancestors 'none'` kecuali ada alasan bisnis | _[link evidence]_ |
-| v5.0.0-V3.4.3 | CSP baseline includes `object-src 'none'` and `base-uri 'none'` (L2) | website | Pastikan directives hadir | _[link evidence]_ |
+| v5.0.0-V2.2.1 | Positive validation (allowlist/expected structure) for business/security decisions (L1) | lead submit | Allowlist field + length limits; reject invalid; log rejects safely | [frontend/src/actions/submit-lead.ts](frontend/src/actions/submit-lead.ts) |
+| v5.0.0-V2.2.2 | Input validation enforced at trusted service layer (L1) | lead submit | Server-side validation; client validation tidak dipercaya | [frontend/src/actions/submit-lead.ts](frontend/src/actions/submit-lead.ts) |
+| v5.0.0-V2.4.1 | Anti-automation controls (L2) | lead submit | Rate limit/throttle + honeypot; 429 on abuse | [frontend/src/actions/submit-lead.ts](frontend/src/actions/submit-lead.ts) |
+| v5.0.0-V4.1.1 | Correct Content-Type incl. charset (L1) | lead submit response | Pastikan JSON content-type + charset | [frontend/src/app/api/leads/route.ts](frontend/src/app/api/leads/route.ts) |
+| v5.0.0-V3.4.4 | `X-Content-Type-Options: nosniff` (L2) | website/endpoint | Header aktif di response HTML + JSON | [frontend/next.config.ts](frontend/next.config.ts) |
+| v5.0.0-V3.4.6 | CSP `frame-ancestors` prevents embedding by default (L2) | website | `frame-ancestors 'none'` kecuali ada alasan bisnis | [frontend/src/middleware.ts](frontend/src/middleware.ts) |
+| v5.0.0-V3.4.3 | CSP baseline includes `object-src 'none'` and `base-uri 'none'` (L2) | website | Pastikan directives hadir | [frontend/src/middleware.ts](frontend/src/middleware.ts) |
 
 Acceptable evidence examples:
 

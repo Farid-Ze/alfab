@@ -65,7 +65,7 @@ export default function ProductFilters() {
           placeholder={tx.products.filters.searchPlaceholder ?? "Search products..."}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          aria-label="Search products" // Accessible name
+          aria-label={tx.products.filters.searchAriaLabel ?? "Search products"} // Accessible name
         />
       </div>
 
@@ -73,7 +73,7 @@ export default function ProductFilters() {
       <div className="hidden md:block mb-8 border-b border-border pb-6">
         <div className="flex flex-wrap items-center gap-2">
           <FilterPill
-            label={locale === "id" ? "Semua" : "All"}
+            label={tx.products.filters.allLabel ?? "All"}
             active={!hasFilters}
             onClick={clear}
           />
@@ -91,7 +91,7 @@ export default function ProductFilters() {
       {/* Mobile Filter Toggle Button */}
       <div className="md:hidden mb-6 flex items-center justify-between">
         <p className="type-data text-muted" aria-live="polite" aria-atomic="true">
-          {filtered.length} {filtered.length === 1 ? "product" : "products"}
+          {filtered.length} {filtered.length === 1 ? (tx.products.filters.countSingular ?? "product") : (tx.products.filters.countPlural ?? "products")}
         </p>
         <button
           type="button"

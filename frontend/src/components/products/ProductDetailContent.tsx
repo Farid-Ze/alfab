@@ -66,7 +66,9 @@ export default function ProductDetailContent({ product }: Props) {
         {/* Product Image */}
         <div className="relative aspect-square bg-subtle border border-border overflow-hidden group">
           <Image
-            src="/images/products/product-placeholder.jpg"
+            src={product.image?.url && !product.image.url.includes("placeholder")
+              ? product.image.url
+              : "/images/products/product-placeholder.jpg"}
             alt={`${product.brand} ${product.name}`}
             fill
             priority

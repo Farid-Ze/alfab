@@ -7,6 +7,8 @@ interface ErrorStateProps {
     description?: string;
     retry?: () => void;
     showHome?: boolean;
+    homeHref?: string;
+    homeLabel?: string;
     className?: string;
 }
 
@@ -19,6 +21,8 @@ export default function ErrorState({
     description = "We encountered an unexpected error. Please try again.",
     retry,
     showHome = true,
+    homeHref = "/",
+    homeLabel = "Return Home",
     className = "",
 }: ErrorStateProps) {
     return (
@@ -52,10 +56,10 @@ export default function ErrorState({
 
                 {showHome && (
                     <AppLink
-                        href="/"
+                        href={homeHref}
                         className="type-ui-strong text-foreground/70 hover:text-foreground transition-colors border-b border-transparent hover:border-foreground"
                     >
-                        Return Home
+                        {homeLabel}
                     </AppLink>
                 )}
             </div>

@@ -2,6 +2,9 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { buildWhatsAppHref } from "@/lib/whatsapp";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 /**
  * WhatsAppCTA: Elegant WhatsApp sticky button.
@@ -9,6 +12,8 @@ import { useState, useEffect } from "react";
  */
 export default function WhatsAppCTA() {
     const [isVisible, setIsVisible] = useState(false);
+    const { locale } = useLocale();
+    const tx = t(locale);
 
     useEffect(() => {
         // Show after scrolling past hero
@@ -20,11 +25,17 @@ export default function WhatsAppCTA() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const whatsappNumber = "+6281234567890"; // TODO: Replace with env variable
-    const prefillMessage = encodeURIComponent(
-        "Hello, I would like to learn more about partnership opportunities with Alfa Beauty."
-    );
-    const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, "")}?text=${prefillMessage}`;
+    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+    const prefillMessage =
+        process.env.NEXT_PUBLIC_WHATSAPP_PREFILL ||
+        "Hello, I would like to learn more about partnership opportunities with Alfa Beauty.";
+
+    const whatsappUrl = buildWhatsAppHref({
+        number: whatsappNumber,
+        message: prefillMessage,
+    });
+
+    if (!whatsappNumber || whatsappUrl === "#") return null;
 
     return (
         <motion.a
@@ -35,7 +46,7 @@ export default function WhatsAppCTA() {
             animate={isVisible ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
             className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 bg-[#25D366] text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
-            aria-label="Contact via WhatsApp"
+            aria-label={tx.ui.contactViaWhatsapp}
             data-testid="whatsapp-cta"
         >
             {/* WhatsApp Icon */}
@@ -50,7 +61,7 @@ export default function WhatsAppCTA() {
 
             {/* Text (hidden on mobile) */}
             <span className="hidden sm:inline type-data">
-                Chat with us
+                {tx.ui.chatWithUs}
             </span>
         </motion.a>
     );

@@ -1,16 +1,18 @@
 import type { EducationArticle } from "@/lib/types";
+import type { Locale } from "@/lib/i18n";
 
 type Props = {
     article: EducationArticle;
+    locale: Locale;
 };
 
 /**
  * Article JSON-LD structured data.
  * Provides rich snippets for search engines (Headline, Date, Author).
  */
-export default function ArticleSchema({ article }: Props) {
+export default function ArticleSchema({ article, locale }: Props) {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    const articleUrl = `${siteUrl.replace(/\/$/, "")}/education/articles/${article.slug}`;
+    const articleUrl = `${siteUrl.replace(/\/$/, "")}/${locale}/education/articles/${article.slug}`;
 
     const schema = {
         "@context": "https://schema.org",
@@ -19,7 +21,7 @@ export default function ArticleSchema({ article }: Props) {
         description: article.excerpt,
         image: [
             // Fallback placeholder
-            `${siteUrl.replace(/\/$/, "")}/images/education/article-placeholder.jpg`
+            `${siteUrl.replace(/\/$/, "")}/images/education/training-placeholder.jpg`
         ],
         datePublished: article.date,
         dateModified: article.date,
@@ -33,7 +35,7 @@ export default function ArticleSchema({ article }: Props) {
             name: "PT Alfa Beauty Cosmetica",
             logo: {
                 "@type": "ImageObject",
-                url: `${siteUrl.replace(/\/$/, "")}/logo.png`
+                url: `${siteUrl.replace(/\/$/, "")}/images/logo.svg`
             }
         },
         mainEntityOfPage: {

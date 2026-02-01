@@ -20,14 +20,23 @@ import { logger } from "@/lib/logger";
 const ADMIN_TOKEN = env.LEAD_API_ADMIN_TOKEN || "";
 const EXPORT_LIMIT = 1000; // Pagination limit to prevent timeout
 
+function constantTimeEquals(a: string, b: string): boolean {
+    if (a.length !== b.length) return false;
+    let result = 0;
+    for (let i = 0; i < a.length; i++) {
+        result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    }
+    return result === 0;
+}
+
 export async function GET(req: Request) {
     // Validate admin token - MUST be non-empty and match
     const token =
         req.headers.get("x-admin-token") ||
         req.headers.get("authorization")?.replace("Bearer ", "");
 
-    // Security: Require ADMIN_TOKEN to be configured AND non-empty
-    if (!ADMIN_TOKEN || ADMIN_TOKEN.length < 8) {
+    // Security: Require ADMIN_TOKEN to be configured AND strong length
+    if (!ADMIN_TOKEN || ADMIN_TOKEN.length < 32) {
         logger.error("[leads/export] LEAD_API_ADMIN_TOKEN not configured or too short");
         return NextResponse.json(
             { error: "service_not_configured" },
@@ -35,7 +44,7 @@ export async function GET(req: Request) {
         );
     }
 
-    if (!token || token !== ADMIN_TOKEN) {
+    if (!token || !constantTimeEquals(token, ADMIN_TOKEN)) {
         return NextResponse.json(
             { error: "unauthorized" },
             { status: 401, headers: { "Cache-Control": "no-store" } }

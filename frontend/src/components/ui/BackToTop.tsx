@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { IconChevronUp } from "@/components/ui/icons";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 /**
  * BackToTop - Floating button to scroll back to top
@@ -15,6 +17,8 @@ import { IconChevronUp } from "@/components/ui/icons";
  */
 export default function BackToTop() {
     const [visible, setVisible] = React.useState(false);
+    const { locale } = useLocale();
+    const tx = t(locale);
 
     React.useEffect(() => {
         const handleScroll = () => {
@@ -42,7 +46,7 @@ export default function BackToTop() {
                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground
                        transition-all duration-300
                        animate-in fade-in slide-in-from-bottom-4"
-            aria-label="Back to top"
+            aria-label={tx.ui?.backToTop ?? "Back to top"}
         >
             <IconChevronUp className="h-5 w-5" />
         </button>

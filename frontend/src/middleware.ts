@@ -53,11 +53,11 @@ export function middleware(request: NextRequest) {
 
     const cspHeader = `
         default-src 'self';
-        script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ""};
+        script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://www.googletagmanager.com ${isDev ? "'unsafe-eval'" : ""};
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-        img-src 'self' data: https://cdn.brandfetch.io https://*.supabase.co https://placehold.co;
+        img-src 'self' data: https://cdn.brandfetch.io https://*.supabase.co https://placehold.co https://www.google-analytics.com;
         font-src 'self' https://fonts.gstatic.com;
-        connect-src 'self' https://*.supabase.co https://*.sentry.io https://vitals.vercel-insights.com https://www.google-analytics.com;
+        connect-src 'self' https://*.supabase.co https://*.sentry.io https://vitals.vercel-insights.com https://www.google-analytics.com https://www.googletagmanager.com;
         object-src 'none';
         base-uri 'none';
         form-action 'self';

@@ -15,6 +15,15 @@ export default function EducationEventDetailClient({ slug }: { slug: string }) {
   const tx = useTranslations();
   const base = `/${locale}`;
   const event = slug ? getEventBySlug(locale, slug) : null;
+  const typeLabel = event?.type
+    ? (tx.education.hub.types[event.type.toLowerCase() as keyof typeof tx.education.hub.types] || event.type)
+    : "";
+  const audienceLabels = event?.audience?.map((audience) => {
+    const key = audience.toLowerCase();
+    if (key.startsWith("salon")) return tx.leadForm?.salonTypes?.salon || audience;
+    if (key.startsWith("barber")) return tx.leadForm?.salonTypes?.barber || audience;
+    return audience;
+  }) ?? [];
 
   if (!event) {
     return (
@@ -69,11 +78,11 @@ export default function EducationEventDetailClient({ slug }: { slug: string }) {
             <p className="type-body text-muted-strong">{event.excerpt}</p>
             <div className="flex items-center gap-3 type-data text-muted">
               <IconDocument className="h-4 w-4" />
-              <span>{event.type}</span>
+              <span>{typeLabel}</span>
             </div>
             <div className="flex items-center gap-2 type-data text-muted">
               <IconUsers className="h-4 w-4" />
-              <span>{tx.education.hub.labels.audience}: {event.audience.join(", ")}</span>
+              <span>{tx.education.hub.labels.audience}: {audienceLabels.join(", ")}</span>
             </div>
           </header>
 

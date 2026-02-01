@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
+import { useReducedMotion } from "@/components/a11y/ReducedMotionProvider";
 
 /**
  * LenisProvider: Smooth scroll wrapper for Design V2.
@@ -16,8 +17,10 @@ export default function LenisProvider({
     children: React.ReactNode;
 }) {
     const lenisRef = useRef<Lenis | null>(null);
+    const { prefersReducedMotion } = useReducedMotion();
 
     useEffect(() => {
+        if (prefersReducedMotion) return;
         const lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Elegant easing
@@ -39,7 +42,7 @@ export default function LenisProvider({
         return () => {
             lenis.destroy();
         };
-    }, []);
+    }, [prefersReducedMotion]);
 
     return <>{children}</>;
 }

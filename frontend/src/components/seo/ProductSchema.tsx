@@ -1,40 +1,36 @@
 import type { Product } from "@/lib/types";
+import type { Locale } from "@/lib/i18n";
 
 type Props = {
     product: Product;
+    locale: Locale;
 };
 
 /**
  * Product JSON-LD structured data.
  * Provides rich snippets for search engines (Name, Description, Brand, Image).
  */
-export default function ProductSchema({ product }: Props) {
+export default function ProductSchema({ product, locale }: Props) {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    const productUrl = `${siteUrl.replace(/\/$/, "")}/products/${product.slug}`;
+    const productUrl = `${siteUrl.replace(/\/$/, "")}/${locale}/products/${product.slug}`;
+    const imageUrl = product.image?.url
+        ? (product.image.url.startsWith("http")
+            ? product.image.url
+            : `${siteUrl.replace(/\/$/, "")}${product.image.url.startsWith("/") ? "" : "/"}${product.image.url}`)
+        : undefined;
+    const hasRealImage = !!imageUrl && !imageUrl.includes("placeholder");
 
     const schema = {
         "@context": "https://schema.org",
         "@type": "Product",
         name: product.name,
-        image: [
-            // Fallback to placeholder if no specific images (Phase 20 simplification)
-            `${siteUrl.replace(/\/$/, "")}/images/products/product-placeholder.jpg`
-        ],
+        ...(hasRealImage ? { image: [imageUrl] } : {}),
         description: product.summary,
         brand: {
             "@type": "Brand",
             name: product.brand,
         },
         url: productUrl,
-        // Add dummy offer to make it valid for Merchant Center (optional but good practice)
-        offers: {
-            "@type": "Offer",
-            priceCurrency: "IDR",
-            availability: "https://schema.org/InStock",
-            url: productUrl,
-            // Price is hidden/call-to-action based, so we omit specific price or use 0 with "Call for price" intent implication
-            price: "0",
-        },
     };
 
     return (

@@ -1,16 +1,18 @@
 import type { EducationEvent } from "@/lib/types";
+import type { Locale } from "@/lib/i18n";
 
 type Props = {
     event: EducationEvent;
+    locale: Locale;
 };
 
 /**
  * Event JSON-LD structured data.
  * Provides rich snippets for search engines (Name, Date, Location, Organizer).
  */
-export default function EventSchema({ event }: Props) {
+export default function EventSchema({ event, locale }: Props) {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    const eventUrl = `${siteUrl.replace(/\/$/, "")}/education/events/${event.slug}`;
+    const eventUrl = `${siteUrl.replace(/\/$/, "")}/${locale}/education/events/${event.slug}`;
 
     const schema = {
         "@context": "https://schema.org",
@@ -31,23 +33,12 @@ export default function EventSchema({ event }: Props) {
                 addressCountry: "ID"
             }
         },
-        image: [
-            // Fallback placeholder
-            `${siteUrl.replace(/\/$/, "")}/images/education/event-placeholder.jpg`
-        ],
         organizer: {
             "@type": "Organization",
             name: "PT Alfa Beauty Cosmetica",
             url: siteUrl
         },
         url: eventUrl,
-        offers: {
-            "@type": "Offer",
-            price: "0",
-            priceCurrency: "IDR",
-            availability: "https://schema.org/InStock",
-            url: eventUrl
-        }
     };
 
     return (

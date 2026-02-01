@@ -21,16 +21,37 @@ export async function generateMetadata({
 
   const event = getEventBySlug(locale, slug) ?? getEventBySlug(locale === "en" ? "id" : "en", slug);
   const path = `/${locale}/education/events/${slug}`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const fullUrl = `${siteUrl.replace(/\/$/, "")}${path}`;
+  const fallbackImage = `${siteUrl.replace(/\/$/, "")}/images/education/training-placeholder.jpg`;
+
+  const title = event?.title ?? "Event";
+  const description = event?.excerpt;
 
   return {
-    title: event?.title ?? "Event",
-    description: event?.excerpt,
+    title,
+    description,
     alternates: {
       canonical: path,
       languages: {
         en: `/en/education/events/${slug}`,
         id: `/id/education/events/${slug}`,
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url: fullUrl,
+      siteName: "Alfa Beauty Cosmetica",
+      locale: locale === "id" ? "id_ID" : "en_US",
+      type: "website",
+      images: [{ url: fallbackImage }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [fallbackImage],
     },
   };
 }
@@ -55,7 +76,7 @@ export default async function EducationEventDetailPage({
 
   return (
     <div className="mx-auto max-w-[80rem] px-4 sm:px-6 lg:px-10 py-12">
-      <EventSchema event={event} />
+      <EventSchema event={event} locale={locale} />
       <EducationEventDetailClient slug={slug} />
     </div>
   );

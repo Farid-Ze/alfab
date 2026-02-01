@@ -3,11 +3,13 @@
 import { usePathname, useRouter } from "next/navigation";
 
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 type LocaleToggleTone = "default" | "onMedia";
 
 export default function LocaleToggle({ tone = "default" }: { tone?: LocaleToggleTone }) {
   const { locale, setLocale } = useLocale();
+  const tx = t(locale);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -44,6 +46,7 @@ export default function LocaleToggle({ tone = "default" }: { tone?: LocaleToggle
         onClick={() => navigate("en")}
         className={`${baseBtn} ${locale === "en" ? activeClass : inactiveClass}`}
         aria-pressed={locale === "en"}
+        aria-label={tx.ui?.switchToEnglish ?? "Switch to English"}
       >
         EN
       </button>
@@ -55,6 +58,7 @@ export default function LocaleToggle({ tone = "default" }: { tone?: LocaleToggle
         onClick={() => navigate("id")}
         className={`${baseBtn} ${locale === "id" ? activeClass : inactiveClass}`}
         aria-pressed={locale === "id"}
+        aria-label={tx.ui?.switchToIndonesian ?? "Switch to Indonesian"}
       >
         ID
       </button>

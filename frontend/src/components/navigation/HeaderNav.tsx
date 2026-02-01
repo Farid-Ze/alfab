@@ -7,12 +7,15 @@ import ButtonLink from "@/components/ui/ButtonLink";
 import MagneticButton from "@/components/ui/MagneticButton";
 import LocaleToggle from "@/components/i18n/LocaleToggle";
 import HamburgerIcon from "@/components/ui/HamburgerIcon";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 const NAV_LINKS = [
-    { href: "#about", label: "About" },
-    { href: "#brands", label: "Our Brands" },
-    { href: "#education", label: "Education" },
-    { href: "#partner", label: "Partnership" },
+    { href: "/about", labelKey: "about" },
+    { href: "/products", labelKey: "products" },
+    { href: "/education", labelKey: "education" },
+    { href: "/partnership", labelKey: "partnership" },
+    { href: "/contact", labelKey: "contact" },
 ];
 
 /**
@@ -20,6 +23,10 @@ const NAV_LINKS = [
  * Design V2 pattern - Transparent at top, frosted on scroll.
  */
 export default function HeaderNav() {
+    const { locale } = useLocale();
+    const tx = t(locale);
+    const base = `/${locale}`;
+
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -46,7 +53,7 @@ export default function HeaderNav() {
                 <div className="container mx-auto px-6 lg:px-12">
                     <div className="flex items-center justify-between h-20">
                         {/* Logo */}
-                        <AppLink href="/" className="type-footer-brand text-foreground">
+                        <AppLink href={base} className="type-footer-brand text-foreground">
                             ALFA BEAUTY
                         </AppLink>
 
@@ -56,21 +63,21 @@ export default function HeaderNav() {
                                 <MagneticButton
                                     key={link.href}
                                     as="a"
-                                    href={link.href}
+                                    href={`${base}${link.href}`}
                                     strength={0.2}
                                     className="type-nav text-foreground-muted hover:text-foreground transition-colors duration-[var(--transition-elegant)]"
                                 >
-                                    {link.label}
+                                    {tx.nav[link.labelKey as keyof typeof tx.nav]}
                                 </MagneticButton>
                             ))}
 
                             <MagneticButton
                                 as="a"
-                                href="#partner"
+                                href={`${base}/partnership`}
                                 strength={0.15}
                                 className="ui-btn-primary px-6 py-2.5 type-data rounded-full"
                             >
-                                Become Partner
+                                {tx.nav.partnership}
                             </MagneticButton>
 
                             {/* Language Switcher - DEV-37 */}
@@ -81,7 +88,7 @@ export default function HeaderNav() {
                         <button
                             onClick={() => setIsMobileOpen(!isMobileOpen)}
                             className="lg:hidden p-2 text-foreground"
-                            aria-label={isMobileOpen ? "Close menu" : "Open menu"}
+                            aria-label={isMobileOpen ? tx.header.actions.closeMenu : tx.header.actions.openMenu}
                             aria-expanded={isMobileOpen}
                         >
                             <HamburgerIcon isOpen={isMobileOpen} />
@@ -108,11 +115,11 @@ export default function HeaderNav() {
                             transition={{ delay: i * 0.1, duration: 0.4 }}
                         >
                             <AppLink
-                                href={link.href}
+                                href={`${base}${link.href}`}
                                 onClick={() => setIsMobileOpen(false)}
                                 className="type-h2 text-foreground block py-4 border-b border-border"
                             >
-                                {link.label}
+                                {tx.nav[link.labelKey as keyof typeof tx.nav]}
                             </AppLink>
                         </motion.div>
                     ))}
@@ -124,12 +131,12 @@ export default function HeaderNav() {
                         className="mt-8"
                     >
                         <ButtonLink
-                            href="#partner"
+                            href={`${base}/partnership`}
                             variant="primary"
                             onClick={() => setIsMobileOpen(false)}
                             className="w-full py-4 text-center type-body rounded-full block"
                         >
-                            Become Partner
+                            {tx.nav.partnership}
                         </ButtonLink>
                     </motion.div>
                 </nav>

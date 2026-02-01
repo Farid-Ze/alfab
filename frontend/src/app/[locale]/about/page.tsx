@@ -1,12 +1,44 @@
+import type { Metadata } from "next";
+
 import StaggerReveal from "@/components/ui/StaggerReveal";
 import ButtonLink from "@/components/ui/ButtonLink";
+import { normalizeLocale, t } from "@/lib/i18n";
 
 /**
  * About Page
  * Design V2: Editorial layout with story sections
  * Migrated from (v2) to production route.
  */
-export default function AboutPage() {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const resolved = normalizeLocale(locale);
+  const tx = t(resolved);
+
+  return {
+    title: tx.nav.about,
+    description: tx.seo.aboutDescription,
+    alternates: {
+      canonical: `/${resolved}/about`,
+      languages: {
+        en: "/en/about",
+        id: "/id/about",
+      },
+    },
+  };
+}
+
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const resolved = normalizeLocale(locale);
+
   return (
     <main className="min-h-screen pt-24 pb-16">
       <div className="container mx-auto px-6 lg:px-12">
@@ -89,7 +121,7 @@ export default function AboutPage() {
               Join our network of professional salons and distributors.
             </p>
             <ButtonLink
-              href="/partnership"
+              href={`/${resolved}/partnership`}
               variant="primary"
               className="px-8 py-4 type-nav rounded-full inline-block transition-all duration-[var(--transition-elegant)]"
             >

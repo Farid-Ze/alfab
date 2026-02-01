@@ -14,6 +14,12 @@ function normalizeNumberE164(input?: string): string | undefined {
   return digits.length >= 10 ? digits : undefined;
 }
 
+export function formatWhatsAppDisplay(input?: string): string | undefined {
+  const normalized = normalizeNumberE164(input);
+  if (!normalized) return undefined;
+  return `+${normalized}`;
+}
+
 export function buildWhatsAppHref(opts: {
   number?: string;
   message?: string;

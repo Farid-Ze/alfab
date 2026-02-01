@@ -61,6 +61,10 @@ export default function ProductCard({
     const brand = product?.brand ?? brandProp ?? "";
     const name = product?.name ?? nameProp ?? "";
     const summary = product?.summary ?? summaryProp ?? "";
+    const productImageUrl = product?.image?.url;
+    const resolvedImageUrl = productImageUrl && !productImageUrl.includes("placeholder")
+        ? productImageUrl
+        : imageUrl;
     const ctaLabel = viewDetailsLabel ?? tx.cta.viewDetails;
 
     return (
@@ -75,7 +79,7 @@ export default function ProductCard({
             {/* Product Image */}
             <div className="relative aspect-square bg-subtle overflow-hidden">
                 <Image
-                    src={imageUrl}
+                    src={resolvedImageUrl}
                     alt={`${brand} ${name}`}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

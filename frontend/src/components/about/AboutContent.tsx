@@ -117,7 +117,7 @@ export default function AboutContent() {
           {copy.about.cta.body}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <ButtonLink href={`${base}/partnership/become-partner`} variant="primary" size="lg">
+          <ButtonLink href={`${base}/partnership`} variant="primary" size="lg">
             {copy.cta.becomePartner}
           </ButtonLink>
           <ButtonLink href={`${base}/contact`} variant="secondary" size="lg">

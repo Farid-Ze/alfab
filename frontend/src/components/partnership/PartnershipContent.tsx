@@ -39,7 +39,7 @@ export default function PartnershipContent() {
           <p className="type-lede max-w-lg">{copy.partnership.hero.body}</p>
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <ButtonLink
-              href={`${base}/partnership/become-partner`}
+              href={`${base}/partnership`}
               variant="primary"
               size="lg"
               className="group inline-flex items-center gap-2"
@@ -113,7 +113,7 @@ export default function PartnershipContent() {
           </div>
           <div className="shrink-0">
             <ButtonLink
-              href={`${base}/partnership/become-partner`}
+              href={`${base}/partnership`}
               variant="inverted"
               size="lg"
               className="group"

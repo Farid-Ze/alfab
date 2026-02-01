@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import ErrorState from "@/components/ui/ErrorState";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 export default function Error({
     error,
@@ -14,12 +16,22 @@ export default function Error({
         console.error(error);
     }, [error]);
 
+    const { locale } = useLocale();
+    const tx = t(locale);
+    const base = `/${locale}`;
+
     return (
         <main className="min-h-screen pt-24 pb-16 flex items-center justify-center">
             <ErrorState
-                title="Unable to load products"
-                description="We couldn't load the product catalog at this time. Please try refreshing the page."
+                title={locale === "id" ? "Gagal memuat produk" : "Unable to load products"}
+                description={
+                    locale === "id"
+                        ? "Kami tidak dapat memuat katalog produk saat ini. Silakan coba muat ulang halaman."
+                        : "We couldn't load the product catalog at this time. Please try refreshing the page."
+                }
                 retry={reset}
+                homeHref={base}
+                homeLabel={tx.system.notFound.backHome}
             />
         </main>
     );

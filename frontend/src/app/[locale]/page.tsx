@@ -1,8 +1,12 @@
+import type { Metadata } from "next";
+
 import StaggerReveal from "@/components/ui/StaggerReveal";
 import HeroParallax from "@/components/ui/HeroParallax";
 import ParallaxImage from "@/components/ui/ParallaxImage";
 import AppLink from "@/components/ui/AppLink";
 import ButtonLink from "@/components/ui/ButtonLink";
+import Footer from "@/components/layout/Footer";
+import { normalizeLocale, t } from "@/lib/i18n";
 
 
 /**
@@ -10,7 +14,37 @@ import ButtonLink from "@/components/ui/ButtonLink";
  * Design V2: Elegant Professional + Montserrat + Ineo-Sense Motion
  * Now serving at root [locale] path.
  */
-export default function HomePage() {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const resolved = normalizeLocale(locale);
+  const tx = t(resolved);
+
+  return {
+    title: tx.nav.home,
+    description: tx.seo.homeDescription,
+    alternates: {
+      canonical: `/${resolved}`,
+      languages: {
+        en: "/en",
+        id: "/id",
+      },
+    },
+  };
+}
+
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const resolved = normalizeLocale(locale);
+  const base = `/${resolved}`;
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -125,15 +159,15 @@ export default function HomePage() {
 
             {/* Brand Logos */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                { name: "Alfaparf Milano Professional", country: "Italy", slug: "alfaparf" },
-                { name: "Farmavita", country: "Italy", slug: "farmavita" },
-                { name: "Montibello", country: "Spain", slug: "montibello" },
-                { name: "Gamma+ Professional", country: "Italy", slug: "gammaplus" },
-              ].map((brand) => (
+                {[
+                  { name: "Alfaparf Milano Professional", country: "Italy", slug: "alfaparf" },
+                  { name: "Farmavita", country: "Italy", slug: "farmavita" },
+                  { name: "Montibello", country: "Spain", slug: "montibello" },
+                  { name: "Gamma+ Professional", country: "Italy", slug: "gammaplus" },
+                ].map((brand) => (
                 <AppLink
                   key={brand.name}
-                  href={`/products?brand=${brand.slug}`}
+                  href={`${base}/products?brand=${brand.slug}`}
                   className="group p-8 rounded-2xl bg-background transition-all duration-[var(--transition-elegant)] hover:scale-105 block"
                   style={{ boxShadow: "var(--shadow-elegant)" }}
                 >
@@ -178,7 +212,7 @@ export default function HomePage() {
               {/* CTA Button - DEV-20 */}
               <div className="mt-8">
                 <ButtonLink
-                  href="/education"
+                  href={`${base}/education`}
                   variant="primary"
                   className="px-8 py-4 type-nav rounded-full inline-block transition-all duration-[var(--transition-elegant)]"
                 >
@@ -246,7 +280,7 @@ export default function HomePage() {
             {/* CTA */}
             <div className="text-center mt-12">
               <ButtonLink
-                href="/partnership"
+                href={`${base}/partnership`}
                 variant="primary"
                 className="px-10 py-4 type-nav rounded-full transition-all duration-[var(--transition-elegant)] inline-block"
               >
@@ -268,13 +302,7 @@ export default function HomePage() {
         </div>
       </section >
 
-      {/* Footer Placeholder */}
-      < footer className="py-16 bg-panel border-t border-border" >
-        <div className="container mx-auto px-6 lg:px-12 text-center">
-          <p className="type-footer-brand text-foreground mb-2">ALFA BEAUTY</p>
-          <p className="type-legal text-muted">© 2026 PT Alfa Beauty Cosmetica. All rights reserved.</p>
-        </div>
-      </footer >
+      <Footer />
     </div >
   );
 }

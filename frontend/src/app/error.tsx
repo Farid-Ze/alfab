@@ -24,6 +24,8 @@ export default function ErrorPage({
         description="Please try again. If the issue persists, contact technical support."
         retry={reset}
         showHome={true}
+        homeHref="/id"
+        homeLabel="Back to Home"
       />
       {error?.digest && (
         <div className="fixed bottom-4 right-4 type-legal text-muted opacity-50 font-mono">

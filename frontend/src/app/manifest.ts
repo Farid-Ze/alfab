@@ -5,15 +5,15 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Alfa Beauty Cosmetica',
     short_name: 'Alfa Beauty',
     description: 'Professional beauty distribution for salons and barbershops in Indonesia.',
-    start_url: '/',
+    start_url: '/id',
     display: 'standalone',
     background_color: '#ffffff',
     theme_color: '#ffffff',
     icons: [
       {
-        src: '/icon.png',
+        src: '/images/logo.svg',
         sizes: 'any',
-        type: 'image/png',
+        type: 'image/svg+xml',
       },
     ],
   };

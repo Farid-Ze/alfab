@@ -1,4 +1,8 @@
-﻿import AppLink from "@/components/ui/AppLink";
+﻿"use client";
+
+import AppLink from "@/components/ui/AppLink";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 const SOCIAL_LINKS = [
     { name: "Instagram", href: "https://instagram.com/alfabeauty", icon: "instagram" },
@@ -6,17 +10,10 @@ const SOCIAL_LINKS = [
     { name: "LinkedIn", href: "https://linkedin.com/company/alfabeauty", icon: "linkedin" },
 ];
 
-const SITEMAP = [
-    { title: "Products", href: "/products" },
-    { title: "Education", href: "/education" },
-    { title: "Partnership", href: "/partnership" },
-    { title: "About", href: "/about" },
-    { title: "Contact", href: "/contact" },
-];
-
 const LEGAL = [
-    { title: "Privacy Policy", href: "/privacy" },
-    { title: "Terms of Service", href: "/terms" },
+    { titleKey: "privacy", fallbackTitle: "Privacy Policy", href: "/privacy" },
+    { titleKey: "terms", fallbackTitle: "Terms of Service", href: "/terms" },
+    { titleKey: "securityPolicy", fallbackTitle: "Security Policy", href: "/security-policy" },
 ];
 
 /**
@@ -24,6 +21,25 @@ const LEGAL = [
  * Design V2 pattern for professional closure.
  */
 export default function Footer() {
+    const { locale } = useLocale();
+    const tx = t(locale);
+    const base = `/${locale}`;
+
+    const sitemap = [
+        { title: tx.nav.products, href: `${base}/products` },
+        { title: tx.nav.education, href: `${base}/education` },
+        { title: tx.nav.partnership, href: `${base}/partnership` },
+        { title: tx.nav.about, href: `${base}/about` },
+        { title: tx.nav.contact, href: `${base}/contact` },
+    ];
+
+    const legal = LEGAL.map((item) => ({
+        title:
+            (tx.nav as Record<string, string>)[item.titleKey] ||
+            item.fallbackTitle,
+        href: `${base}${item.href}`,
+    }));
+
     return (
         <footer className="bg-panel border-t border-border">
             {/* Main Footer */}
@@ -31,11 +47,11 @@ export default function Footer() {
                 <div className="grid lg:grid-cols-4 gap-12">
                     {/* Brand Column */}
                     <div className="lg:col-span-2">
-                        <AppLink href="/" className="type-footer-brand text-foreground block mb-4">
+                        <AppLink href={base} className="type-footer-brand text-foreground block mb-4">
                             ALFA BEAUTY
                         </AppLink>
                         <p className="type-body text-muted max-w-md mb-6">
-                            PT Alfa Beauty Cosmetica â€” Your trusted partner for professional haircare distribution in Indonesia.
+                            {tx.footer.blurb}
                         </p>
 
                         {/* Social Links */}
@@ -71,9 +87,9 @@ export default function Footer() {
 
                     {/* Sitemap Column */}
                     <div>
-                        <h3 className="type-h4 text-foreground mb-4">Quick Links</h3>
+                        <h3 className="type-h4 text-foreground mb-4">{tx.footer.explore}</h3>
                         <nav className="space-y-3">
-                            {SITEMAP.map((link) => (
+                            {sitemap.map((link) => (
                                 <AppLink
                                     key={link.href}
                                     href={link.href}
@@ -87,9 +103,9 @@ export default function Footer() {
 
                     {/* Legal Column */}
                     <div>
-                        <h3 className="type-h4 text-foreground mb-4">Legal</h3>
+                        <h3 className="type-h4 text-foreground mb-4">{tx.footer.legal}</h3>
                         <nav className="space-y-3">
-                            {LEGAL.map((link) => (
+                            {legal.map((link) => (
                                 <AppLink
                                     key={link.href}
                                     href={link.href}
@@ -107,10 +123,10 @@ export default function Footer() {
             <div className="border-t border-border">
                 <div className="container mx-auto px-6 lg:px-12 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="type-legal text-muted text-center md:text-left">
-                        Â© 2026 PT Alfa Beauty Cosmetica. All rights reserved.
+                        © 2026 PT Alfa Beauty Cosmetica. {tx.footer.copyrightSuffix}
                     </p>
                     <p className="type-legal text-muted text-center md:text-right">
-                        Exclusive distributor of Alfaparf Milano, Farmavita, Montibello, and Gamma+ in Indonesia.
+                        {tx.footer.distributorNote}
                     </p>
                 </div>
             </div>

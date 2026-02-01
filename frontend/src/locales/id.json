@@ -1,5 +1,6 @@
 {
     "seo": {
+        "homeDescription": "Distribusi beauty profesional untuk salon dan barbershop di Indonesia. Produk, edukasi, dan dukungan teknis.",
         "aboutDescription": "Tentang PT Alfa Beauty Cosmetica — distribusi beauty profesional untuk salon dan barbershop di Indonesia.",
         "contactDescription": "Hubungi Alfa Beauty Cosmetica untuk konsultasi, rekomendasi produk, dan pertanyaan partnership.",
         "productsDescription": "Jelajahi portofolio produk profesional yang terkurasi. Tanpa harga publik — konsultasi via WhatsApp.",
@@ -7,7 +8,8 @@
         "partnershipDescription": "Menjadi partner untuk akses produk terkurasi, edukasi, dan dukungan teknis.",
         "becomePartnerDescription": "Kirim data bisnis untuk menjadi partner Alfa Beauty. Tim kami akan follow up dalam 24 jam.",
         "privacyDescription": "Kebijakan Privasi untuk website Alfa Beauty Cosmetica.",
-        "termsDescription": "Syarat dan ketentuan penggunaan website Alfa Beauty Cosmetica."
+        "termsDescription": "Syarat dan ketentuan penggunaan website Alfa Beauty Cosmetica.",
+        "securityPolicyDescription": "Kebijakan pelaporan kerentanan dan praktik keamanan."
     },
     "nav": {
         "home": "Beranda",
@@ -15,7 +17,10 @@
         "education": "Edukasi",
         "partnership": "Kemitraan",
         "about": "Tentang",
-        "contact": "Kontak"
+        "contact": "Kontak",
+        "privacy": "Kebijakan Privasi",
+        "terms": "Syarat & Ketentuan",
+        "securityPolicy": "Kebijakan Keamanan"
     },
     "header": {
         "announcement": "Konsultasi via WhatsApp — tanpa harga publik.",
@@ -57,6 +62,40 @@
             "closeMenu": "Tutup menu",
             "openSearch": "Ke halaman Produk"
         }
+    },
+    "megaMenu": {
+        "labels": {
+            "products": "Produk",
+            "education": "Edukasi",
+            "partnership": "Kemitraan"
+        },
+        "sections": {
+            "byBrand": "Berdasarkan Brand",
+            "byCategory": "Berdasarkan Kategori",
+            "programs": "Program",
+            "resources": "Sumber",
+            "forProfessionals": "Untuk Profesional"
+        },
+        "links": {
+            "alfaparf": "Alfaparf Milano",
+            "farmavita": "Farmavita",
+            "montibello": "Montibello",
+            "gammaplus": "Gamma+ Professional",
+            "hairColor": "Pewarnaan",
+            "hairCare": "Perawatan",
+            "styling": "Styling",
+            "grooming": "Grooming",
+            "upcomingEvents": "Event Mendatang",
+            "articles": "Artikel",
+            "whyPartner": "Mengapa Bermitra",
+            "partnerBenefits": "Manfaat Kemitraan"
+        },
+        "cta": {
+            "viewAllProducts": "Lihat Semua Produk",
+            "exploreEducation": "Jelajahi Edukasi",
+            "becomePartner": "Jadi Partner"
+        },
+        "description": "Jelajahi rangkaian solusi profesional kami."
     },
     "cta": {
         "becomePartner": "Jadi Partner",
@@ -124,6 +163,33 @@
     "contact": {
         "title": "Kontak",
         "body": "Untuk konsultasi, rekomendasi produk, dan pertanyaan kemitraan, hubungi kami via WhatsApp.",
+        "officeTitle": "Kantor",
+        "form": {
+            "title": "Kirim pesan",
+            "lede": "Isi formulir di bawah dan tim kami akan merespons secepatnya.",
+            "fields": {
+                "name": "Nama",
+                "email": "Email",
+                "subject": "Subjek",
+                "message": "Pesan",
+                "namePlaceholder": "Nama Anda",
+                "emailPlaceholder": "anda@email.com",
+                "subjectPlaceholder": "Ada yang bisa kami bantu?",
+                "messagePlaceholder": "Pesan Anda..."
+            },
+            "consentPrefix": "Saya menyetujui ",
+            "consentLink": "Kebijakan Privasi",
+            "consentSuffix": " dan memberikan persetujuan untuk pemrosesan data pribadi saya.",
+            "submit": "Kirim Pesan",
+            "sending": "Mengirim...",
+            "success": "Terima kasih! Pesan Anda berhasil dikirim.",
+            "errors": {
+                "consentRequired": "Anda harus menyetujui kebijakan privasi untuk mengirim formulir ini.",
+                "rateLimited": "Terlalu banyak pengiriman. Silakan coba lagi nanti.",
+                "validation": "Silakan periksa input Anda dan coba lagi.",
+                "generic": "Terjadi kesalahan. Silakan coba lagi."
+            }
+        },
         "email": "Email",
         "whatsapp": {
             "title": "WhatsApp",
@@ -146,38 +212,6 @@
             "body": "Tim kami siap membantu mengembangkan bisnis kecantikan Anda. Hubungi hari ini dan mari diskusikan bagaimana kami dapat mendukung kesuksesan Anda.",
             "button": "Mulai Percakapan"
         }
-    },
-    "partnership": {
-        "title": "Kemitraan",
-        "lede": "Kami bekerja sebagai partner strategis untuk salon dan barbershop: produk terkurasi, edukasi, dan dukungan teknis. B2B-first, profesional, tanpa gimmick retail.",
-        "cards": {
-            "curated": {
-                "title": "Portofolio terkurasi",
-                "body": "Akses brand terpilih yang didukung pengetahuan teknis dan pengalaman penggunaan nyata."
-            },
-            "education": {
-                "title": "Edukasi & dukungan",
-                "body": "Training, product knowledge, dan dukungan untuk membantu tim Anda memberi hasil konsisten."
-            },
-            "b2b": {
-                "title": "B2B-first",
-                "body": "Dirancang untuk profesional — B2B-first, tanpa gimmick retail, tanpa harga publik."
-            }
-        },
-        "readyBlock": {
-            "title": "Siap jadi partner?",
-            "body": "Kirim detail Anda dan tim kami akan follow up. Permintaan Anda kami simpan sebelum ditandai berhasil."
-        },
-        "features": [
-            "Produk premium pilihan",
-            "Harga B2B kompetitif",
-            "Pelatihan profesional",
-            "Dukungan khusus",
-            "Materi marketing",
-            "Pembayaran fleksibel",
-            "Program loyalitas",
-            "Jangkauan nasional"
-        ]
     },
     "becomePartner": {
         "title": "Jadi Partner",
@@ -243,6 +277,35 @@
     "legal": {
         "privacyTitle": "Kebijakan Privasi",
         "termsTitle": "Syarat & Ketentuan",
+        "securityTitle": "Kebijakan Keamanan",
+        "securityPolicy": {
+            "intro": {
+                "body": "Alfa Beauty Cosmetica berkomitmen melindungi mitra kami dan menerima laporan kerentanan dari peneliti keamanan."
+            },
+            "sections": {
+                "disclosure": {
+                    "title": "Pelaporan Kerentanan",
+                    "body": "Jika Anda menemukan kerentanan, silakan laporkan melalui email di:"
+                },
+                "guidelines": {
+                    "title": "Panduan Pelaporan",
+                    "items": [
+                        "Berikan deskripsi kerentanan secara detail.",
+                        "Sertakan langkah reproduksi (PoC).",
+                        "Jangan mengakses atau mengubah data yang bukan milik Anda.",
+                        "Jangan melakukan serangan denial-of-service."
+                    ]
+                },
+                "safeHarbor": {
+                    "title": "Safe Harbor",
+                    "body": "Kami tidak akan menempuh tindakan hukum terhadap peneliti yang melaporkan kerentanan dengan itikad baik dan sesuai kebijakan ini."
+                },
+                "response": {
+                    "title": "Timeline Respons",
+                    "body": "Kami menargetkan konfirmasi penerimaan dalam 24 jam dan evaluasi tingkat keparahan dalam 5 hari kerja."
+                }
+            }
+        },
         "privacyPolicy": {
             "intro": {
                 "prefix": "Tanggal Efektif: 1 Januari 2026.",
@@ -553,7 +616,23 @@
     "footer": {
         "explore": "Jelajahi",
         "legal": "Legal",
+        "ui": {
+            "backToTop": "Kembali ke atas",
+            "closeZoom": "Tutup zoom",
+            "clickToEnlarge": "Klik untuk memperbesar",
+            "serviceBackground": "Latar layanan",
+            "contactViaWhatsapp": "Hubungi via WhatsApp",
+            "chatWithUs": "Chat dengan kami",
+            "skipToMainContent": "Lewati ke konten utama",
+            "switchToEnglish": "Ganti ke bahasa Inggris",
+            "switchToIndonesian": "Ganti ke bahasa Indonesia"
+        },
+            "searchAriaLabel": "Cari produk",
         "blurb": "Distribusi kecantikan profesional untuk salon dan barbershop di Indonesia.",
-        "copyrightSuffix": "Hak cipta dilindungi."
+        "copyrightSuffix": "Hak cipta dilindungi.",
+            "allLabel": "Semua",
+            "countSingular": "produk",
+            "countPlural": "produk",
+        "distributorNote": "Distributor eksklusif Alfaparf Milano, Farmavita, Montibello, dan Gamma+ di Indonesia."
     }
 }

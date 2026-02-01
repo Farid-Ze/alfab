@@ -3,6 +3,8 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 type ImageZoomProps = {
     src: string;
@@ -19,6 +21,8 @@ export default function ImageZoom({ src, alt, className = "" }: ImageZoomProps) 
     const [isZoomed, setIsZoomed] = useState(false);
     const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
     const containerRef = useRef<HTMLDivElement>(null);
+    const { locale } = useLocale();
+    const tx = t(locale);
 
     const handleMouseMove = (e: React.MouseEvent) => {
         if (!containerRef.current) return;
@@ -32,15 +36,26 @@ export default function ImageZoom({ src, alt, className = "" }: ImageZoomProps) 
         setIsZoomed(!isZoomed);
     };
 
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setIsZoomed(!isZoomed);
+        }
+    };
+
     return (
         <>
             {/* Thumbnail with hover zoom */}
             <div
                 ref={containerRef}
                 onClick={handleClick}
+                onKeyDown={handleKeyDown}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={() => setMousePos({ x: 0.5, y: 0.5 })}
-                className={`relative overflow-hidden cursor-zoom-in ${className}`}
+                className={`group relative overflow-hidden cursor-zoom-in ${className}`}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isZoomed}
             >
                 <motion.div
                     animate={{
@@ -62,7 +77,7 @@ export default function ImageZoom({ src, alt, className = "" }: ImageZoomProps) 
 
                 {/* Zoom indicator */}
                 <div className="absolute bottom-4 right-4 px-3 py-1.5 bg-background/80 backdrop-blur-sm rounded-full type-legal text-muted opacity-0 group-hover:opacity-100 transition-opacity">
-                    Click to enlarge
+                    {tx.ui.clickToEnlarge}
                 </div>
             </div>
 
@@ -82,6 +97,7 @@ export default function ImageZoom({ src, alt, className = "" }: ImageZoomProps) 
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
                             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                            onClick={(event) => event.stopPropagation()}
                             className="relative w-[90vw] h-[90vh]"
                         >
                             <Image
@@ -96,9 +112,10 @@ export default function ImageZoom({ src, alt, className = "" }: ImageZoomProps) 
 
                         {/* Close button */}
                         <button
+                            type="button"
                             onClick={() => setIsZoomed(false)}
                             className="absolute top-6 right-6 p-3 rounded-full bg-panel border border-border hover:bg-subtle transition-colors"
-                            aria-label="Close zoom"
+                            aria-label={tx.ui.closeZoom}
                         >
                             <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

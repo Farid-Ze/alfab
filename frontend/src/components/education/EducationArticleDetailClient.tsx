@@ -2,6 +2,7 @@
 
 import { getArticleBySlug } from "@/lib/education";
 import { useTranslations } from "@/hooks/useTranslations";
+import { formatDate } from "@/lib/i18n";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import AppLink from "@/components/ui/AppLink";
 import ButtonLink from "@/components/ui/ButtonLink";
@@ -54,7 +55,7 @@ export default function EducationArticleDetailClient({ slug }: { slug: string })
         <div className="lg:col-span-2 space-y-8">
           <header className="space-y-4">
             <div className="flex items-center gap-3 type-data text-muted">
-              <span>{article.date}</span>
+              <span>{formatDate(article.date, locale)}</span>
               <span>•</span>
               <span>{article.readTime} {tx.education.article.meta.readTime}</span>
             </div>

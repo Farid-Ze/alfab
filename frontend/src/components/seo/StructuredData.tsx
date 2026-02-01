@@ -10,6 +10,13 @@ function getSiteUrl(): string {
 export default function StructuredData() {
   const siteUrl = getSiteUrl();
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
+  const contactPhone = (() => {
+    const digits = whatsappNumber.replace(/\D/g, "");
+    if (!digits) return undefined;
+    if (digits.startsWith("0")) return `+62${digits.slice(1)}`;
+    if (digits.startsWith("62")) return `+${digits}`;
+    return `+${digits}`;
+  })();
 
   // Keep schema minimal and factual (no pricing).
   const organization = {
@@ -24,10 +31,10 @@ export default function StructuredData() {
       "@type": "Country",
       name: "Indonesia",
     },
-    ...(whatsappNumber && {
+    ...(contactPhone && {
       contactPoint: {
         "@type": "ContactPoint",
-        telephone: whatsappNumber,
+        telephone: contactPhone,
         contactType: "sales",
         areaServed: "ID",
         availableLanguage: ["id", "en"],

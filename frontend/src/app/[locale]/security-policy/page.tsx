@@ -1,53 +1,74 @@
 import type { Metadata } from "next";
 
+import type { Locale } from "@/lib/i18n";
+import { normalizeLocale, t } from "@/lib/i18n";
 
-export const metadata: Metadata = {
-  title: "Security Policy",
-  description: "Vulnerability disclosure policy and security practices.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const resolved = normalizeLocale(locale);
+  const tx = t(resolved);
 
-export default function SecurityPolicyPage() {
+  return {
+    title: tx.legal.securityTitle,
+    description: tx.seo.securityPolicyDescription,
+    alternates: {
+      canonical: `/${resolved}/security-policy`,
+      languages: {
+        en: "/en/security-policy",
+        id: "/id/security-policy",
+      },
+    },
+  };
+}
+
+export default async function SecurityPolicyPage({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = await params;
+  const tx = t(locale);
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="prose prose-zinc max-w-none">
-        <h1 className="type-h1 mb-8">Security Policy</h1>
+        <h1 className="type-h1 mb-8">{tx.legal.securityTitle}</h1>
 
         <section className="space-y-4 mb-10">
-          <h2 className="type-h2">Vulnerability Disclosure</h2>
+          <h2 className="type-h2">{tx.legal.securityPolicy.sections.disclosure.title}</h2>
           <p className="type-body">
-            Alfa Beauty Cosmetica is committed to ensuring the safety and security of our partners.
-            We welcome feedback from security researchers to help us improve our security posture.
+            {tx.legal.securityPolicy.intro.body}
           </p>
           <p className="type-body">
-            If you believe you have discovered a vulnerability, please report it to us via email
-            at <a href="mailto:alfabeautycosmeticaa@gmail.com" className="text-foreground underline">alfabeautycosmeticaa@gmail.com</a>.
+            {tx.legal.securityPolicy.sections.disclosure.body}{" "}
+            <a href="mailto:alfabeautycosmeticaa@gmail.com" className="text-foreground underline">alfabeautycosmeticaa@gmail.com</a>.
           </p>
         </section>
 
         <section className="space-y-4 mb-10">
-          <h2 className="type-h2">Reporting Guidelines</h2>
+          <h2 className="type-h2">{tx.legal.securityPolicy.sections.guidelines.title}</h2>
           <ul className="list-disc pl-5 type-body space-y-2">
-            <li>Please provide a detailed description of the vulnerability.</li>
-            <li>Include steps to reproduce the issue (PoC).</li>
-            <li>Do not access or modify data that does not belong to you.</li>
-            <li>Do not execute denial-of-service attacks.</li>
+            {tx.legal.securityPolicy.sections.guidelines.items.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
           </ul>
         </section>
 
         <section className="space-y-4 mb-10">
-          <h2 className="type-h2">Safe Harbor</h2>
+          <h2 className="type-h2">{tx.legal.securityPolicy.sections.safeHarbor.title}</h2>
           <p className="type-body">
-            We will not pursue legal action against researchers who report vulnerabilities
-            in good faith and in accordance with this policy. We are committed to working
-            with you to verify and resolve the issue promptly.
+            {tx.legal.securityPolicy.sections.safeHarbor.body}
           </p>
         </section>
 
         <section className="space-y-4">
-          <h2 className="type-h2">Response Timeline</h2>
+          <h2 className="type-h2">{tx.legal.securityPolicy.sections.response.title}</h2>
           <p className="type-body">
-            We aim to acknowledge receipt of your report within 24 hours and evaluate the severity
-            within 5 business days.
+            {tx.legal.securityPolicy.sections.response.body}
           </p>
         </section>
       </div>

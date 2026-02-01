@@ -4,70 +4,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AppLink from "@/components/ui/AppLink";
 import ButtonLink from "@/components/ui/ButtonLink";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { t } from "@/lib/i18n";
 
-const MEGA_MENU_DATA = {
-    products: {
-        label: "Products",
-        sections: [
-            {
-                title: "By Brand",
-                links: [
-                    { label: "Alfaparf Milano", href: "/products?brand=alfaparf" },
-                    { label: "Farmavita", href: "/products?brand=farmavita" },
-                    { label: "Montibello", href: "/products?brand=montibello" },
-                    { label: "Gamma+ Professional", href: "/products?brand=gammaplus" },
-                ],
-            },
-            {
-                title: "By Category",
-                links: [
-                    { label: "Hair Color", href: "/products?category=color" },
-                    { label: "Hair Care", href: "/products?category=care" },
-                    { label: "Styling", href: "/products?category=styling" },
-                    { label: "Tools & Equipment", href: "/products?category=tools" },
-                ],
-            },
-        ],
-        cta: { label: "View All Products", href: "/products" },
-    },
-    education: {
-        label: "Education",
-        sections: [
-            {
-                title: "Programs",
-                links: [
-                    { label: "Upcoming Events", href: "/education" },
-                    { label: "Technical Training", href: "/education?type=training" },
-                    { label: "Workshops", href: "/education?type=workshop" },
-                ],
-            },
-            {
-                title: "Resources",
-                links: [
-                    { label: "Industry Trends", href: "/education?type=article" },
-                    { label: "Product Knowledge", href: "/education?type=product" },
-                ],
-            },
-        ],
-        cta: { label: "Explore Education", href: "/education" },
-    },
-    partnership: {
-        label: "Partnership",
-        sections: [
-            {
-                title: "For Professionals",
-                links: [
-                    { label: "Why Partner With Us", href: "/partnership" },
-                    { label: "Partner Benefits", href: "/partnership#benefits" },
-                    { label: "Application Process", href: "/partnership#process" },
-                ],
-            },
-        ],
-        cta: { label: "Become a Partner", href: "/partnership" },
-    },
-};
-
-type MegaMenuKey = keyof typeof MEGA_MENU_DATA;
+type MegaMenuKey = "products" | "education" | "partnership";
 
 /**
  * MegaMenu: Elegant dropdown with curtain animation.
@@ -75,7 +15,69 @@ type MegaMenuKey = keyof typeof MEGA_MENU_DATA;
  * Design V2: Full-width reveal with elegant motion.
  */
 export default function MegaMenu() {
+    const { locale } = useLocale();
+    const tx = t(locale);
+    const base = `/${locale}`;
     const [activeMenu, setActiveMenu] = useState<MegaMenuKey | null>(null);
+
+    const MEGA_MENU_DATA: Record<MegaMenuKey, { label: string; sections: Array<{ title: string; links: Array<{ label: string; href: string }> }>; cta: { label: string; href: string } }> = {
+        products: {
+            label: tx.megaMenu.labels.products,
+            sections: [
+                {
+                    title: tx.megaMenu.sections.byBrand,
+                    links: [
+                        { label: tx.megaMenu.links.alfaparf, href: `${base}/products?brand=alfaparf` },
+                        { label: tx.megaMenu.links.farmavita, href: `${base}/products?brand=farmavita` },
+                        { label: tx.megaMenu.links.montibello, href: `${base}/products?brand=montibello` },
+                        { label: tx.megaMenu.links.gammaplus, href: `${base}/products?brand=gammaplus` },
+                    ],
+                },
+                {
+                    title: tx.megaMenu.sections.byCategory,
+                    links: [
+                        { label: tx.megaMenu.links.hairColor, href: `${base}/products?category=color` },
+                        { label: tx.megaMenu.links.hairCare, href: `${base}/products?category=treatment` },
+                        { label: tx.megaMenu.links.styling, href: `${base}/products?category=styling` },
+                        { label: tx.megaMenu.links.grooming, href: `${base}/products?category=grooming` },
+                    ],
+                },
+            ],
+            cta: { label: tx.megaMenu.cta.viewAllProducts, href: `${base}/products` },
+        },
+        education: {
+            label: tx.megaMenu.labels.education,
+            sections: [
+                {
+                    title: tx.megaMenu.sections.programs,
+                    links: [
+                        { label: tx.megaMenu.links.upcomingEvents, href: `${base}/education/events` },
+                        { label: tx.megaMenu.links.articles, href: `${base}/education/articles` },
+                    ],
+                },
+                {
+                    title: tx.megaMenu.sections.resources,
+                    links: [
+                        { label: tx.megaMenu.links.articles, href: `${base}/education/articles` },
+                    ],
+                },
+            ],
+            cta: { label: tx.megaMenu.cta.exploreEducation, href: `${base}/education` },
+        },
+        partnership: {
+            label: tx.megaMenu.labels.partnership,
+            sections: [
+                {
+                    title: tx.megaMenu.sections.forProfessionals,
+                    links: [
+                        { label: tx.megaMenu.links.whyPartner, href: `${base}/partnership` },
+                        { label: tx.megaMenu.links.partnerBenefits, href: `${base}/partnership` },
+                    ],
+                },
+            ],
+            cta: { label: tx.megaMenu.cta.becomePartner, href: `${base}/partnership` },
+        },
+    };
 
     const handleMouseEnter = (key: MegaMenuKey) => {
         setActiveMenu(key);
@@ -152,7 +154,7 @@ export default function MegaMenu() {
                                             {MEGA_MENU_DATA[activeMenu].label}
                                         </h3>
                                         <p className="type-body text-muted mb-6">
-                                            Discover our complete range of professional solutions.
+                                            {tx.megaMenu.description}
                                         </p>
                                         <ButtonLink
                                             href={MEGA_MENU_DATA[activeMenu].cta.href}

@@ -94,6 +94,7 @@ export default function LeadForm() {
         </label>
         <Input
           id="business_name"
+          name="business_name"
           className="w-full"
           value={values.businessName}
           onChange={(e) => setField("businessName", e.target.value)}
@@ -120,6 +121,7 @@ export default function LeadForm() {
         </label>
         <Input
           id="contact_name"
+          name="contact_name"
           className="w-full"
           value={values.contactName}
           onChange={(e) => setField("contactName", e.target.value)}
@@ -147,6 +149,7 @@ export default function LeadForm() {
           </label>
           <Input
             id="email"
+            name="email"
             type="email"
             className="w-full"
             value={values.email}
@@ -161,6 +164,9 @@ export default function LeadForm() {
           </label>
           <Input
             id="phone_whatsapp"
+            name="phone_whatsapp"
+            type="tel"
+            inputMode="tel"
             className="w-full"
             value={values.phoneWhatsApp}
             onChange={(e) => setField("phoneWhatsApp", e.target.value)}
@@ -188,6 +194,7 @@ export default function LeadForm() {
           </label>
           <Input
             id="city"
+            name="city"
             className="w-full"
             value={values.city}
             onChange={(e) => setField("city", e.target.value)}
@@ -212,6 +219,7 @@ export default function LeadForm() {
           </label>
           <Select
             id="salon_type"
+            name="salon_type"
             className="w-full"
             value={values.salonType}
             onChange={(e) => {
@@ -256,6 +264,7 @@ export default function LeadForm() {
             </label>
             <Input
               id="chair_count"
+              name="chair_count"
               inputMode="numeric"
               className="w-full"
               value={values.chairCount}
@@ -270,6 +279,7 @@ export default function LeadForm() {
             </label>
             <Input
               id="specialization"
+              name="specialization"
               className="w-full"
               value={values.specialization}
               onChange={(e) => setField("specialization", e.target.value)}
@@ -284,6 +294,7 @@ export default function LeadForm() {
             </label>
             <Input
               id="current_brands_used"
+              name="current_brands_used"
               className="w-full"
               value={values.currentBrandsUsed}
               onChange={(e) => setField("currentBrandsUsed", e.target.value)}
@@ -297,6 +308,7 @@ export default function LeadForm() {
             </label>
             <Input
               id="monthly_spend_range"
+              name="monthly_spend_range"
               className="w-full"
               value={values.monthlySpendRange}
               onChange={(e) => setField("monthlySpendRange", e.target.value)}
@@ -314,6 +326,7 @@ export default function LeadForm() {
         </label>
         <Input
           id="company"
+          name="company"
           tabIndex={-1}
           autoComplete="off"
           className="w-full"
@@ -330,6 +343,7 @@ export default function LeadForm() {
         </label>
         <Textarea
           id="message"
+          name="message"
           className="w-full"
           rows={4}
           maxLength={2000}
@@ -343,6 +357,7 @@ export default function LeadForm() {
         <label className="flex items-start gap-3 type-data cursor-pointer group">
           <input
             type="checkbox"
+            name="consent"
             className={`mt-0.5 h-4 w-4 accent-foreground transition-colors ${shouldShowError("consent") ? "outline outline-2 outline-error" : ""
               }`}
             checked={values.consent}

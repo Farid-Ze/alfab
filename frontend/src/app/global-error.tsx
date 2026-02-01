@@ -50,7 +50,7 @@ export default function GlobalError({
             {/* Hard reload for global error recovery */}
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a
-              href="/"
+              href="/id"
               className="px-6 py-2.5 type-ui-strong text-foreground/70 hover:text-foreground transition-colors"
             >
               Return Home

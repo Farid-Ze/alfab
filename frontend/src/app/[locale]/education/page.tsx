@@ -1,24 +1,49 @@
+import type { Metadata } from "next";
+
 import StaggerReveal from "@/components/ui/StaggerReveal";
 import AppLink from "@/components/ui/AppLink";
-import { t } from "@/lib/i18n";
 import { listEvents, listArticles, calculateReadTime } from "@/lib/education";
+import { normalizeLocale, t } from "@/lib/i18n";
 
 /**
  * Education Page
  * Design V2: Events + Articles with editorial layout
  * Migrated from (v2) to production route.
  */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const resolved = normalizeLocale(locale);
+  const tx = t(resolved);
+
+  return {
+    title: tx.nav.education,
+    description: tx.seo.educationDescription,
+    alternates: {
+      canonical: `/${resolved}/education`,
+      languages: {
+        en: "/en/education",
+        id: "/id/education",
+      },
+    },
+  };
+}
+
 export default async function EducationPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const dict = t(locale as "en" | "id");
+  const resolved = normalizeLocale(locale);
+  const dict = t(resolved);
 
   // Fetch dynamic content
-  const events = listEvents(locale as "en" | "id");
-  const articles = listArticles(locale as "en" | "id").map((article) => ({
+  const events = listEvents(resolved);
+  const articles = listArticles(resolved).map((article) => ({
     ...article,
     readTime: calculateReadTime(article.body),
   }));
@@ -62,7 +87,7 @@ export default async function EducationPage({
         <section className="mb-24">
           <div className="flex items-center justify-between mb-8">
             <h2 className="type-h2 text-foreground">{dict.education.hub.sections.events}</h2>
-            <AppLink href={`/${locale}/education/events`} className="type-nav text-muted hover:text-foreground transition-colors">
+            <AppLink href={`/${resolved}/education/events`} className="type-nav text-muted hover:text-foreground transition-colors">
               {dict.education.hub.actions.viewAll}
             </AppLink>
           </div>
@@ -71,7 +96,7 @@ export default async function EducationPage({
             {events.slice(0, 3).map((event) => (
               <AppLink
                 key={event.slug}
-                href={`/${locale}/education/events/${event.slug}`}
+                href={`/${resolved}/education/events/${event.slug}`}
                 className="group p-6 rounded-2xl bg-panel transition-all duration-[var(--transition-elegant)] hover:scale-[1.02] block"
                 style={{ boxShadow: "var(--shadow-elegant)" }}
               >
@@ -88,7 +113,7 @@ export default async function EducationPage({
                 {/* Meta */}
                 <div className="space-y-2 type-data text-muted">
                   <p>🏷️ {event.brand}</p>
-                  <p>📅 {new Date(event.date).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
+                  <p>📅 {new Date(event.date).toLocaleDateString(resolved === "id" ? "id-ID" : "en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
                   <p>📍 {event.city}</p>
                 </div>
               </AppLink>
@@ -100,7 +125,7 @@ export default async function EducationPage({
         <section>
           <div className="flex items-center justify-between mb-8">
             <h2 className="type-h2 text-foreground">{dict.education.hub.sections.articles}</h2>
-            <AppLink href={`/${locale}/education/articles`} className="type-nav text-muted hover:text-foreground transition-colors">
+            <AppLink href={`/${resolved}/education/articles`} className="type-nav text-muted hover:text-foreground transition-colors">
               {dict.education.hub.actions.viewAll}
             </AppLink>
           </div>
@@ -109,7 +134,7 @@ export default async function EducationPage({
             {articles.slice(0, 2).map((article) => (
               <AppLink
                 key={article.slug}
-                href={`/${locale}/education/articles/${article.slug}`}
+                href={`/${resolved}/education/articles/${article.slug}`}
                 className="group"
               >
                 {/* Thumbnail */}
@@ -124,7 +149,7 @@ export default async function EducationPage({
 
                 {/* Meta */}
                 <div className="flex items-center gap-4 type-data text-muted mb-2">
-                  <span>{new Date(article.date).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", { month: "short", day: "numeric" })}</span>
+                  <span>{new Date(article.date).toLocaleDateString(resolved === "id" ? "id-ID" : "en-US", { month: "short", day: "numeric" })}</span>
                   <span>•</span>
                   <span>{article.readTime} {dict.education.hub.labels.readTime}</span>
                 </div>

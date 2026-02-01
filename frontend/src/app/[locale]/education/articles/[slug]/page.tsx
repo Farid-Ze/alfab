@@ -22,16 +22,38 @@ export async function generateMetadata({
   const article =
     getArticleBySlug(locale, slug) ?? getArticleBySlug(locale === "en" ? "id" : "en", slug);
   const path = `/${locale}/education/articles/${slug}`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const fullUrl = `${siteUrl.replace(/\/$/, "")}${path}`;
+  const fallbackImage = `${siteUrl.replace(/\/$/, "")}/images/education/training-placeholder.jpg`;
+
+  const title = article?.title ?? "Article";
+  const description = article?.excerpt;
 
   return {
-    title: article?.title ?? "Article",
-    description: article?.excerpt,
+    title,
+    description,
     alternates: {
       canonical: path,
       languages: {
         en: `/en/education/articles/${slug}`,
         id: `/id/education/articles/${slug}`,
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url: fullUrl,
+      siteName: "Alfa Beauty Cosmetica",
+      locale: locale === "id" ? "id_ID" : "en_US",
+      type: "article",
+      publishedTime: article?.date ? new Date(article.date).toISOString() : undefined,
+      images: [{ url: fallbackImage }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [fallbackImage],
     },
   };
 }
@@ -56,7 +78,7 @@ export default async function EducationArticleDetailPage({
 
   return (
     <div className="mx-auto max-w-[80rem] px-4 sm:px-6 lg:px-10 py-12">
-      <ArticleSchema article={article} />
+      <ArticleSchema article={article} locale={locale} />
       <EducationArticleDetailClient slug={slug} />
     </div>
   );

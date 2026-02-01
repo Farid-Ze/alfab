@@ -32,6 +32,12 @@ export async function generateMetadata({
   const path = `/${locale}/products/${slug}`;
   const fullUrl = `${siteUrl.replace(/\/$/, "")}${path}`;
 
+  const imageUrl = p?.image?.url;
+  const hasImage = Boolean(imageUrl && !imageUrl.includes("/placeholder"));
+  const ogImage = hasImage
+    ? (imageUrl?.startsWith("http") ? imageUrl : `${siteUrl.replace(/\/$/, "")}${imageUrl}`)
+    : undefined;
+
   // Fallbacks for undefined product data (UAT-15: no empty metadata)
   const title = p?.name ?? "Product";
   const description = p?.summary ?? "Professional beauty product for salons and barbershops.";
@@ -54,12 +60,14 @@ export async function generateMetadata({
       siteName: "Alfa Beauty Cosmetica",
       locale: locale === "id" ? "id_ID" : "en_US",
       type: "website",
+      ...(ogImage ? { images: [{ url: ogImage }] } : {}),
     },
     // UAT-15: twitter card metadata
     twitter: {
-      card: "summary_large_image",
+      card: ogImage ? "summary_large_image" : "summary",
       title,
       description,
+      ...(ogImage ? { images: [ogImage] } : {}),
     },
   };
 }
@@ -87,7 +95,7 @@ export default async function ProductDetailPage({
   return (
     <div className="mx-auto max-w-[80rem] px-4 sm:px-6 lg:px-10 py-12">
       <BreadcrumbSchema items={breadcrumbs} />
-      {p && <ProductSchema product={p} />}
+      {p && <ProductSchema product={p} locale={locale} />}
       <ProductDetailContent product={p ?? null} />
     </div>
   );

@@ -1,8 +1,12 @@
-import React from "react";
+import type { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Under Maintenance - Alfa Beauty Cosmetica",
     description: "We are currently performing scheduled maintenance.",
+    robots: {
+        index: false,
+        follow: false,
+    },
 };
 
 export default function MaintenancePage() {

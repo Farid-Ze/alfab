@@ -1,5 +1,6 @@
 {
     "seo": {
+        "homeDescription": "Professional beauty distribution for salons and barbershops in Indonesia. Products, education, and technical support.",
         "aboutDescription": "About PT Alfa Beauty Cosmetica — professional beauty distribution for salons and barbershops in Indonesia.",
         "contactDescription": "Contact Alfa Beauty Cosmetica for consultation, recommendations, and partnership inquiries.",
         "productsDescription": "Browse our curated professional product portfolio. No public pricing — consult via WhatsApp.",
@@ -7,7 +8,8 @@
         "partnershipDescription": "Become a partner and get curated products, education, and technical support.",
         "becomePartnerDescription": "Submit your details to become an Alfa Beauty partner. We will follow up within 24 hours.",
         "privacyDescription": "Privacy Policy for Alfa Beauty Cosmetica website.",
-        "termsDescription": "Terms and conditions for using the Alfa Beauty Cosmetica website."
+        "termsDescription": "Terms and conditions for using the Alfa Beauty Cosmetica website.",
+        "securityPolicyDescription": "Vulnerability disclosure policy and security practices."
     },
     "nav": {
         "home": "Home",
@@ -15,7 +17,10 @@
         "education": "Education",
         "partnership": "Partnership",
         "about": "About",
-        "contact": "Contact"
+        "contact": "Contact",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "securityPolicy": "Security Policy"
     },
     "header": {
         "announcement": "WhatsApp-first consultation — no public pricing.",
@@ -57,6 +62,40 @@
             "closeMenu": "Close menu",
             "openSearch": "Go to Products"
         }
+    },
+    "megaMenu": {
+        "labels": {
+            "products": "Products",
+            "education": "Education",
+            "partnership": "Partnership"
+        },
+        "sections": {
+            "byBrand": "By Brand",
+            "byCategory": "By Category",
+            "programs": "Programs",
+            "resources": "Resources",
+            "forProfessionals": "For Professionals"
+        },
+        "links": {
+            "alfaparf": "Alfaparf Milano",
+            "farmavita": "Farmavita",
+            "montibello": "Montibello",
+            "gammaplus": "Gamma+ Professional",
+            "hairColor": "Hair Color",
+            "hairCare": "Hair Care",
+            "styling": "Styling",
+            "grooming": "Grooming",
+            "upcomingEvents": "Upcoming Events",
+            "articles": "Articles",
+            "whyPartner": "Why Partner With Us",
+            "partnerBenefits": "Partner Benefits"
+        },
+        "cta": {
+            "viewAllProducts": "View All Products",
+            "exploreEducation": "Explore Education",
+            "becomePartner": "Become a Partner"
+        },
+        "description": "Discover our complete range of professional solutions."
     },
     "cta": {
         "becomePartner": "Become Partner",
@@ -124,6 +163,33 @@
     "contact": {
         "title": "Contact",
         "body": "For consultation, product recommendations, and partnership inquiries, reach us via WhatsApp.",
+        "officeTitle": "Office",
+        "form": {
+            "title": "Send a message",
+            "lede": "Fill out the form below and our team will respond as soon as possible.",
+            "fields": {
+                "name": "Name",
+                "email": "Email",
+                "subject": "Subject",
+                "message": "Message",
+                "namePlaceholder": "Your name",
+                "emailPlaceholder": "your@email.com",
+                "subjectPlaceholder": "How can we help?",
+                "messagePlaceholder": "Your message..."
+            },
+            "consentPrefix": "I agree to the ",
+            "consentLink": "Privacy Policy",
+            "consentSuffix": " and consent to the processing of my personal data.",
+            "submit": "Send Message",
+            "sending": "Sending...",
+            "success": "Thank you! Your message has been sent successfully.",
+            "errors": {
+                "consentRequired": "You must agree to the privacy policy to submit this form.",
+                "rateLimited": "Too many submissions. Please try again later.",
+                "validation": "Please check your input and try again.",
+                "generic": "Something went wrong. Please try again."
+            }
+        },
         "email": "Email",
         "whatsapp": {
             "title": "WhatsApp",
@@ -146,38 +212,6 @@
             "body": "Our team is ready to help you grow your beauty business. Reach out today and let's discuss how we can support your success.",
             "button": "Start Conversation"
         }
-    },
-    "partnership": {
-        "title": "Partnership",
-        "lede": "We work as a strategic partner for salons and barbershops: curated products, education, and technical support. B2B-first, professional, no retail gimmicks.",
-        "cards": {
-            "curated": {
-                "title": "Curated portfolio",
-                "body": "Access carefully selected brands supported by real-world technical knowledge."
-            },
-            "education": {
-                "title": "Education & support",
-                "body": "Training, product knowledge, and support to help your team deliver consistent results."
-            },
-            "b2b": {
-                "title": "B2B-first",
-                "body": "Designed for professionals — B2B-first, no retail gimmicks, no public pricing."
-            }
-        },
-        "readyBlock": {
-            "title": "Ready to become a partner?",
-            "body": "Submit your details and we'll follow up. We save your request before confirming success."
-        },
-        "features": [
-            "Premium curated products",
-            "Competitive B2B pricing",
-            "Professional training",
-            "Dedicated support",
-            "Marketing materials",
-            "Flexible payment terms",
-            "Loyalty rewards program",
-            "Nationwide coverage"
-        ]
     },
     "becomePartner": {
         "title": "Become a Partner",
@@ -216,8 +250,12 @@
         "filters": {
             "title": "Filters",
             "searchPlaceholder": "Search products...",
+            "searchAriaLabel": "Search products",
             "button": "Filters",
             "clear": "Clear",
+            "allLabel": "All",
+            "countSingular": "product",
+            "countPlural": "products",
             "groups": {
                 "brand": "Brand",
                 "category": "Category",
@@ -243,6 +281,35 @@
     "legal": {
         "privacyTitle": "Privacy Policy",
         "termsTitle": "Terms of Service",
+        "securityTitle": "Security Policy",
+        "securityPolicy": {
+            "intro": {
+                "body": "Alfa Beauty Cosmetica is committed to protecting our partners and welcomes vulnerability reports from security researchers."
+            },
+            "sections": {
+                "disclosure": {
+                    "title": "Vulnerability Disclosure",
+                    "body": "If you believe you have discovered a vulnerability, please report it to us via email at:"
+                },
+                "guidelines": {
+                    "title": "Reporting Guidelines",
+                    "items": [
+                        "Provide a detailed description of the vulnerability.",
+                        "Include steps to reproduce the issue (PoC).",
+                        "Do not access or modify data that does not belong to you.",
+                        "Do not execute denial-of-service attacks."
+                    ]
+                },
+                "safeHarbor": {
+                    "title": "Safe Harbor",
+                    "body": "We will not pursue legal action against researchers who report vulnerabilities in good faith and in accordance with this policy."
+                },
+                "response": {
+                    "title": "Response Timeline",
+                    "body": "We aim to acknowledge receipt of your report within 24 hours and evaluate severity within 5 business days."
+                }
+            }
+        },
         "privacyPolicy": {
             "intro": {
                 "prefix": "Effective Date: January 1, 2026.",
@@ -550,10 +617,22 @@
             "ref": "Ref"
         }
     },
+    "ui": {
+        "backToTop": "Back to top",
+        "closeZoom": "Close zoom",
+        "clickToEnlarge": "Click to enlarge",
+        "serviceBackground": "Service background",
+        "contactViaWhatsapp": "Contact via WhatsApp",
+        "chatWithUs": "Chat with us",
+        "skipToMainContent": "Skip to main content",
+        "switchToEnglish": "Switch to English",
+        "switchToIndonesian": "Switch to Indonesian"
+    },
     "footer": {
         "explore": "Explore",
         "legal": "Legal",
         "blurb": "Professional beauty distribution for salons and barbershops in Indonesia.",
-        "copyrightSuffix": "All rights reserved."
+        "copyrightSuffix": "All rights reserved.",
+        "distributorNote": "Exclusive distributor of Alfaparf Milano, Farmavita, Montibello, and Gamma+ in Indonesia."
     }
 }

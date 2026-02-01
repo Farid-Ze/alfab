@@ -61,7 +61,7 @@ export default function ProductCTA({
                     {tx.cta.whatsappConsult}
                 </WhatsAppLink>
                 <ButtonLink
-                    href={`${base}/partnership/become-partner`}
+                    href={`${base}/partnership`}
                     variant="secondary"
                     size="lg"
                     className="flex-1 sm:flex-none"

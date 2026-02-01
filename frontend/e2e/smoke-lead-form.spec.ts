@@ -5,7 +5,7 @@ test("Become Partner form can submit successfully", async ({ page }) => {
   const runId = process.env.PLAYWRIGHT_E2E_RUN_ID ?? String(Date.now());
 
   // Use canonical locale path to avoid environment-dependent redirects.
-  await page.goto("/en/partnership/become-partner");
+  await page.goto("/en/partnership");
 
   const submit = page.getByRole("button", { name: /^submit$/i });
   await expect(submit).toBeVisible();
@@ -31,7 +31,7 @@ test("Become Partner form can submit successfully", async ({ page }) => {
 });
 
 test("Become Partner form requires consent before enabling submit", async ({ page }) => {
-  await page.goto("/en/partnership/become-partner");
+  await page.goto("/en/partnership");
 
   const submit = page.getByRole("button", { name: /^submit$/i });
   await expect(submit).toBeVisible();
@@ -50,7 +50,7 @@ test("Become Partner form requires consent before enabling submit", async ({ pag
 });
 
 test("Become Partner shows friendly message on rate limit (429)", async ({ page }) => {
-  await page.goto("/en/partnership/become-partner");
+  await page.goto("/en/partnership");
 
   // TRIGGER_429 forces the server action to return 'rate_limited' error
   await page.getByLabel(/business name/i).fill("Salon Trigger TRIGGER_429");
@@ -68,7 +68,7 @@ test("Become Partner shows friendly message on rate limit (429)", async ({ page 
 });
 
 test("Become Partner shows server error message (>=400)", async ({ page }) => {
-  await page.goto("/en/partnership/become-partner");
+  await page.goto("/en/partnership");
 
   // TRIGGER_500 forces the server action to return 'internal_error'
   await page.getByLabel(/business name/i).fill("Salon Trigger TRIGGER_500");
