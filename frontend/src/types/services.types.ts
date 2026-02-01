@@ -8,7 +8,7 @@ export interface Service {
     description: Record<Locale, string>;
     cta: {
         label: Record<Locale, string>;
-        url: string;
+        href: string;
     };
     image?: string;
     video?: {

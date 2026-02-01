@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { t } from "@/lib/i18n";
-import { useProductFilters } from "@/lib/useProductFilters";
+import { useProductFilters } from "@/hooks/useProductFilters";
 import { getCategoryLabel } from "@/content/homepage";
 import FilterPill from "@/components/ui/FilterPill";
 import FilterCheckbox from "@/components/ui/FilterCheckbox";

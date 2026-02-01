@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import WebVitalsReporter from "@/components/analytics/WebVitalsReporter";
 import StructuredData from "@/components/seo/StructuredData";
 import { LocaleProvider } from "@/components/i18n/LocaleProvider";
-import V2LayoutWrapper from "@/components/v2/V2LayoutWrapper";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import type { Locale } from "@/lib/i18n";
 
 export async function generateMetadata({
@@ -36,15 +36,15 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (locale !== "en" && locale !== "id") notFound();
 
-  // V2 skips manual "Skip to content" link here as it's included in V2LayoutWrapper (SkipLink component)
+  // Skip to content link is included in LayoutWrapper (SkipLink component)
 
   return (
     <LocaleProvider defaultLocale={locale}>
       <StructuredData />
       <WebVitalsReporter />
-      <V2LayoutWrapper>
+      <LayoutWrapper>
         {children}
-      </V2LayoutWrapper>
+      </LayoutWrapper>
     </LocaleProvider>
   );
 }

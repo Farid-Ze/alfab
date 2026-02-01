@@ -1,13 +1,13 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 /**
- * V2Preloader: Curtain reveal animation on initial load.
+ * Preloader: Curtain reveal animation on initial load.
  * Design V2 pattern for elegant first impression.
  */
-export default function V2Preloader() {
+export default function Preloader() {
     const [isLoading, setIsLoading] = useState(true);
     const [isVisible, setIsVisible] = useState(true);
 

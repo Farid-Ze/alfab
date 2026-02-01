@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -6,6 +6,7 @@ import AppLink from "@/components/ui/AppLink";
 import ButtonLink from "@/components/ui/ButtonLink";
 import MagneticButton from "@/components/ui/MagneticButton";
 import LocaleToggle from "@/components/i18n/LocaleToggle";
+import HamburgerIcon from "@/components/ui/HamburgerIcon";
 
 const NAV_LINKS = [
     { href: "#about", label: "About" },
@@ -15,10 +16,10 @@ const NAV_LINKS = [
 ];
 
 /**
- * V2HeaderNav: Elegant header with frosted glass effect on scroll.
+ * HeaderNav: Elegant header with frosted glass effect on scroll.
  * Design V2 pattern - Transparent at top, frosted on scroll.
  */
-export default function V2HeaderNav() {
+export default function HeaderNav() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -80,30 +81,10 @@ export default function V2HeaderNav() {
                         <button
                             onClick={() => setIsMobileOpen(!isMobileOpen)}
                             className="lg:hidden p-2 text-foreground"
-                            aria-label="Toggle menu"
+                            aria-label={isMobileOpen ? "Close menu" : "Open menu"}
+                            aria-expanded={isMobileOpen}
                         >
-                            <svg
-                                className="w-6 h-6"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                {isMobileOpen ? (
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                ) : (
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                )}
-                            </svg>
+                            <HamburgerIcon isOpen={isMobileOpen} />
                         </button>
                     </div>
                 </div>

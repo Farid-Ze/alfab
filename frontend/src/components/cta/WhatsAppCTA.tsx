@@ -1,13 +1,13 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
 /**
- * V2WhatsAppCTA: Elegant WhatsApp sticky button.
+ * WhatsAppCTA: Elegant WhatsApp sticky button.
  * Design V2 pattern - subtle, professional, not intrusive.
  */
-export default function V2WhatsAppCTA() {
+export default function WhatsAppCTA() {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {

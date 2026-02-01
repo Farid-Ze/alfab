@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import StaggerReveal from "@/components/ui/StaggerReveal";
 import { useTranslations } from "@/hooks/useTranslations";
-import { useLeadForm, type SalonType } from "@/components/lead/useLeadForm";
+import { useLeadForm, type SalonType } from "@/hooks/useLeadForm";
 
 /**
  * Partnership Page

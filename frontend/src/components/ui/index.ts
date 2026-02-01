@@ -9,7 +9,6 @@ export { default as BackToTop } from "./BackToTop";
 export { default as Button } from "./Button";
 export { default as ButtonLink } from "./ButtonLink";
 export { default as Card } from "./Card";
-export { default as Container } from "./Container";
 export { default as ErrorBoundary } from "./ErrorBoundary";
 export { default as ErrorState } from "./ErrorState";
 export { default as FilterCheckbox } from "./FilterCheckbox";

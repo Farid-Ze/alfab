@@ -1,4 +1,4 @@
-import AppLink from "@/components/ui/AppLink";
+﻿import AppLink from "@/components/ui/AppLink";
 
 const SOCIAL_LINKS = [
     { name: "Instagram", href: "https://instagram.com/alfabeauty", icon: "instagram" },
@@ -20,10 +20,10 @@ const LEGAL = [
 ];
 
 /**
- * V2Footer: Elegant footer with sitemap, social links, and branding.
+ * Footer: Elegant footer with sitemap, social links, and branding.
  * Design V2 pattern for professional closure.
  */
-export default function V2Footer() {
+export default function Footer() {
     return (
         <footer className="bg-panel border-t border-border">
             {/* Main Footer */}
@@ -35,7 +35,7 @@ export default function V2Footer() {
                             ALFA BEAUTY
                         </AppLink>
                         <p className="type-body text-muted max-w-md mb-6">
-                            PT Alfa Beauty Cosmetica — Your trusted partner for professional haircare distribution in Indonesia.
+                            PT Alfa Beauty Cosmetica â€” Your trusted partner for professional haircare distribution in Indonesia.
                         </p>
 
                         {/* Social Links */}
@@ -107,7 +107,7 @@ export default function V2Footer() {
             <div className="border-t border-border">
                 <div className="container mx-auto px-6 lg:px-12 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="type-legal text-muted text-center md:text-left">
-                        © 2026 PT Alfa Beauty Cosmetica. All rights reserved.
+                        Â© 2026 PT Alfa Beauty Cosmetica. All rights reserved.
                     </p>
                     <p className="type-legal text-muted text-center md:text-right">
                         Exclusive distributor of Alfaparf Milano, Farmavita, Montibello, and Gamma+ in Indonesia.
