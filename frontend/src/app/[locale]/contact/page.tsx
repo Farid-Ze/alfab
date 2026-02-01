@@ -1,26 +1,82 @@
 "use client";
 
 import { useState } from "react";
+import { useTransition } from "react";
 import StaggerReveal from "@/components/ui/StaggerReveal";
 import WhatsAppLink from "@/components/ui/WhatsAppLink";
+import AppLink from "@/components/ui/AppLink";
+import { submitContact } from "@/actions/submit-contact";
 
 /**
  * Contact Page
- * Design V2: Elegant form + Map placeholder
- * Migrated from (v2) to production route.
+ * 
+ * ISO 27001 A.18.1.4: Privacy by Design
+ * - Consent checkbox required before submission
+ * - Links to privacy policy
+ * - Server-side validation and persistence
  */
 export default function ContactPage() {
+  const [isPending, startTransition] = useTransition();
+  const [formState, setFormState] = useState<{
+    status: "idle" | "success" | "error";
+    message?: string;
+  }>({ status: "idle" });
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
+    consent: false,
+    honeypot: "", // Bot trap - hidden field
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In production, this would POST to API
-    console.log("Contact form submitted:", formData);
+
+    if (!formData.consent) {
+      setFormState({
+        status: "error",
+        message: "You must agree to the privacy policy to submit this form."
+      });
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await submitContact({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject || undefined,
+        message: formData.message,
+        consent: formData.consent as true, // TypeScript narrowing
+        honeypot: formData.honeypot || undefined,
+      });
+
+      if (result.success) {
+        setFormState({
+          status: "success",
+          message: "Thank you! Your message has been sent successfully."
+        });
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+          consent: false,
+          honeypot: "",
+        });
+      } else {
+        let errorMessage = "Something went wrong. Please try again.";
+        if (result.error === "rate_limited") {
+          errorMessage = "Too many submissions. Please try again later.";
+        } else if (result.error === "validation_error") {
+          const firstError = Object.values(result.details || {})[0]?.[0];
+          errorMessage = firstError || "Please check your input and try again.";
+        }
+        setFormState({ status: "error", message: errorMessage });
+      }
+    });
   };
 
   return (
@@ -40,6 +96,19 @@ export default function ContactPage() {
         <div className="grid lg:grid-cols-2 gap-16">
           {/* Contact Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Success/Error Messages */}
+            {formState.status !== "idle" && (
+              <div
+                className={`p-4 rounded-xl ${formState.status === "success"
+                    ? "bg-success-bg text-success"
+                    : "bg-error-bg text-error"
+                  }`}
+                role="alert"
+              >
+                {formState.message}
+              </div>
+            )}
+
             <div>
               <label className="type-data text-muted block mb-2">Name *</label>
               <input
@@ -49,6 +118,7 @@ export default function ContactPage() {
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-panel border border-border focus:border-foreground focus:outline-none transition-colors"
                 placeholder="Your name"
+                disabled={isPending}
               />
             </div>
 
@@ -61,6 +131,7 @@ export default function ContactPage() {
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-panel border border-border focus:border-foreground focus:outline-none transition-colors"
                 placeholder="your@email.com"
+                disabled={isPending}
               />
             </div>
 
@@ -72,6 +143,7 @@ export default function ContactPage() {
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-panel border border-border focus:border-foreground focus:outline-none transition-colors"
                 placeholder="How can we help?"
+                disabled={isPending}
               />
             </div>
 
@@ -84,14 +156,47 @@ export default function ContactPage() {
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-panel border border-border focus:border-foreground focus:outline-none transition-colors resize-none"
                 placeholder="Your message..."
+                disabled={isPending}
               />
+            </div>
+
+            {/* Honeypot - Hidden from users (OWASP Bot Protection) */}
+            <input
+              type="text"
+              name="company"
+              value={formData.honeypot}
+              onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+              className="hidden"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+            />
+
+            {/* Consent Checkbox (ISO 27001 A.18.1.4 Privacy by Design) */}
+            <div className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                id="consent"
+                checked={formData.consent}
+                onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
+                className="mt-1 w-5 h-5 rounded border-border text-foreground focus:ring-foreground"
+                disabled={isPending}
+              />
+              <label htmlFor="consent" className="type-body text-foreground-muted">
+                I agree to the{" "}
+                <AppLink href="/privacy" className="underline hover:text-foreground">
+                  Privacy Policy
+                </AppLink>{" "}
+                and consent to the processing of my personal data. *
+              </label>
             </div>
 
             <button
               type="submit"
-              className="ui-btn-primary px-8 py-4 type-nav rounded-full w-full lg:w-auto"
+              disabled={isPending || !formData.consent}
+              className="ui-btn-primary px-8 py-4 type-nav rounded-full w-full lg:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Send Message
+              {isPending ? "Sending..." : "Send Message"}
             </button>
           </form>
 
@@ -99,7 +204,7 @@ export default function ContactPage() {
           <div className="space-y-8">
             {/* Map Placeholder */}
             <div
-              className="aspect-video rounded-2xl bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 flex items-center justify-center"
+              className="aspect-video rounded-2xl bg-gradient-to-br from-zinc-100 to-zinc-200 flex items-center justify-center"
               style={{ boxShadow: "var(--shadow-elegant)" }}
             >
               <span className="type-ui text-muted">Map</span>

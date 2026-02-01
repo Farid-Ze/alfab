@@ -94,3 +94,47 @@ export async function sendLeadNotification(lead: LeadRecord): Promise<void> {
         // Don't throw - lead is already saved, email is best-effort but traced.
     }
 }
+
+/**
+ * Generic email sender for contact forms and other uses.
+ * ISO 27001: Audit-logged email transmission.
+ */
+export interface EmailOptions {
+    subject: string;
+    text: string;
+    html?: string;
+    to?: string; // Optional override, defaults to SMTP_TO
+}
+
+export async function sendEmail(options: EmailOptions): Promise<void> {
+    if (!SMTP_ENABLED) {
+        logger.warn("[email] SMTP not configured, email not sent", { subject: options.subject });
+        return;
+    }
+
+    const recipient = options.to || SMTP_TO;
+    if (!recipient) {
+        logger.warn("[email] No recipient configured");
+        return;
+    }
+
+    const mailer = getTransporter();
+    if (!mailer) {
+        logger.warn("[email] Transporter not available");
+        return;
+    }
+
+    try {
+        await mailer.sendMail({
+            from: SMTP_FROM,
+            to: recipient,
+            subject: options.subject,
+            text: options.text,
+            html: options.html,
+        });
+        logger.info("[email] Email sent successfully", { subject: options.subject });
+    } catch (err) {
+        logger.error("[email] Failed to send email", { error: String(err), subject: options.subject });
+        throw err; // Let caller handle fallback
+    }
+}

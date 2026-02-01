@@ -34,8 +34,24 @@ The following documents govern the operation and maintenance of this platform:
 ### Resilience Patterns
 
 1. **Fail-Open Lead Capture**: If Database fails, leads are routed via SMTP (Email Fallback).
-2. **Rate Limiting**: In-Memory Token Bucket prevents DDoS/Spam (`src/actions/submit-lead.ts`).
+2. **Rate Limiting**: Distributed (Upstash Redis) or In-Memory Token Bucket prevents DDoS/Spam.
 3. **Crash Safety**: `global-error.tsx` catches React hydration failures with Error Correlation IDs.
+
+### Security (OWASP / ISO 27001)
+
+| Endpoint | Auth | Description |
+| :--- | :--- | :--- |
+| `GET /api/health` | None | Minimal 200 OK (no infra details) |
+| `GET /api/health?deep=true` | `Bearer $HEALTH_CHECK_TOKEN` | Full DB/service status |
+| `GET /api/leads/export` | `Bearer $LEAD_API_ADMIN_TOKEN` | Admin CSV export |
+
+**Token Requirements**:
+
+- `LEAD_API_ADMIN_TOKEN`: Min 32 chars, rotate monthly
+- `HEALTH_CHECK_TOKEN`: Min 16 chars, for ops monitoring
+
+**Distributed Rate Limiting** (Optional):
+Set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` for multi-instance deployments.
 
 ---
 

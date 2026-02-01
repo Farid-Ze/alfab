@@ -6,7 +6,7 @@ const config: Config = {
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     ],
-    darkMode: "media", // Enforce system-based dark mode (Matches globals.css @media)
+    darkMode: false, // Disabled - B2B light-only theme (COBIT SDLC compliance)
     theme: {
         extend: {},
     },

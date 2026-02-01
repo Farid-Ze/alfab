@@ -24,7 +24,7 @@ export default function AboutPage() {
         {/* Story Section 1 */}
         <section className="grid lg:grid-cols-2 gap-16 items-center mb-24">
           <div
-            className="aspect-square rounded-3xl bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900"
+            className="aspect-square rounded-3xl bg-gradient-to-br from-zinc-100 to-zinc-200"
             style={{ boxShadow: "var(--shadow-elegant)" }}
           />
           <StaggerReveal delay={0.2}>
@@ -56,7 +56,7 @@ export default function AboutPage() {
             </p>
           </StaggerReveal>
           <div
-            className="aspect-square rounded-3xl bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 lg:order-1"
+            className="aspect-square rounded-3xl bg-gradient-to-br from-zinc-100 to-zinc-200 lg:order-1"
             style={{ boxShadow: "var(--shadow-elegant)" }}
           />
         </section>

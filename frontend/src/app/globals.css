@@ -407,69 +407,8 @@ html {
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --panel: #111113;
-    --panel-elevated: #18181b;
-    --foreground: #ededed;
-    --foreground-soft: #e4e4e7;
-    /* zinc-200 */
-    --foreground-muted: #d4d4d8;
-    /* zinc-300 */
-    --muted: #a1a1aa;
-    /* zinc-400 (Improved Contrast ~6:1) */
-    --muted-strong: #d4d4d8;
-    /* zinc-300 */
-    --muted-soft: #52525b;
-    /* zinc-600 */
-    --border: #27272a;
-    /* zinc-800 */
-    --border-strong: #3f3f46;
-    /* zinc-700 */
-    --border-focus: #e4e4e7;
-    /* zinc-200 */
-    --subtle: #18181b;
-    /* zinc-900 */
-    --subtle-hover: #27272a;
-    /* zinc-800 */
-
-    /* Semantic (dark mode adjustments) */
-    --success: #86efac;
-    /* green-300 */
-    --success-bg: rgba(34, 197, 94, 0.15);
-    --error: #fca5a5;
-    /* red-300 */
-    --error-bg: rgba(239, 68, 68, 0.15);
-    --warning: #fcd34d;
-    /* amber-300 */
-    --warning-bg: rgba(245, 158, 11, 0.15);
-    --info: #93c5fd;
-    /* blue-300 */
-    --info-bg: rgba(59, 130, 246, 0.15);
-
-    --focus-ring: #ededed;
-    --focus-ring-offset: #0a0a0a;
-
-    --hover-overlay: rgba(255, 255, 255, 0.04);
-    --active-overlay: rgba(255, 255, 255, 0.08);
-
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
-    --shadow-focus: 0 0 0 3px rgba(237, 237, 237, 0.15);
-
-    /* Design V2: Elegant Shadows for dark mode (ARCH-08) */
-    --shadow-elegant:
-      0 2px 4px rgba(0, 0, 0, 0.15),
-      0 8px 16px rgba(0, 0, 0, 0.2),
-      0 24px 48px rgba(0, 0, 0, 0.25);
-    --shadow-elegant-hover:
-      0 4px 8px rgba(0, 0, 0, 0.2),
-      0 16px 32px rgba(0, 0, 0, 0.25),
-      0 32px 64px rgba(0, 0, 0, 0.3);
-  }
-}
+/* Dark mode disabled - B2B light-only theme (COBIT SDLC compliance) */
+/* Original dark mode variables removed for professional consistency */
 
 body {
   background: var(--background);
@@ -1242,22 +1181,7 @@ a {
   transition: background-color var(--header-transition), border-color var(--header-transition);
 }
 
-@media (prefers-color-scheme: dark) {
-  .ui-overlay {
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-
-  .ui-section-dark {
-    /* In dark mode, invert back: light bg, dark text */
-    background-color: var(--background);
-    color: var(--foreground);
-  }
-
-  .ui-icon-dark {
-    background-color: var(--foreground);
-    color: var(--background);
-  }
-}
+/* Dark mode ui-overlay/section/icon removed - B2B light-only */
 
 /* Hover variant for subtle → darker */
 .ui-hover-darken:hover {
@@ -1275,11 +1199,7 @@ a {
   background-color: rgba(9, 9, 11, 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-  .ui-bg-decorative {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-}
+/* Dark mode ui-bg-decorative removed - B2B light-only */
 
 /* Mobile utility classes (following Calvin Klein approach) */
 .mobile-element {

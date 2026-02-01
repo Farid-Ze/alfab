@@ -52,7 +52,7 @@ export default function EventDetailPage() {
                     <div className="grid lg:grid-cols-2 gap-12 mb-16">
                         {/* Image */}
                         <div
-                            className="aspect-video rounded-2xl bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900"
+                            className="aspect-video rounded-2xl bg-gradient-to-br from-zinc-100 to-zinc-200"
                             style={{ boxShadow: "var(--shadow-elegant)" }}
                         />
 

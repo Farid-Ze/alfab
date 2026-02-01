@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function SecurityPolicyPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
-      <div className="prose prose-zinc dark:prose-invert max-w-none">
+      <div className="prose prose-zinc max-w-none">
         <h1 className="type-h1 mb-8">Security Policy</h1>
 
         <section className="space-y-4 mb-10">

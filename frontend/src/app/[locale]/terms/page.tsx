@@ -15,7 +15,7 @@ export default function TermsPage() {
           <p className="type-data text-muted">Last updated: January 2026</p>
         </StaggerReveal>
 
-        <div className="prose prose-zinc dark:prose-invert max-w-none">
+        <div className="prose prose-zinc max-w-none">
           <section className="mb-12">
             <h2 className="type-h3 text-foreground mb-4">1. Acceptance of Terms</h2>
             <p className="type-body text-foreground-muted">

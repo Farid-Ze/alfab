@@ -22,8 +22,13 @@ const envSchema = z.object({
     SMTP_TO: z.string().optional(),
 
     // Features / Security
-    // COBIT DSS05.04: Admin Token must be strong (min 12 chars) if configured
-    LEAD_API_ADMIN_TOKEN: z.string().min(12, "Admin token must be at least 12 characters").optional(),
+    // OWASP A07: Admin Token strongly recommended in production (min 32 chars)
+    // Validated at endpoint-level to avoid build-time failures
+    LEAD_API_ADMIN_TOKEN: z.string().min(32, "Admin token must be at least 32 characters").optional(),
+
+    // ISO 27001 A.9: Health check token for deep monitoring access
+    HEALTH_CHECK_TOKEN: z.string().min(16, "Health check token must be at least 16 characters").optional(),
+
     NEXT_PUBLIC_GA_ID: z.string().optional(),
 
     // ITIL 4: Service Management
@@ -41,6 +46,11 @@ const envSchema = z.object({
 
     // Observability (OPS-01 ITIL4)
     NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
+
+    // Distributed Rate Limiting (OWASP API4:2023)
+    // Optional: If configured, enables Redis-backed rate limiting for multi-instance deployments
+    UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(10).optional(),
 });
 
 // Parse and validate process.env

@@ -33,7 +33,7 @@ export default function HeroParallax({ children, className = "" }: HeroParallaxP
             >
                 {children || (
                     <div
-                        className="aspect-square rounded-3xl bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900"
+                        className="aspect-square rounded-3xl bg-gradient-to-br from-zinc-100 to-zinc-200"
                         style={{ boxShadow: "var(--shadow-elegant)" }}
                     />
                 )}
