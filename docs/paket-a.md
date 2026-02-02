@@ -90,7 +90,7 @@ Blueprint dianggap “approved” hanya bila ada sign-off eksplisit + evidence.
 - Analytics events
 - Lead pipeline “Become Partner”: server-side validation + anti-spam minimum + **persistence di Supabase** + **email notifikasi**
 - Export lead: **download CSV** (mekanisme minimal untuk Owner/PIC; tanpa admin dashboard kompleks)
-- Integrasi **CMS (free tier)** untuk konten yang disepakati
+- Integrasi **Sanity (free tier)** untuk konten yang disepakati
 - Setup **GA4 + Google Search Console** (verifikasi + submit sitemap)
 - Runbook + production checklist
 - **i18n (bilingual EN/ID)**
@@ -183,7 +183,7 @@ Website harus terasa **professional B2B**:
 | Actor | Capabilities |
 |---|---|
 | Guest | Browse katalog, baca education/events, submit lead, click WhatsApp |
-| Internal Admin (content ops) | Update konten (via repo/CMS) — tidak memerlukan RBAC kompleks di Paket A |
+| Internal Admin (content ops) | Update konten (via **Sanity**) — role sederhana (Owner/Karyawan), tanpa workflow kompleks |
 
 > Paket A tidak memiliki Partner/Agent/Admin login flow.
 
@@ -257,8 +257,8 @@ Profil field detail: lihat [Partner profiling](#5-partner-profiling-lead-capture
 
 Paket A pada scope ini memakai pendekatan sederhana namun reliabel:
 
-- Konten marketing/teks/gambar yang disepakati dikelola melalui **CMS (free tier)**.
-- Konten katalog produk dan education dapat dikelola melalui CMS sesuai keputusan implementasi (minimal: field yang dibutuhkan untuk listing + detail).
+- Konten marketing/teks/gambar yang disepakati dikelola melalui **Sanity (free tier)**.
+- Konten katalog produk dan education dikelola melalui Sanity sesuai keputusan implementasi (minimal: field yang dibutuhkan untuk listing + detail).
 - Form lead (Become Partner) diproses melalui endpoint server-side untuk validasi + anti-spam, lalu:
   - **disimpan ke Supabase (database) sebagai source of truth**,
   - mengirim **email notifikasi** ke inbox internal Perusahaan (bukan satu-satunya penyimpanan),
@@ -472,7 +472,7 @@ Jika seluruh skenario PASS, maka deliverable dianggap selesai.
 
 ### UAT-17 — CMS editing
 
-**Steps:** ubah teks/gambar yang disepakati melalui CMS; cek tampilan di produksi/staging  
+**Steps:** ubah teks/gambar yang disepakati melalui **Sanity**; cek tampilan di produksi/staging  
 **Expected:** perubahan tampil sesuai environment.
 
 ### UAT-18 — Handover & training
@@ -728,10 +728,10 @@ Catatan implementasi:
 - A2.8 Static pages: About, Contact, Privacy, Terms
 - A2.9 Global 404 + error fallback UI
 
-#### Epic A3 — Content system
+#### Epic A3 — Content system (Sanity)
 
 - A3.1 Define content schema (brand/category/product/event)
-- A3.2 CMS setup (free tier) + content seeding
+- A3.2 Sanity setup (free tier) + content seeding
 
 #### Epic A4 — SEO / Analytics / Ops
 
@@ -811,8 +811,8 @@ Effort expressed as **MD** (1 MD = 8 hours focused work).
 | A2-17 | Contact page | 0.25 | C | WA + fallback contact |
 | A2-18 | Privacy + Terms pages | 0.25 | B | Placeholder allowed |
 | A2-19 | Global 404 + error fallback UI | 0.5 | B | No blank page |
-| A3-01 | Content model definition | 1.0 | B | CMS model (product/event/pages) |
-| A3-02 | CMS setup + seeding | 1.0 | C | Free tier + initial content |
+| A3-01 | Content model definition | 1.0 | B | Sanity model (product/event/pages) |
+| A3-02 | Sanity setup + seeding | 1.0 | C | Free tier + initial content |
 | A4-01 | SEO basics metadata per page | 1.0 | B | Titles/description |
 | A4-02 | sitemap.xml + robots.txt | 0.5 | B | Accessible endpoints |
 | A4-03 | Social metadata | 0.75 | B | Share cards |
@@ -936,7 +936,7 @@ Angka CapEx/OpEx final mengacu ke `docs-paket-a/proposal.md` agar Owner/Finance 
 
 - Kode sumber: diserahkan ke Perusahaan pada saat handover.
 - Aset desain (Figma): diserahkan ke Perusahaan.
-- Akun Vercel/Supabase/CMS/GA4/GSC: berada di pihak Perusahaan; Vendor sebagai collaborator selama implementasi.
+- Akun Vercel/Supabase/Sanity/GA4/GSC: berada di pihak Perusahaan; Vendor sebagai collaborator selama implementasi.
 - Detail lihat `docs-paket-a/proposal.md` §4.1.
 
 **Backup Supabase:**
@@ -958,6 +958,7 @@ Angka CapEx/OpEx final mengacu ke `docs-paket-a/proposal.md` agar Owner/Finance 
 - **Lead notification email:** alamat email tujuan + kebijakan spam/quarantine.
 - **Email deliverability:** domain/From address yang dipakai untuk pengirim + akses DNS untuk setup **SPF/DKIM/DMARC**.
 - **Supabase:** PIC owner untuk akses admin + kebijakan backup/retention.
+- **Sanity:** PIC owner + 1 karyawan; role sederhana tanpa approval bertingkat.
 
 #### Kickoff checklist (pra-implementasi)
 

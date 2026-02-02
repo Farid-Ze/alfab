@@ -25,7 +25,7 @@ We implement frameworks to ensure reliability without over-engineering.
 We enforce a **B2B Professional** aesthetic via automated scripts (`npm run lint`):
 
 * **Typography**: Use semantic tokens (`.type-h1`, `.type-body`) NOT raw Tailwind (`text-xl`).
-* **Colors**: Use tokens (`bg-background`, `text-primary`) NOT raw hexes.
+* **Colors**: Use tokens (`bg-background`, `text-foreground`) NOT raw hexes.
 * **Robots.txt**: Strictly disallow `/api/` crawling to prevent excessive load.
 
 ### Quality Gates
@@ -45,7 +45,7 @@ Every Pull Request must pass:
 
 | ID | Risk | Mitigation | Owner |
 | :--- | :--- | :--- | :--- |
-| **R01** | **Key Leak** | `gitleaks` scanning, `env.ts` validation. | DevOps |
+| **R01** | **Key Leak** | `env.ts` validation + CI checks. | DevOps |
 | **R02** | **Email Outage** | Fail-Open architecture (DB persist first). | Tech Lead |
 | **R03** | **DDoS** | Rate Limiting (5 req/hr/IP) in `submit-lead.ts`. | DevOps |
 | **R06** | **PDP Violation** | Data Retention Policy (3 Years). | Legal |

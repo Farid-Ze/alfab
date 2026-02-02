@@ -42,13 +42,6 @@ Before diving into technical details, understand the Business Context:
 - Canonical Data Models (Products, Leads).
 - Schema Evolution Strategy.
 
-👉 **[Decision Log](./architecture/ADR-Log.md)**
-
-- ADR-001: Tech Stack.
-- ADR-002: Error Handling.
-
----
-
 ## ⚙️ 3. Operations (ITIL 4)
 
 *Runbooks, Monitoring, and Incident Response.*

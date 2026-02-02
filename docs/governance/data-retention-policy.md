@@ -11,15 +11,15 @@ To ensure compliance with GDPR (Art 5.1.e) and local privacy laws regarding stor
 
 | Data Category | Retention Period | Reason |
 |---|---|---|
-| **Lead Data** | 2 Years | Business Qualification Cycle |
-| **Access Logs** | 30 Days | Security Auditing (ISO 27001) |
+| **Lead Data** | 3 Years | Business Qualification Cycle |
+| **Access Logs** | 90 Days | Security Auditing (ISO 27001) |
 | **Backup Snapshots** | 30 Days | Disaster Recovery |
-| **Application Logs** | 14 Days | specific Troubleshooting |
+| **Application Logs** | 90 Days | Troubleshooting & incident review |
 
 ## 3. Deletion Process
 
 - **Automated:** Database backups expire via Supabase PITR policy (configurable).
-- **Manual:** Leads older than 2 years are purged quarterly via SQL job.
+- **Manual:** Leads older than 3 years are purged quarterly via SQL job.
 
 ## 4. Exception
 

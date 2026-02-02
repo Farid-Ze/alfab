@@ -7,14 +7,13 @@
 
 ## 1. Service Catalogue (Request Fulfillment)
 
-**Base URL**: `https://alfabeauty.co.id/api`
+**Base URL**: `https://alfabeauty.co.id`
 
 | Service | Endpoint | SLA (P95) | Dependencies |
 | :--- | :--- | :--- | :--- |
-| **Lead Capture** | `/leads` | < 1000ms | Supabase, Resend |
-| **Product List** | `/products` | < 500ms | Supabase, Redis (Cache) |
-| **Health Check** | `/health` | < 200ms | None |
-| **Analytics** | `/rum` | Async | Vercel Analytics |
+| **Lead Capture** | `/api/leads` | < 1000ms | Supabase |
+| **Lead Export (Admin)** | `/api/leads/export` | < 2000ms | Supabase |
+| **Health Check** | `/api/health` | < 200ms | None |
 
 ---
 

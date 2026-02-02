@@ -9,26 +9,37 @@
 
 ### Product (Catalog)
 
-**Source**: `products.json` (Read-Read).
+**Source**: `src/content/data/products.json` (read-only JSON catalog).
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `id` | UUID | Unique ID. |
 | `slug` | String | URL-friendly identifier. |
-| `category` | Enum | `shampoo`, `treatment`, `styling`, `color`, `grooming`. |
-| `brand` | String | Brand Name (e.g., "Makarizo"). |
+| `name` | String | Product name. |
+| `brand` | String | Brand name. |
+| `audience` | Enum[] | `SALON`, `BARBER`. |
+| `functions` | String[] | Key functions/tags. |
+| `categories` | Enum[] | `shampoo`, `treatment`, `styling`, `color`, `grooming` (optional). |
+| `summary` | String | Short description. |
+| `benefits` | String[] | Bullet benefits. |
+| `howToUse` | String | Usage guidance. |
+| `image.url` | String | Image URL (local or remote). |
+| `image.alt` | String | Accessibility text. |
+| `image.caption` | String | Optional caption. |
 
 ### Lead (Transactional)
 
-**Source**: Supabase `leads` table.
+**Source**: Supabase `leads` table (inserted via server action).
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `id` | UUID | Primary Key. |
-| `email` | String | Unique, Verified. |
-| `company` | String | Business Name. |
-| `intent` | Enum | `distribution`, `salon_use`. |
-| `status` | Enum | `new`, `contacted`, `converted`. |
+| `name` | String | Contact name. |
+| `phone` | String | WhatsApp number. |
+| `email` | String | Contact email (optional). |
+| `message` | String | Optional note. |
+| `ip_address` | String | Request IP (truncated). |
+| `page_url_initial` | String | First landing URL (session). |
+| `page_url_current` | String | Current page URL. |
+| `raw` | JSONB | Full payload + profiling fields. |
 
 ---
 

@@ -32,7 +32,7 @@ npm run test:all
 
 1. **Lead Submission**: Verify Form -> API -> Database (Mocked).
 2. **Localization**: Switch EN/ID.
-3. **Navigation**: Mega Menu structure.
+3. **Navigation**: Header + mobile menu toggle.
 
 ---
 
@@ -47,7 +47,7 @@ npm run test:all
 2. **Client/Server**:
     * Default to **Server Components**.
     * Add `"use client"` ONLY for interactivity (`onClick`, `useState`).
-3. **Icons**: Use `lucide-react`.
+3. **Icons**: Use shared icons in `src/components/ui/icons.tsx`.
 
 ### Typography Tokens
 

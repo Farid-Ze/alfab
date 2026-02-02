@@ -1,14 +1,13 @@
-# V2 UAT Checklist
+# Design UAT Checklist
 
 **ITIL 4: Service Transition — User Acceptance Testing**
-**Version**: 1.0 | **Last Updated**: 2026-01-30
+**Version**: 1.0 | **Last Updated**: 2026-02-02
 
 ---
 
 ## Instructions
 
-Each page must be verified by the Owner before V2 can go to production.
-Mark each item with:
+Each page must be verified by the Owner before release. Mark each item with:
 
 - ✅ Pass
 - ❌ Fail (with notes)
@@ -36,9 +35,9 @@ Mark each item with:
 
 | Test Case | Expected | Status | Notes |
 |-----------|----------|--------|-------|
-| Product grid loads | Bento grid with cards | ⏸️ | |
+| Product grid loads | Cards render correctly | ⏸️ | |
 | Filter bar works | Brand, Function, Audience filters | ⏸️ | |
-| Card hover effects | Scale, shadow transition | ⏸️ | |
+| Card hover effects | Scale and hover states visible | ⏸️ | |
 | Click to detail | Navigate to product detail page | ⏸️ | |
 
 ---
@@ -48,9 +47,9 @@ Mark each item with:
 | Test Case | Expected | Status | Notes |
 |-----------|----------|--------|-------|
 | Product info visible | Name, description, specs | ⏸️ | |
-| Gallery functional | Images display correctly | ⏸️ | |
+| Product image visible | Main image loads correctly | ⏸️ | |
 | CTA buttons work | WhatsApp, Partner links | ⏸️ | |
-| Sticky info panel | Scrolls correctly on desktop | ⏸️ | |
+| Key benefits + how-to | Sections render correctly | ⏸️ | |
 
 ---
 
@@ -71,10 +70,9 @@ Mark each item with:
 
 | Test Case | Expected | Status | Notes |
 |-----------|----------|--------|-------|
-| Desktop nav | Transparent → Frosted on scroll | ⏸️ | |
+| Desktop nav | Transparent → frosted on scroll | ⏸️ | |
 | Mobile menu | Curtain reveal works | ⏸️ | |
 | All links work | Navigate to correct pages | ⏸️ | |
-| Active states | Current page highlighted | ⏸️ | |
 
 ---
 
@@ -95,7 +93,7 @@ Mark each item with:
 |-----------|----------|--------|-------|
 | LCP < 2.5s | Homepage, Products | ⏸️ | |
 | CLS < 0.1 | No layout shift | ⏸️ | |
-| FID < 100ms | Responsive interactions | ⏸️ | |
+| INP < 200ms | Responsive interactions | ⏸️ | |
 
 ---
 

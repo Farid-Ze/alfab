@@ -1,1 +1,166 @@
-<section class="o-sliderSection  -activityHome"><div class="row"><div class="o-sliderSection__content no-width -bgw100 a-panel column-22 offset-1 -right"><h2 class="o-sliderSection__title tx-sm">IoT transforms field data into drivers of performance and innovation. It accelerates the transition to more agile, connected, and service-oriented business models.</h2> <section class="m-slider -keepOverflow" data-module-slider="m1"><div class="m-slider__viewport is-draggable" data-slider="viewport"><ul class="m-slider__container" style="transform: translate3d(0px, 0px, 0px);"><li class="m-slider__slide is-snapped is-in-view"><div class="m-sliderCard -rounded -bgs100"><h3 class="m-sliderCard__title tx-lg">Smart Logistics</h3> <p class="tx-plg m-sliderCard__text">Reinventing transportation, logistics, and warehouse management</p> <figure class="a-image m-sliderCard__cover js-image"><img alt="" class="a-image__image js-image-image -entered -loaded" data-lazy="" data-src="https://www.ineo-sense.com/media/site/284ac3575b-1738260235/logistics-square-v3.png" data-srcset="https://www.ineo-sense.com/media/site/284ac3575b-1738260235/logistics-square-v3-600x-q80.webp 600w, https://www.ineo-sense.com/media/site/284ac3575b-1738260235/logistics-square-v3-1024x-q80.webp 1024w, https://www.ineo-sense.com/media/site/284ac3575b-1738260235/logistics-square-v3-1440x-q80.webp 1440w, https://www.ineo-sense.com/media/site/284ac3575b-1738260235/logistics-square-v3-1920x-q80.webp 1920w" height="600" sizes="85vw, (min-width: 1025px) 25vw" width="600" data-ll-status="loaded" srcset="https://www.ineo-sense.com/media/site/284ac3575b-1738260235/logistics-square-v3-600x-q80.webp 600w, https://www.ineo-sense.com/media/site/284ac3575b-1738260235/logistics-square-v3-1024x-q80.webp 1024w, https://www.ineo-sense.com/media/site/284ac3575b-1738260235/logistics-square-v3-1440x-q80.webp 1440w, https://www.ineo-sense.com/media/site/284ac3575b-1738260235/logistics-square-v3-1920x-q80.webp 1920w" src="https://www.ineo-sense.com/media/site/284ac3575b-1738260235/logistics-square-v3.png"></figure> <a class="a-button -primary -tx600 tx-labmd" href="https://www.ineo-sense.com/activities/smart-logistics" title=" Smart Logistics "><i class="a-button__leftDot"></i> <span class="a-labelText">Know more</span> <i class="a-button__rightDot"></i></a></div> </li><li class="m-slider__slide is-in-view"><div class="m-sliderCard -rounded -bgs100"><h3 class="m-sliderCard__title tx-lg">Smart Industry</h3> <p class="tx-plg m-sliderCard__text">Transforming key industrial sectors through IoT Innovation</p> <figure class="a-image m-sliderCard__cover js-image"><img alt="" class="a-image__image js-image-image -entered -loaded" data-lazy="" data-src="https://www.ineo-sense.com/media/site/cce70cd7e3-1738260153/industrie-square-v4.png" data-srcset="https://www.ineo-sense.com/media/site/cce70cd7e3-1738260153/industrie-square-v4-600x-q80.webp 600w, https://www.ineo-sense.com/media/site/cce70cd7e3-1738260153/industrie-square-v4-1024x-q80.webp 1024w, https://www.ineo-sense.com/media/site/cce70cd7e3-1738260153/industrie-square-v4-1440x-q80.webp 1440w, https://www.ineo-sense.com/media/site/cce70cd7e3-1738260153/industrie-square-v4-1920x-q80.webp 1920w" height="600" sizes="85vw, (min-width: 1025px) 25vw" width="600" data-ll-status="loaded" srcset="https://www.ineo-sense.com/media/site/cce70cd7e3-1738260153/industrie-square-v4-600x-q80.webp 600w, https://www.ineo-sense.com/media/site/cce70cd7e3-1738260153/industrie-square-v4-1024x-q80.webp 1024w, https://www.ineo-sense.com/media/site/cce70cd7e3-1738260153/industrie-square-v4-1440x-q80.webp 1440w, https://www.ineo-sense.com/media/site/cce70cd7e3-1738260153/industrie-square-v4-1920x-q80.webp 1920w" src="https://www.ineo-sense.com/media/site/cce70cd7e3-1738260153/industrie-square-v4.png"></figure> <a class="a-button -primary -tx600 tx-labmd" href="https://www.ineo-sense.com/activities/smart-industry" title=" Smart Industry "><i class="a-button__leftDot"></i> <span class="a-labelText">Know more</span> <i class="a-button__rightDot"></i></a></div> </li><li class="m-slider__slide is-in-view"><div class="m-sliderCard -rounded -bgs100"><h3 class="m-sliderCard__title tx-lg">Smart City</h3> <p class="tx-plg m-sliderCard__text">Making living spaces smarter to improve daily life, discover the Smart City (Building &amp; Parking, Facility Management, and more)</p> <figure class="a-image m-sliderCard__cover js-image"><img alt="" class="a-image__image js-image-image -entered -loaded" data-lazy="" data-src="https://www.ineo-sense.com/media/site/e41e4b5963-1738255080/city-square.png" data-srcset="https://www.ineo-sense.com/media/site/e41e4b5963-1738255080/city-square-600x-q80.webp 600w, https://www.ineo-sense.com/media/site/e41e4b5963-1738255080/city-square-1024x-q80.webp 1024w, https://www.ineo-sense.com/media/site/e41e4b5963-1738255080/city-square-1440x-q80.webp 1440w, https://www.ineo-sense.com/media/site/e41e4b5963-1738255080/city-square-1920x-q80.webp 1920w" height="600" sizes="85vw, (min-width: 1025px) 25vw" width="600" data-ll-status="loaded" srcset="https://www.ineo-sense.com/media/site/e41e4b5963-1738255080/city-square-600x-q80.webp 600w, https://www.ineo-sense.com/media/site/e41e4b5963-1738255080/city-square-1024x-q80.webp 1024w, https://www.ineo-sense.com/media/site/e41e4b5963-1738255080/city-square-1440x-q80.webp 1440w, https://www.ineo-sense.com/media/site/e41e4b5963-1738255080/city-square-1920x-q80.webp 1920w" src="https://www.ineo-sense.com/media/site/e41e4b5963-1738255080/city-square.png"></figure> <a class="a-button -primary -tx600 tx-labmd" href="https://www.ineo-sense.com/activities/smart-city" title=" Smart City "><i class="a-button__leftDot"></i> <span class="a-labelText">Know more</span> <i class="a-button__rightDot"></i></a></div></li></ul></div> <div class="m-slider__controls"><div class="m-slider__progress tx-labmd -tx600" data-slider="progress">1&nbsp;<span> • 2</span></div> <button aria-label="Previous" class="a-button -icon tx-labmd" data-slider="prevBtn" type="button" disabled="disabled"><svg aria-hidden="true" class="a-svg -arrow-left" focusable="false"><use href="#icon-arrow-left"></use></svg></button> <button aria-label="Next" class="a-button -icon tx-labmd" data-slider="nextBtn" type="button"><svg aria-hidden="true" class="a-svg -arrow-right" focusable="false"><use href="#icon-arrow-right"></use></svg></button></div></section> <div class="o-sliderSection__link"><a class="a-button -primary -tx600  tx-labmd" href="https://www.ineo-sense.com/activities" title="View all our sectors"><i class="a-button__leftDot"></i> <span class="a-labelText">View all our sectors</span> <i class="a-button__rightDot"></i></a></div></div></div></section>
+HOMEPAGE – PT ALFA BEAUTY COSMETICA
+
+⸻
+
+HERO SECTION
+
+Headline / Tagline
+
+Connecting Global Hair Innovation to Indonesia’s Salon Professionals
+Menghubungkan Inovasi Rambut Global dengan Profesional Salon Indonesia
+
+Sub-Headline
+
+Exclusive importer and distributor of leading Italian and Spanish professional haircare brands, serving Indonesia’s salon industry for over 18 years.
+Importir dan distributor eksklusif merek perawatan rambut profesional terkemuka dari Italia dan Spanyol, melayani industri salon Indonesia selama lebih dari 18 tahun.
+
+CTA (Optional)
+
+Explore Our Brands | Partner With Us
+Jelajahi Brand Kami | Bermitra dengan Kami
+
+⸻
+
+ABOUT US
+
+English
+
+PT Alfa Beauty Cosmetica is a professional haircare distribution company specializing in salon products and solutions. With nationwide coverage and more than 18 years of experience, we represent globally recognized professional hair brands and deliver them to the Indonesian market through a structured, reliable, and long-term partnership approach.
+
+Bahasa Indonesia
+
+PT Alfa Beauty Cosmetica adalah perusahaan distribusi perawatan rambut profesional yang berfokus pada produk dan solusi untuk salon. Dengan jangkauan nasional dan pengalaman lebih dari 18 tahun, kami menghadirkan merek-merek profesional kelas dunia ke pasar Indonesia melalui pendekatan kemitraan yang terstruktur, andal, dan berkelanjutan.
+
+⸻
+
+OUR ROLE IN THE INDUSTRY
+
+English
+
+More Than a Distributor
+We act as a strategic bridge between international principals and Indonesia’s professional salon industry by:
+	•	Connecting global innovation with local market needs
+	•	Building brands through education and technical excellence
+	•	Supporting sustainable growth for salons and professionals
+
+Bahasa Indonesia
+
+Lebih dari Sekadar Distributor
+Kami berperan sebagai penghubung strategis antara prinsipal internasional dan industri salon profesional di Indonesia dengan cara:
+	•	Menyatukan inovasi global dengan kebutuhan pasar lokal
+	•	Membangun merek melalui edukasi dan keunggulan teknis
+	•	Mendukung pertumbuhan salon dan profesional secara berkelanjutan
+
+⸻
+
+OUR BRANDS
+
+English
+
+Global Professional Brands We Represent
+	•	Alfaparf Milano Professional – Italy
+	•	Farmavita – Italy
+	•	Montibello – Spain
+
+Each brand is carefully selected for its innovation, quality, and relevance to the professional salon market.
+
+Bahasa Indonesia
+
+Merek Profesional Global yang Kami Wakili
+	•	Alfaparf Milano Professional – Italia
+	•	Farmavita – Italia
+	•	Montibello – Spanyol
+
+Setiap merek dipilih secara selektif berdasarkan inovasi, kualitas, dan relevansinya dengan kebutuhan salon profesional.
+
+⸻
+
+EDUCATION & MARKET DEVELOPMENT
+
+English
+
+Educating the Professional Market
+Supported by a solid technical and sales team, we actively educate the salon industry through:
+	•	Technical trainings and product education
+	•	Trend insights and service development
+	•	Skill enhancement for hairdressers and salon teams
+
+We believe long-term success is built on knowledge, not short-term tactics.
+
+Bahasa Indonesia
+
+Mengembangkan Industri melalui Edukasi
+Didukung oleh tim teknis dan penjualan yang solid, kami secara aktif mengedukasi industri salon melalui:
+	•	Pelatihan teknis dan edukasi produk
+	•	Wawasan tren dan pengembangan layanan
+	•	Peningkatan keterampilan bagi hairdresser dan tim salon
+
+Kami percaya kesuksesan jangka panjang dibangun melalui pengetahuan, bukan pendekatan instan.
+
+⸻
+
+WHY PARTNER WITH US
+
+English
+
+For International Principals
+	•	Strong nationwide distribution network
+	•	Deep understanding of Indonesia’s salon ecosystem
+	•	Proven capability in brand building and market education
+
+For Professional Salons
+	•	Access to trusted global haircare brands
+	•	Consistent product quality and professional support
+	•	Long-term partnership based on trust and competence
+
+Bahasa Indonesia
+
+Untuk Prinsipal Internasional
+	•	Jaringan distribusi nasional yang kuat
+	•	Pemahaman mendalam terhadap ekosistem salon Indonesia
+	•	Kapabilitas terbukti dalam pengembangan merek dan edukasi pasar
+
+Untuk Salon Profesional
+	•	Akses ke merek perawatan rambut global terpercaya
+	•	Kualitas produk yang konsisten dan dukungan profesional
+	•	Kemitraan jangka panjang yang dibangun atas dasar kepercayaan dan kompetensi
+
+⸻
+
+CLOSING STATEMENT
+
+English
+
+PT Alfa Beauty Cosmetica is a trusted distribution partner for global professional haircare suppliers and a reliable supplier for salons across Indonesia—committed to quality, education, and sustainable industry growth.
+
+Bahasa Indonesia
+
+PT Alfa Beauty Cosmetica adalah mitra distribusi terpercaya bagi pemasok perawatan rambut profesional global serta pemasok andal bagi salon di seluruh Indonesia—berkomitmen pada kualitas, edukasi, dan pertumbuhan industri yang berkelanjutan.
+
+---
+
+OUR BRANDS
+
+English
+
+Global Professional Brands We Represent
+	•	Alfaparf Milano Professional – Italy
+	•	Farmavita – Italy
+	•	Montibello – Spain
+	•	Gamma+ Professional – Italy
+
+Each brand is carefully selected for its innovation, quality, and relevance to the professional salon and barber market.
+
+Bahasa Indonesia
+
+Merek Profesional Global yang Kami Wakili
+	•	Alfaparf Milano Professional – Italia
+	•	Farmavita – Italia
+	•	Montibello – Spanyol
+	•	Gamma+ Professional – Italia
+
+Setiap merek dipilih secara selektif berdasarkan inovasi, kualitas, dan relevansinya dengan kebutuhan salon dan barber profesional.
+
+---
+
+Intinya kalau ada tulisan “salon” pastikan diikuti kata “dan barber” di belakangnya, tambahkan “barber” di tagline. 18 tahun untuk salon, untuk barber sih baru mulai.

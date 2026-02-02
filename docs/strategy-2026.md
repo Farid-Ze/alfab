@@ -18,7 +18,7 @@ Berikut adalah analisis ketepatan implementasi untuk masing-masing framework pad
 Karena ini adalah platform B2B, ketersediaan (*availability*) adalah segalanya bagi klien bisnis.
 
 - **Penerapan:** Gunakan praktik **Service Level Management** untuk memastikan website selalu dapat diakses saat klien ingin melakukan input lead. Karena Anda menggunakan *Vercel Free*, ITIL membantu Anda menyusun rencana cadangan jika terjadi limitasi trafik pada tier gratis.
-- **Aksi:** Tetapkan prosedur "Incident Management" jika API Supabase atau Headless CMS mengalami gangguan.
+- **Aksi:** Tetapkan prosedur "Incident Management" jika API Supabase atau pipeline konten berbasis repo mengalami gangguan.
 
 ### 2. COBIT 2019 (Tata Kelola Data & Kepatuhan)
 
@@ -31,17 +31,17 @@ Platform B2B mengumpulkan data bisnis (Lead Capture). Di tahun 2026, regulasi pe
 ### 3. TOGAF (Arsitektur Terintegrasi)
 
 **Status: Tepat (Fokus pada Integrasi).**
-Proyek Anda melibatkan banyak komponen terpisah: Next.js (Frontend), Supabase (Database), dan Headless CMS.
+Proyek Anda melibatkan banyak komponen terpisah: Next.js (Frontend), Supabase (Database), dan konten berbasis repo (JSON).
 
-- **Penerapan:** TOGAF memastikan bahwa integrasi antara **Headless CMS** dan **Next.js 16.x** tidak berantakan di masa depan saat produk kosmetik bertambah banyak. Ini membantu mendefinisikan standar struktur data produk agar konsisten.
-- **Aksi:** Buat diagram "Information Systems Architecture" yang memetakan bagaimana data mengalir dari CMS ke tampilan katalog produk.
+- **Penerapan:** TOGAF memastikan bahwa integrasi antara **konten berbasis repo** dan **Next.js 16.x** tetap konsisten saat katalog bertambah. Ini membantu mendefinisikan standar struktur data produk agar konsisten.
+- **Aksi:** Buat diagram "Information Systems Architecture" yang memetakan bagaimana data mengalir dari repo konten ke tampilan katalog produk.
 
 ### 4. Jamstack/DevOps (Efisiensi Teknis)
 
 **Status: Sangat Tepat (Wajib).**
-Tech stack Anda (Next.js + Vercel + Headless CMS) adalah perwujudan modern dari Jamstack.
+Tech stack Anda (Next.js + Vercel + konten berbasis repo) adalah perwujudan modern dari Jamstack.
 
-- **Penerapan:** Memastikan proses pengembangan berjalan otomatis. Setiap kali Anda mengubah deskripsi produk di CMS, website harus otomatis melakukan *re-build* atau menggunakan **Incremental Static Regeneration (ISR)** di Next.js.
+- **Penerapan:** Memastikan proses pengembangan berjalan otomatis. Setiap kali Anda mengubah deskripsi produk di repo, website harus otomatis melakukan *re-build* atau menggunakan **Incremental Static Regeneration (ISR)** di Next.js.
 - **Aksi:** Optimalkan penggunaan Vercel Deployment Pipelines agar setiap perubahan kode diuji secara otomatis sebelum *live*.
 
 ---
@@ -59,9 +59,9 @@ Mengingat ini adalah platform B2B yang biasanya memiliki kebutuhan fitur yang te
 
 #### 2. Technical Framework: JAMSTACK 2.0 (Arsitektur Web)
 
-Karena tech stack Anda menggunakan Next.js dan Headless CMS, Anda secara otomatis berada di jalur **Jamstack**. Ini adalah framework arsitektur paling tepat untuk website kosmetik yang membutuhkan visual tinggi namun harus tetap ringan.
+Karena tech stack Anda menggunakan Next.js dan konten berbasis repo, Anda secara otomatis berada di jalur **Jamstack**. Ini adalah framework arsitektur paling tepat untuk website kosmetik yang membutuhkan visual tinggi namun harus tetap ringan.
 
-- **Alasan:** Memisahkan *Frontend* (Next.js), *Database* (Supabase), dan *Content* (Headless CMS) membuat website Anda tidak bisa "down" secara total jika salah satu bagian bermasalah.
+- **Alasan:** Memisahkan *Frontend* (Next.js), *Database* (Supabase), dan *Content* (repo JSON) membuat website Anda tidak bisa "down" secara total jika salah satu bagian bermasalah.
 - **Manfaat:** Kecepatan akses yang luar biasa (skor LCP tinggi di Google) yang sangat krusial untuk citra brand kecantikan (*premium feel*).
 
 #### 3. Service Framework: ITIL 4 - Fokus pada "Change Management"

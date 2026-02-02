@@ -28,7 +28,7 @@ Website ini berfungsi sebagai alat bantu sales/BD untuk meningkatkan trust, memp
 | Notifikasi lead | **Email internal Perusahaan** |
 | Deliverability email notifikasi | **SPF/DKIM/DMARC** (setup DNS) |
 | Export data | **Download CSV** |
-| CMS | **Git-based CMS (JSON)** |
+| CMS | **Sanity (free tier)** |
 | Analytics & Search | **GA4 + Google Search Console** |
 | Garansi bug fix | **90 hari kalender (3 bulan)** |
 
@@ -60,7 +60,7 @@ Yang “Bapak beli” dari Paket A:
 - **Konversi terukur:** klik WhatsApp dan submit lead bisa dipantau.
 - **Lead tidak hilang:** lead tersimpan di database walaupun email masuk spam atau server email perusahaan down.
 - **Operasional lebih ringan:** data bisa diunduh (CSV) tanpa copy manual dari email.
-- **Kemandirian tim internal:** konten marketing dasar bisa diedit lewat CMS tanpa menyentuh kode.
+- **Kemandirian tim internal:** konten marketing dasar bisa diedit lewat **Sanity** tanpa menyentuh kode.
 
 ---
 
@@ -79,7 +79,7 @@ Yang “Bapak beli” dari Paket A:
   - mengirim **notifikasi email ke inbox internal Perusahaan**,
   - menyediakan **ekspor data (download CSV)**.
 - Konten editable tanpa menyentuh kode:
-  - Integrasi **headless CMS (free tier)** untuk edit teks/gambar dasar yang disepakati.
+  - Integrasi **Sanity (free tier)** untuk edit teks/gambar dasar yang disepakati (role: **Owner + Karyawan**).
 - Setup analytics standar:
   - **Google Analytics (GA4)** terpasang + event konversi dasar (klik WA, submit lead).
   - **Google Search Console**: verifikasi kepemilikan situs + submit sitemap.
@@ -125,7 +125,7 @@ Penambahan fitur/halaman di luar in-scope diproses sebagai Change Request:
 - Deliverability email notifikasi: Vendor menyiapkan panduan dan melakukan verifikasi konfigurasi DNS domain pengirim (**SPF/DKIM/DMARC**) bersama PIC IT Perusahaan.
 - Backup data Supabase: Vendor menyiapkan skrip backup terjadwal (atau instruksi manual yang jelas) dan langkah restore yang terdokumentasi.
 
-1) Integrasi CMS (free tier) untuk konten yang disepakati.
+1) Integrasi **Sanity (free tier)** untuk konten yang disepakati.
 2) GA4 + Search Console terpasang dan tervalidasi.
 3) Dokumentasi handover + 1 sesi pelatihan (± 60 menit).
 
@@ -133,7 +133,7 @@ Penambahan fitur/halaman di luar in-scope diproses sebagai Change Request:
 
 - Kepemilikan kode sumber: seluruh kode implementasi yang dibuat Vendor untuk proyek ini diserahkan kepada Perusahaan pada saat handover (akses repositori, struktur proyek, dan cara build/deploy).
 - Aset desain: file desain editable (Figma) diserahkan kepada Perusahaan.
-- Kepemilikan akun: akun/akses Vercel, Supabase, CMS, GA4/GSC, dan Figma berada di pihak Perusahaan; Vendor sebagai collaborator selama implementasi.
+- Kepemilikan akun: akun/akses Vercel, Supabase, **Sanity**, GA4/GSC, dan Figma berada di pihak Perusahaan; Vendor sebagai collaborator selama implementasi.
 
 ---
 
@@ -157,7 +157,7 @@ Pekerjaan dinyatakan selesai jika seluruh item UAT berikut dinyatakan PASS.
 - UAT-14 — Search Console: situs terverifikasi dan sitemap tersubmit.
 - UAT-15 — Static pages: About/Contact/Privacy/Terms dapat diakses; link tidak broken.
 - UAT-16 — 404: URL tidak ada menampilkan halaman 404 user-friendly.
-- UAT-17 — CMS editing: perubahan teks/gambar yang disepakati dapat dilakukan melalui CMS dan tampil di produksi.
+- UAT-17 — CMS editing: perubahan teks/gambar yang disepakati dapat dilakukan melalui **Sanity** (Owner/Karyawan) dan tampil di produksi.
 - UAT-18 — Handover & training: dokumentasi diserahkan dan sesi pelatihan dilakukan.
 - UAT-19 — Social metadata: OpenGraph + Twitter card ada (Home + Product detail), tidak kosong/invalid.
 
@@ -173,14 +173,49 @@ Pekerjaan dinyatakan selesai jika seluruh item UAT berikut dinyatakan PASS.
 - Finalisasi UAT (bagian 5).
 - Finalisasi CTA WhatsApp (nomor + prefill).
 - Finalisasi struktur data lead (field form) + kebijakan export.
-- Konfirmasi hosting (bagian 9.8) + akses yang dibutuhkan (Supabase, GA4, GSC, CMS).
+- Konfirmasi hosting (bagian 9.8) + akses yang dibutuhkan (Supabase, GA4, GSC, Sanity).
 
 ### Tahap 2 — Implementasi bertahap (Staging)
 
 - Kami bangun halaman dan fitur sesuai urutan prioritas (Home → Products → Detail → Partnership).
 - Setup Supabase (schema + penyimpanan lead) + notifikasi email.
-- Integrasi CMS (free tier) untuk konten yang disepakati.
+- Integrasi **Sanity (free tier)** untuk konten yang disepakati.
 - Setup GA4 + GSC.
+
+#### Plan CMS (full effort)
+
+1) **Provisioning & akses:** buat workspace Sanity, set **Owner** + **Karyawan** (2 role sederhana, tanpa approval bertingkat).
+2) **Content modeling:** definisikan schema (brand, category, product, education/event, static pages) + validasi field minimum.
+3) **Seeding/migrasi awal:** input konten awal yang disepakati + asset upload; pastikan struktur konsisten.
+4) **Integrasi frontend:** koneksi dataset, query, dan mapping ke template; fallback & empty-state.
+5) **Preview & staging QA:** verifikasi listing/detail/SEO di staging, lalu smoke check perubahan konten.
+6) **Training & handover:** SOP edit konten, batasan field, dan checklist sebelum publish.
+
+#### Plan implementasi (detail)
+
+**Week 1 — Foundation & CMS**
+
+1) **Repo & env:** finalisasi env vars, secrets, dan akses (Supabase/Sanity/GA4/GSC).
+2) **Content model:** mapping schema Sanity → struktur halaman (brand, category, product, education/event, static pages).
+3) **Data seeding:** input konten awal + asset upload; verifikasi data minimum per template.
+4) **Routing & i18n:** pastikan semua template bilingual (ID/EN) dengan fallback aman.
+5) **Baseline UI:** header/footer, homepage, products overview (listing + filter).
+
+**Week 2 — Core features**
+
+1) **Products detail:** struktur konten, CTA WhatsApp, blok decision support.
+2) **Education/events:** listing + detail (event/article) + CTA.
+3) **Partnership:** landing + form Become Partner + success state.
+4) **Lead pipeline:** validasi + anti-spam + persistence Supabase + email notif + export CSV.
+5) **SEO & social:** metadata, sitemap, robots, OG/Twitter cards.
+
+**Week 3 — QA, UAT, go-live**
+
+1) **QA regressi:** responsive + a11y baseline + performance pass.
+2) **Tracking:** event WA + lead submit + GA4/GSC verification.
+3) **UAT execution:** jalankan UAT-01..19 + evidence.
+4) **Polish & fixes:** perbaikan bug minor + re-test.
+5) **Go-live:** deploy produksi + smoke test + handover.
 
 ### Tahap 3 — UAT & perbaikan
 
@@ -216,7 +251,7 @@ Persiapan teknis sudah ada untuk mempercepat eksekusi:
 
 Timeline delivery: 3 minggu kalender.
 
-- Minggu 1: finalisasi ruang lingkup & UAT, setup Supabase/CMS/GA4/GSC, implementasi struktur halaman inti.
+- Minggu 1: finalisasi ruang lingkup & UAT, setup Supabase/Sanity/GA4/GSC, implementasi struktur halaman inti.
 - Minggu 2: Products overview + detail, Partnership/Become Partner, export CSV, bilingual ID/EN.
 - Minggu 3: UAT end-to-end, perbaikan minor, go-live, handover (dokumen + training).
 
@@ -228,7 +263,7 @@ Timeline delivery: 3 minggu kalender.
 
 | Paket | Cocok untuk | Fixed Price (tanpa PPN) | Timeline | Pembeda utama |
 |---|---|---:|---|---|
-| **Paket A** | ingin lead tervalidasi, **tersimpan**, dan bisa diekspor | **Rp 11.850.000** | 3 minggu | Supabase (DB) + export CSV + CMS (free tier) + GA4/GSC + bilingual + tracking |
+| **Paket A** | ingin lead tervalidasi, **tersimpan**, dan bisa diekspor | **Rp 11.850.000** | 3 minggu | Supabase (DB) + export CSV + Sanity (free tier) + GA4/GSC + bilingual + tracking |
 
 Harga di atas **tidak termasuk PPN** (sesuai arahan).
 
@@ -296,7 +331,7 @@ Tabel ini memfinalisasi rincian perhitungan **untuk proyek ini** agar transparan
 
 | Workstream | MD | Dasar hitung (ringkas) | Rate (IDR/MD) | Subtotal |
 |---|---:|---|---:|---:|
-| Setup proyek & scaffolding (repo, env, routing dasar) | 1,25 | setup Next.js + struktur repo + env dasar (termasuk koneksi Supabase/CMS/GA4 pada level plumbing) | 300.000 | 375.000 |
+| Setup proyek & scaffolding (repo, env, routing dasar) | 1,25 | setup Next.js + struktur repo + env dasar (termasuk koneksi Supabase/Sanity/GA4 pada level plumbing) | 300.000 | 375.000 |
 | UI/halaman publik (Home, About, Contact, legal bundle, 404) | 5,50 | design system + section components + 0,75 × 4 template halaman | 300.000 | 1.650.000 |
 | Products overview (listing + filter + empty-state) | 5,25 | listing + data model + filter UX/state + polish/responsive | 300.000 | 1.575.000 |
 | Product detail (struktur, CTA, content blocks) | 4,25 | template + blocks + struktur konten + CTA + polish | 300.000 | 1.275.000 |
@@ -307,7 +342,7 @@ Tabel ini memfinalisasi rincian perhitungan **untuk proyek ini** agar transparan
 | Lead pipeline (Supabase + email notif + export CSV + anti-spam) | 4,00 | endpoint + validation + anti-spam + persistence DB + export + evidence | 300.000 | 1.200.000 |
 | QA/UAT readiness (regresi dasar + evidence jalur kritikal) | 3,00 | jalankan UAT + evidence + bugfix minor/polish | 300.000 | 900.000 |
 | PM, koordinasi, handover & pelatihan | 3,00 | kickoff + review staging + rilis + dokumentasi handover + 1 jam training | 300.000 | 900.000 |
-| Kontinjensi risiko & iterasi UAT (Likely) | 5,25 | buffer realistis untuk integrasi (Supabase/CMS/GA4/GSC), iterasi UAT, dan polishing sebelum go-live | 300.000 | 1.575.000 |
+| Kontinjensi risiko & iterasi UAT (Likely) | 5,25 | buffer realistis untuk integrasi (Supabase/Sanity/GA4/GSC), iterasi UAT, dan polishing sebelum go-live | 300.000 | 1.575.000 |
 | **TOTAL baseline (Likely)** | **39,50** |  |  | **11.850.000** |
 
 **Referensi singkat (untuk transparansi):**
@@ -338,7 +373,7 @@ Pada proposal ini baseline (**Likely**) sudah mencakup:
 - lead tersimpan (Supabase),
 - export CSV sederhana,
 - analytics basic (GA4 + GSC),
-- CMS basic (free tier).
+- Sanity (free tier).
 
 Contoh kebutuhan yang biasanya termasuk peningkatan di luar baseline dan diproses sebagai Change Request:
 
@@ -360,7 +395,7 @@ OpEx yang relevan (Baseline — Likely):
 
 1) Hosting website: **Vercel Free/Hobby (Rp 0)**
 2) Supabase (database): **menggunakan Free tier** (selama masih dalam batas penggunaan)
-3) Headless CMS: **menggunakan Free tier** (sesuai pilihan yang disepakati)
+3) Sanity: **menggunakan Free tier**
 4) GA4 & Search Console: **Rp 0**
 
 **Kebijakan OpEx (Owner):**
@@ -484,7 +519,7 @@ Maintenance adalah layanan bulanan terpisah (di luar Fixed Price) untuk perubaha
 
 1) Akses Supabase (PIC owner)
 2) Akses Google (GA4 & Search Console) (PIC owner)
-3) Akses CMS (PIC owner)
+3) Akses Sanity (PIC owner + 1 Karyawan)
 
 ### I) Bilingual (ID/EN)
 
@@ -510,7 +545,7 @@ Dengan menandatangani bagian ini, Perusahaan menyetujui ruang lingkup, UAT, jadw
 ## 14) Next step
 
 1) Bapak Edy menunjuk PIC konten + memberi nomor WA & pesan prefill.  
-2) Finalisasi ruang lingkup & UAT + akses Supabase/CMS/GA4/GSC.  
+2) Finalisasi ruang lingkup & UAT + akses Supabase/Sanity/GA4/GSC.  
 3) Staging → UAT PASS → Go-live → handover.
 
 ---
