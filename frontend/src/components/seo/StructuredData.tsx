@@ -26,7 +26,7 @@ export default function StructuredData() {
     url: siteUrl,
     logo: `${siteUrl}/images/logo.svg`,
     sameAs: ["https://instagram.com/alfabeauty"],
-    description: "Professional beauty distribution for salons & barbers in Indonesia.",
+    description: "Professional beauty distribution for salon & barber in Indonesia.",
     areaServed: {
       "@type": "Country",
       name: "Indonesia",

@@ -356,26 +356,12 @@ body {
   }
 }
 
-/* Hero kicker - uppercase label above headline */
-.type-hero-kicker {
-  font-size: clamp(0.6875rem, 1vw, 0.75rem);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-}
-
 /* Hero body */
 .type-hero-body {
   font-size: clamp(0.9375rem, 1.5vw, 1.125rem);
   line-height: 1.6;
   font-weight: 400;
   /* Regular for readability */
-}
-
-/* Hero note */
-.type-hero-note {
-  font-size: clamp(0.8125rem, 1.2vw, 0.875rem);
-  line-height: 1.5;
 }
 
 /* Headings: Tuned for Montserrat */
@@ -426,12 +412,6 @@ body {
   letter-spacing: -0.02em;
 }
 
-.type-lede {
-  font-size: 1rem;
-  line-height: 1.75;
-  color: var(--foreground-muted);
-}
-
 .type-body {
   font-size: 0.9375rem;
   line-height: 1.75;
@@ -461,12 +441,6 @@ body {
 .type-data-strong {
   font-size: 0.875rem;
   line-height: 1.5;
-  font-weight: 600;
-  color: inherit;
-}
-
-/* Inline emphasis helper (no sizing): use for <span> inside paragraphs */
-.type-strong {
   font-weight: 600;
   color: inherit;
 }
@@ -531,15 +505,6 @@ body {
   }
 }
 
-.type-brand {
-  font-size: 1.125rem;
-  line-height: 1.25;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: inherit;
-}
-
 /* Large status code / hero numerals (e.g., 404 page) */
 .type-error-code {
   font-size: clamp(3.5rem, 10vw, 6rem);
@@ -547,25 +512,6 @@ body {
   font-weight: 600;
   letter-spacing: -0.04em;
   color: inherit;
-}
-
-.type-promo {
-  font-size: 0.75rem;
-  /* 12px - Calvin Klein spec */
-  line-height: 1.5;
-  /* 18px at 12px font - CK uses 18px line-height */
-  font-weight: 500;
-  letter-spacing: 0.0125em;
-  /* 0.2px at 16px base - CK uses 0.2px */
-  color: inherit;
-}
-
-.type-footer-label {
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  /* tracking-wider */
 }
 
 .type-footer-brand {
@@ -581,20 +527,12 @@ body {
   font-size: 11px;
 }
 
-.type-footer-link {
-  font-size: 13px;
-}
-
 .type-ui-xs {
   font-size: 0.75rem;
   line-height: 1rem;
 }
 
 @media (min-width: 640px) {
-  .type-lede {
-    font-size: 1.125rem;
-  }
-
   .type-body {
     font-size: 1rem;
   }
@@ -645,12 +583,6 @@ a {
     0 0 0 4px var(--focus-ring-offset);
 }
 
-/* Surface helper for dark sections (e.g. promo bar) */
-.ui-on-dark {
-  --focus-ring: #ffffff;
-  --focus-ring-offset: #000000;
-}
-
 /* Interactive card states (HCI: clear affordance + feedback) */
 .ui-interactive-card {
   transition:
@@ -672,19 +604,6 @@ a {
 .ui-interactive-card:focus-visible {
   border-color: var(--border-focus);
   box-shadow: var(--shadow-focus);
-}
-
-/* Elevated card (for CTA sections, featured content) */
-.ui-card-elevated {
-  background-color: var(--panel-elevated);
-  box-shadow: var(--shadow-sm);
-  transition:
-    box-shadow var(--transition-base),
-    transform var(--transition-fast);
-}
-
-.ui-card-elevated:hover {
-  box-shadow: var(--shadow-md);
 }
 
 /* Button interactive states (CK-style: clean, minimal) */
@@ -737,39 +656,6 @@ a {
   opacity: 0.9;
 }
 
-/* CK-style text CTA (editorial underlined links) */
-.ui-cta-text {
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-  transition: text-decoration-thickness 0.2s ease;
-  color: inherit;
-}
-
-.ui-cta-text:hover {
-  text-decoration-thickness: 2px;
-}
-
-/* Skeleton loading animation */
-@keyframes skeleton-pulse {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.5;
-  }
-}
-
-.ui-skeleton {
-  background-color: var(--subtle);
-  animation: skeleton-pulse 1.5s ease-in-out infinite;
-}
-
 /* Fade in animation for content */
 @keyframes fade-in {
   from {
@@ -803,86 +689,6 @@ a {
   animation: spinner 0.6s linear infinite;
 }
 
-/* Alert/feedback styles */
-.ui-alert {
-  display: flex;
-  gap: 0.75rem;
-  padding: 0.875rem 1rem;
-  border-radius: var(--radius-soft);
-}
-
-.ui-alert-success {
-  background-color: var(--success-bg);
-  color: var(--success);
-  border: 1px solid currentColor;
-}
-
-.ui-alert-error {
-  background-color: var(--error-bg);
-  color: var(--error);
-  border: 1px solid currentColor;
-}
-
-.ui-alert-warning {
-  background-color: var(--warning-bg);
-  color: var(--warning);
-  border: 1px solid currentColor;
-}
-
-.ui-alert-info {
-  background-color: var(--info-bg);
-  color: var(--info);
-  border: 1px solid currentColor;
-}
-
-/* Badge styles */
-.ui-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  border-radius: var(--radius-soft);
-}
-
-.ui-badge-muted {
-  background-color: var(--subtle);
-  color: var(--muted-strong);
-}
-
-.ui-badge-success {
-  background-color: var(--success-bg);
-  color: var(--success);
-}
-
-/* ============================================
-   Dark Surface Utilities
-   These use explicit CSS custom properties to
-   ensure Tailwind v4 compatibility.
-   ============================================ */
-
-/*
-  Hero-on-media typography (video/image backgrounds)
-  Goal: keep the same readable light-on-dark text colors in BOTH light & dark modes.
-  This avoids theme variable inversion (e.g. text-background flips in dark mode).
-*/
-.ui-hero-on-media {
-  color: rgba(237, 237, 237, 1);
-}
-
-.ui-hero-on-media-strong {
-  color: rgba(237, 237, 237, 0.9);
-}
-
-.ui-hero-on-media-muted {
-  color: rgba(237, 237, 237, 0.8);
-}
-
-.ui-hero-on-media-subtle {
-  color: rgba(237, 237, 237, 0.75);
-}
-
 /* Dark section (inverted: dark background, light text) */
 .ui-section-dark {
   background-color: var(--foreground);
@@ -891,194 +697,6 @@ a {
   --focus-ring-offset: var(--foreground);
 }
 
-/* Dark icon badge (circle with icon) */
-.ui-icon-dark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--foreground);
-  color: var(--background);
-  border-radius: 9999px;
-  flex-shrink: 0;
-}
-
-/* Size variants for icon badges */
-.ui-icon-dark-xs {
-  width: 1.5rem;
-  /* 24px */
-  height: 1.5rem;
-}
-
-.ui-icon-dark-sm {
-  width: 2rem;
-  /* 32px */
-  height: 2rem;
-}
-
-.ui-icon-dark-md {
-  width: 2.5rem;
-  /* 40px */
-  height: 2.5rem;
-}
-
-.ui-icon-dark-lg {
-  width: 3rem;
-  /* 48px */
-  height: 3rem;
-}
-
-.ui-icon-dark-xl {
-  width: 3.5rem;
-  /* 56px */
-  height: 3.5rem;
-}
-
-/* Overlay backdrop (for modals/drawers) */
-.ui-overlay {
-  background-color: rgba(9, 9, 11, 0.3);
-}
-
-/* Mobile drawer slide-from-right animation (CK-style) */
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideOutRight {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(100%);
-  }
-}
-
-.ui-drawer-right {
-  will-change: transform;
-  animation: slideInRight var(--header-transition) forwards;
-}
-
-.ui-drawer-right-exit {
-  will-change: transform;
-  animation: slideOutRight var(--header-transition) forwards;
-}
-
-/* Drill-down submenu animations (CK-style: content slides left/right) */
-@keyframes slideInFromRight {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideOutToLeft {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-
-  to {
-    transform: translateX(-30%);
-    opacity: 0;
-  }
-}
-
-@keyframes slideInFromLeft {
-  from {
-    transform: translateX(-30%);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.ui-drill-in {
-  animation: slideInFromRight var(--header-transition) forwards;
-}
-
-.ui-drill-back {
-  animation: slideInFromLeft var(--header-transition) forwards;
-}
-
-/* Header scroll transition (transparent → solid) */
-.ui-header-transparent {
-  background-color: transparent;
-  border-color: transparent;
-  transition: background-color var(--header-transition), border-color var(--header-transition);
-}
-
-.ui-header-solid {
-  background-color: var(--background);
-  border-color: var(--border);
-  transition: background-color var(--header-transition), border-color var(--header-transition);
-}
-
-/* Dark mode ui-overlay/section/icon removed - B2B light-only */
-
-/* Hover variant for subtle → darker */
-.ui-hover-darken:hover {
-  background-color: rgba(9, 9, 11, 0.1);
-}
-
-/* Dark mode removed - B2B light-only theme (COBIT compliance) */
-
-/* Subtle decorative background (for icons, lines) */
-.ui-bg-decorative {
-  background-color: rgba(9, 9, 11, 0.1);
-}
-
-/* Dark mode ui-bg-decorative removed - B2B light-only */
-
-/* Mobile utility classes (following Calvin Klein approach) */
-.mobile-element {
-  display: none;
-}
-
-/* Alias: reference snapshots use underscore naming */
-.mobile_element {
-  display: none;
-}
-
-.desktop-element {
-  display: block;
-}
-
-/* Alias: reference snapshots use underscore naming */
-.desktop_element {
-  display: inline;
-}
-
-@media (max-width: 767px) {
-  .mobile-element {
-    display: block;
-  }
-
-  .mobile_element {
-    display: block;
-  }
-
-  .desktop-element {
-    display: none;
-  }
-
-  .desktop_element {
-    display: none;
-  }
-}
 
 /* Safe area support for notch/safe phones */
 .safe-inset {
@@ -1095,32 +713,6 @@ a {
   justify-content: center;
 }
 
-/* Container queries for intrinsically responsive components */
-@supports (container-type: inline-size) {
-  .ui-container {
-    container-type: inline-size;
-  }
-
-  /* Product card: switch to horizontal layout in wider containers */
-  @container (min-width: 400px) {
-    .ui-card-responsive {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr;
-      gap: 1rem;
-    }
-
-    .ui-card-responsive .ui-card-image {
-      aspect-ratio: 1 / 1;
-    }
-
-    .ui-card-responsive .ui-card-content {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-  }
-}
-
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
 
@@ -1132,55 +724,6 @@ a {
     transition-duration: 0.01ms !important;
   }
 
-  .ui-skeleton {
-    animation: none;
-    opacity: 0.7;
-  }
-}
-
-/* Hide scrollbar for horizontal carousel (touch-friendly) */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-/* Aspect ratio utilities for images */
-.aspect-hero {
-  aspect-ratio: 16 / 9;
-}
-
-.aspect-product {
-  aspect-ratio: 1 / 1;
-}
-
-.aspect-card {
-  aspect-ratio: 3 / 2;
-}
-
-/* Image hover zoom effect */
-.ui-img-zoom {
-  overflow: hidden;
-}
-
-.ui-img-zoom img {
-  transition: transform 0.5s ease-out;
-}
-
-.ui-img-zoom:hover img {
-  transform: scale(1.05);
-}
-
-/* Gradient overlays for image cards */
-.ui-gradient-bottom {
-  background: linear-gradient(to top, rgba(9, 9, 11, 0.6) 0%, transparent 50%);
-}
-
-.ui-gradient-top {
-  background: linear-gradient(to bottom, rgba(9, 9, 11, 0.6) 0%, transparent 50%);
 }
 
 /* =============================================================================
@@ -1292,80 +835,6 @@ a {
    Hero Text Accessibility (WCAG AA Contrast)
    ============================================================================= */
 
-/* Enhanced text shadow for readability on video/image backgrounds */
-.ui-text-shadow {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.ui-text-shadow-strong {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-/* Scrim overlay for hero sections */
-.ui-scrim {
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.2) 0%,
-      rgba(0, 0, 0, 0.4) 50%,
-      rgba(0, 0, 0, 0.6) 100%);
-}
-
-.ui-scrim-light {
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.1) 0%,
-      rgba(0, 0, 0, 0.25) 50%,
-      rgba(0, 0, 0, 0.4) 100%);
-}
-
-/* =============================================================================
-   Visual Intensity Tokens (Enterprise Section Differentiation)
-   ============================================================================= */
-
-/* High intensity sections - larger padding, bolder typography */
-.section-intensity-high {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-}
-
-@media (min-width: 640px) {
-  .section-intensity-high {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .section-intensity-high {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-  }
-}
-
-/* Number badge styling for enterprise lists */
-.ui-number-badge {
-  font-family: var(--font-geist-mono);
-  font-size: 0.75rem;
-  font-weight: 400;
-  letter-spacing: 0.05em;
-  color: var(--muted-soft);
-}
-
-/* Pulse animation for attention-grabbing elements */
-@keyframes pulse-soft {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.7;
-  }
-}
-
-.animate-pulse-soft {
-  animation: pulse-soft 2s ease-in-out infinite;
-}
-
 /* =============================================================================
    CK-B2B Design System Utilities
    ============================================================================= */
@@ -1410,207 +879,11 @@ a {
   border-radius: var(--radius-tight);
 }
 
-/* 
-  Section Spacing Utilities (CK Negative Space)
-  Generous vertical rhythm for "breathing" layouts
-*/
-.section-py-sm {
-  padding-top: var(--section-py-sm);
-  padding-bottom: var(--section-py-sm);
-}
-
-.section-py-md {
-  padding-top: var(--section-py-md);
-  padding-bottom: var(--section-py-md);
-}
-
-.section-py-lg {
-  padding-top: var(--section-py-lg);
-  padding-bottom: var(--section-py-lg);
-}
-
-.section-py-xl {
-  padding-top: var(--section-py-xl);
-  padding-bottom: var(--section-py-xl);
-}
-
-/* Container Utilities */
-.container-sm {
-  max-width: var(--container-sm);
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.container-md {
-  max-width: var(--container-md);
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.container-lg {
-  max-width: var(--container-lg);
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.container-xl {
-  max-width: var(--container-xl);
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.container-2xl {
-  max-width: var(--container-2xl);
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* 
-  Typography - CK Stark Minimalism
-  Light weight, wide tracking, uppercase for labels
-*/
-.type-nav-minimal {
-  font-size: 0.8125rem;
-  font-weight: 300;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: inherit;
-}
-
-.type-kicker-subtle {
-  font-size: 0.625rem;
-  font-weight: 400;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.type-label-stark {
-  font-size: 0.75rem;
-  font-weight: 400;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--foreground);
-}
-
-/* Transition Utilities */
-.transition-cinematic {
-  transition: all var(--transition-cinematic);
-}
-
-.transition-dramatic {
-  transition: all var(--transition-dramatic);
-}
-
-/* Gap Utilities using Design Tokens */
-.gap-nav-sm {
-  gap: var(--nav-gap-sm);
-}
-
-.gap-nav-md {
-  gap: var(--nav-gap-md);
-}
-
-.gap-nav-lg {
-  gap: var(--nav-gap-lg);
-}
-
-.gap-nav-xl {
-  gap: var(--nav-gap-xl);
-}
-
-/* Spacing Utilities */
-.space-y-section {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(var(--section-py-md) * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(var(--section-py-md) * var(--tw-space-y-reverse));
-}
-
-/* CK Hover Effects */
-.hover-lift {
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-}
-
-.hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.hover-scale {
-  transition: transform var(--transition-normal);
-}
-
-.hover-scale:hover {
-  transform: scale(1.02);
-}
-
-/* Discord-style Sibling Fade (utility version) */
-.sibling-fade-container:hover>* {
-  opacity: 0.4;
-  filter: blur(1px);
-  transition: all var(--transition-normal);
-}
-
-.sibling-fade-container:hover>*:hover {
-  opacity: 1;
-  filter: blur(0);
-}
-
-/* Focus States with Design Tokens */
-.focus-minimal:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 1px var(--border-focus);
-}
-
-/* Aspect Ratios for CK-style Wide Images */
-.aspect-cinema {
-  aspect-ratio: 21 / 9;
-}
-
-.aspect-ultrawide {
-  aspect-ratio: 32 / 9;
-}
-
-.aspect-editorial {
-  aspect-ratio: 16 / 6;
-}
-
 /* Lenis Scroll Prevent Utility (OPS-04) */
 /* Add [data-lenis-prevent] or .lenis-prevent to disable smooth scroll on specific elements */
 [data-lenis-prevent],
 .lenis-prevent {
   overscroll-behavior: contain;
-}
-
-/* Skeleton Animation (High Performance) */
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.ui-skeleton {
-  position: relative;
-  overflow: hidden;
-  background-color: var(--subtle);
-  /* Fallback */
-}
-
-.ui-skeleton::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.4) 50%,
-      transparent 100%);
-  animation: shimmer 1.5s infinite;
-  will-change: transform;
-  /* Performance optimization */
 }
 
 /* Dark mode removed - B2B light-only theme (COBIT compliance) */

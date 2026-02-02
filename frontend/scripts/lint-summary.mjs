@@ -25,11 +25,9 @@ const ROOT = path.resolve(process.cwd(), "src");
 const LINK_ALLOWLIST = new Set([
   path.resolve(process.cwd(), "src/components/ui/AppLink.tsx"),
   path.resolve(process.cwd(), "src/components/ui/ButtonLink.tsx"),
-  path.resolve(process.cwd(), "src/components/ui/TextLink.tsx"),
 ]);
 
 const TYPOGRAPHY_ALLOWLIST = new Set([
-  "src/components/ui/ImageTransition.tsx",
   "src/app/globals.css",
 ]);
 

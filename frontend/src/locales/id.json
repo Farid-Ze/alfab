@@ -102,47 +102,6 @@
         },
         "closing": {
             "body": "PT Alfa Beauty Cosmetica adalah mitra distribusi terpercaya bagi pemasok perawatan rambut profesional global serta pemasok andal bagi salon & barber di seluruh Indonesia—berkomitmen pada kualitas, edukasi, dan pertumbuhan industri yang berkelanjutan."
-        },
-        "productsHighlight": {
-            "title": "Produk Pilihan",
-            "subtitle": "Katalog"
-        }
-    },
-    "about": {
-        "title": "Tentang",
-        "body": "PT Alfa Beauty adalah perusahaan distribusi kecantikan profesional yang menyediakan produk, edukasi, dan dukungan teknis untuk salon & barber di Indonesia. Kami menghadirkan brand internasional terkurasi dan menjadi partner strategis bagi para profesional, memastikan setiap produk yang kami distribusikan konsisten performanya serta didukung pengetahuan teknis yang tepat.",
-        "mission": {
-            "title": "Misi Kami",
-            "body": "Menyediakan produk kosmetik premium dan dukungan bisnis komprehensif bagi partner kecantikan profesional, memungkinkan kesuksesan mereka di industri kecantikan."
-        },
-        "vision": {
-            "title": "Visi Kami",
-            "body": "Menjadi platform distribusi beauty B2B terdepan di Indonesia, dikenal karena produk berkualitas, layanan andal, dan kemitraan yang memberdayakan."
-        },
-        "valuesTitle": "Nilai-Nilai Kami",
-        "values": {
-            "quality": {
-                "title": "Kualitas",
-                "body": "Kami mengkurasi hanya produk kosmetik terbaik yang memenuhi standar internasional."
-            },
-            "partnership": {
-                "title": "Kemitraan",
-                "body": "Kami tumbuh bersama partner, menyediakan edukasi dan dukungan berkelanjutan."
-            },
-            "excellence": {
-                "title": "Keunggulan",
-                "body": "Kami berjuang untuk keunggulan operasional di setiap aspek bisnis kami."
-            }
-        },
-        "stats": {
-            "products": "Produk",
-            "partners": "Partner",
-            "provinces": "Provinsi",
-            "yearsExperience": "Tahun Pengalaman"
-        },
-        "cta": {
-            "title": "Siap Bermitra Dengan Kami?",
-            "body": "Bergabung dengan ribuan profesional kecantikan yang mempercayai Alfa Beauty untuk kebutuhan bisnis mereka."
         }
     },
     "contact": {
@@ -150,8 +109,6 @@
         "body": "Untuk konsultasi, rekomendasi produk, dan pertanyaan kemitraan, hubungi kami via WhatsApp.",
         "officeTitle": "Kantor",
         "form": {
-            "title": "Kirim pesan",
-            "lede": "Isi formulir di bawah dan tim kami akan merespons secepatnya.",
             "fields": {
                 "name": "Nama",
                 "email": "Email",
@@ -177,11 +134,7 @@
         },
         "email": "Email",
         "whatsapp": {
-            "title": "WhatsApp",
-            "body": "Respon tercepat. Chat langsung dengan tim kami."
-        },
-        "emailCard": {
-            "body": "Untuk pertanyaan formal dan dokumentasi."
+            "title": "WhatsApp"
         },
         "location": {
             "title": "Lokasi",
@@ -189,13 +142,7 @@
         },
         "hours": {
             "title": "Jam Operasional",
-            "weekdays": "Sen - Jum: 09:00 - 18:00 WIB",
-            "saturday": "Sab: 09:00 - 14:00 WIB"
-        },
-        "cta": {
-            "title": "Siap Memulai?",
-            "body": "Tim kami siap membantu mengembangkan bisnis kecantikan Anda. Hubungi hari ini dan mari diskusikan bagaimana kami dapat mendukung kesuksesan Anda.",
-            "button": "Mulai Percakapan"
+            "weekdays": "Sen - Jum: 09:00 - 18:00 WIB"
         }
     },
     "products": {
@@ -324,7 +271,6 @@
     },
     "education": {
         "hub": {
-            "title": "Edukasi & Event",
             "kicker": "Edukasi & Pengembangan",
             "heroTitle": "Tumbuh Bersama Pengetahuan",
             "heroBody": "Kami berinvestasi dalam edukasi karena kami percaya profesional yang terinformasi memberikan hasil luar biasa. Ikuti workshop, seminar, dan program pelatihan kami.",
@@ -343,16 +289,11 @@
             },
             "imageAlt": "Gambar Artikel",
             "actions": {
-                "viewDetails": "Lihat detail",
-                "read": "Baca",
                 "viewAll": "Lihat Semua →"
             },
-            "trainingTitle": "Program Training Profesional",
-            "trainingNote": "Ingin sesi training untuk tim Anda? Hubungi kami via WhatsApp dan sebutkan kota + kebutuhan Anda.",
             "stats": {
                 "focus": "Fokus Profesional",
-                "languages": "Bahasa",
-                "upcoming": "mendatang"
+                "languages": "Bahasa"
             }
         },
         "event": {
@@ -389,17 +330,11 @@
         "sections": {
             "keyBenefits": "Manfaat utama",
             "howToUse": "Cara pakai",
-            "recommendedFor": "Rekomendasi",
-            "specs": "Spesifikasi"
+            "recommendedFor": "Rekomendasi"
         },
         "labels": {
             "audience": "Audiens",
-            "functions": "Fungsi",
-            "size": "Ukuran",
-            "origin": "Asal",
-            "professionalUse": "Penggunaan Profesional",
-            "yes": "Ya",
-            "no": "Tidak"
+            "functions": "Fungsi"
         },
         "consult": {
             "title": "Konsultasi & rekomendasi",
@@ -413,32 +348,6 @@
             "title": "Jadi Mitra Kami",
             "body": "Bergabunglah dengan jaringan salon, barber, dan distributor profesional kami."
         },
-        "readyBlock": {
-            "title": "Siap untuk Bertumbuh?",
-            "body": "Bermitra dengan kami dan tingkatkan bisnis salon & barber Anda ke level berikutnya."
-        },
-        "cards": {
-            "curated": {
-                "title": "Portofolio Terkurasi",
-                "body": "Akses ke brand profesional kelas dunia seperti Alfaparf Milano dan Farmavita."
-            },
-            "education": {
-                "title": "Edukasi Berkelanjutan",
-                "body": "Pelatihan teknis, seminar, dan workshop bisnis untuk tim Anda."
-            },
-            "b2b": {
-                "title": "Dukungan Bisnis",
-                "body": "Manajemen akun khusus, dukungan pemasaran, dan konsultasi pertumbuhan."
-            }
-        },
-        "features": [
-            "Distributor Resmi",
-            "Edukasi Teknis",
-            "Dukungan Pemasaran",
-            "Pertumbuhan Bisnis",
-            "Keaslian Produk",
-            "Jaringan Nasional"
-        ],
         "steps": {
             "1": "Informasi Bisnis",
             "2": "Kontak",
@@ -472,8 +381,7 @@
             "step4": {
                 "title": "Hampir selesai!",
                 "summary": "Ringkasan",
-                "agreeTerms": "Saya setuju dengan Syarat & Ketentuan dan Kebijakan Privasi",
-                "agreeMarketing": "Saya ingin menerima update dan promosi"
+                "agreeTerms": "Saya setuju dengan Syarat & Ketentuan dan Kebijakan Privasi"
             },
             "nav": {
                 "back": "Kembali",
@@ -485,26 +393,9 @@
             "title": "Terima Kasih!",
             "body": "Permintaan kemitraan Anda telah dikirim. Tim kami akan menghubungi Anda dalam 2 hari kerja.",
             "cta": "Chat kami di WhatsApp"
-        },
-        "types": {
-            "Professional Salon": "Salon & Barber Profesional",
-            "Barber": "Barber",
-            "Beauty Academy": "Akademi Kecantikan",
-            "Distributor": "Distributor",
-            "Other": "Lainnya"
         }
     },
     "leadForm": {
-        "fields": {
-            "businessName": "Nama bisnis",
-            "contactName": "Nama kontak",
-            "emailOptional": "Email (opsional)",
-            "whatsAppNumber": "Nomor WhatsApp",
-            "city": "Kota",
-            "salonType": "Tipe salon & barber",
-            "salonTypePlaceholder": "Pilih…",
-            "messageOptional": "Pesan (opsional)"
-        },
         "salonTypes": {
             "salon": "Salon & Barber",
             "barber": "Barber",
@@ -512,20 +403,6 @@
             "unisex": "Unisex",
             "other": "Lainnya"
         },
-        "additionalDetails": {
-            "summary": "Detail tambahan (opsional)",
-            "chairCount": "Jumlah kursi",
-            "chairCountPlaceholder": "contoh: 6",
-            "specialization": "Spesialisasi",
-            "specializationPlaceholder": "contoh: coloring, keratin",
-            "currentBrandsUsed": "Brand yang dipakai saat ini",
-            "monthlySpendRange": "Perkiraan belanja per bulan",
-            "monthlySpendRangePlaceholder": "opsional"
-        },
-        "honeypot": {
-            "companyLabel": "Company"
-        },
-        "consent": "Saya setuju untuk dihubungi untuk tindak lanjut kemitraan.",
         "validation": {
             "businessNameRequired": "Nama bisnis wajib diisi (min 2 karakter)",
             "contactNameRequired": "Nama kontak wajib diisi (min 2 karakter)",
@@ -534,15 +411,7 @@
             "salonTypeRequired": "Pilih tipe bisnis Anda",
             "consentRequired": "Mohon setujui untuk dihubungi"
         },
-        "actions": {
-            "submit": "Kirim",
-            "submitting": "Mengirim…"
-        },
         "success": {
-            "title": "Terima kasih — data Anda sudah kami terima.",
-            "body": "Tim kami akan follow up. Anda juga bisa chat via WhatsApp untuk konsultasi lebih cepat.",
-            "ref": "Referensi",
-            "whatsappCta": "Chat via WhatsApp",
             "whatsappPrefill": "Halo Alfa Beauty, saya baru saja mengirim data kemitraan dan ingin berdiskusi lebih lanjut."
         },
         "errors": {

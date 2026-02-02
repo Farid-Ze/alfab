@@ -118,7 +118,7 @@ export default async function AboutPage({
           <StaggerReveal>
             <h2 className="type-h2 text-foreground mb-4">Ready to Partner?</h2>
             <p className="type-body text-muted mb-8">
-              Join our network of professional salons and barbers and distributors.
+              Join our network of professional salon & barber businesses and distributors.
             </p>
             <ButtonLink
               href={`/${resolved}/partnership`}

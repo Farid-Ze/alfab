@@ -1,8 +1,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const { z } = require('zod');
-
 // Simulating schema imports (since actual schemas are TS and we are running JS script)
 // In a real TS-node setup we could import directly. For now, we do a basic check.
 // This script exists to verify JSON syntax and file presence in CI.

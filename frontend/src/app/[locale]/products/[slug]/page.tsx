@@ -40,7 +40,7 @@ export async function generateMetadata({
 
   // Fallbacks for undefined product data (UAT-15: no empty metadata)
   const title = p?.name ?? "Product";
-  const description = p?.summary ?? "Professional beauty product for salons and barbers.";
+  const description = p?.summary ?? "Professional beauty product for salon & barber.";
 
   return {
     title,

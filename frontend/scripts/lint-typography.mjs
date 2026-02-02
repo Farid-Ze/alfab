@@ -22,7 +22,6 @@ const ROOT = path.resolve(process.cwd(), "src");
 // Allowlist
 // ============================================================
 const ALLOWLIST = new Set([
-  "src/components/ui/ImageTransition.tsx",
   "src/app/globals.css",
   "src/components/ui/Button.tsx",
 ]);

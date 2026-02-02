@@ -260,15 +260,10 @@ export function useLeadForm(
         values,
         result,
         fieldErrors,
-        canSubmit,
         setField,
         markTouched,
         submit,
         shouldShowError,
-        handleSubmit: (e: React.FormEvent) => {
-            e.preventDefault();
-            submit();
-        },
     };
 }
 

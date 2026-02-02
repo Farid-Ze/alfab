@@ -22,25 +22,13 @@ export default function FocusManager() {
             }
         };
 
-        // Handle skip link functionality
-        const handleSkipLink = (e: KeyboardEvent) => {
-            if (e.key === "Tab" && !e.shiftKey) {
-                const activeElement = document.activeElement;
-                if (activeElement?.classList.contains("skip-link")) {
-                    // Skip link is focused, allow normal behavior
-                }
-            }
-        };
-
         window.addEventListener("hashchange", handleHashChange);
-        document.addEventListener("keydown", handleSkipLink);
 
         // Initial hash check
         handleHashChange();
 
         return () => {
             window.removeEventListener("hashchange", handleHashChange);
-            document.removeEventListener("keydown", handleSkipLink);
         };
     }, []);
 

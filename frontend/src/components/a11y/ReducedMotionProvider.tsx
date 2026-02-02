@@ -43,7 +43,3 @@ export function useReducedMotion() {
     return useContext(ReducedMotionContext);
 }
 
-/**
- * Get motion props based on reduced motion preference.
- * Use this to conditionally disable animations.
- */

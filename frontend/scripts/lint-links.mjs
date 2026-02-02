@@ -4,7 +4,7 @@
  *
  * Validates that all link usage follows the design system:
  * - No direct next/link imports (except allowlisted primitives)
- * - All links should use AppLink, ButtonLink, or TextLink
+ * - All links should use AppLink or ButtonLink
  * - No redundant/conflicting link components
  *
  * Scans: All .ts/.tsx files in src/
@@ -23,7 +23,6 @@ const ROOT = path.resolve(process.cwd(), "src");
 const ALLOWLIST = new Set([
   path.resolve(process.cwd(), "src/components/ui/AppLink.tsx"),
   path.resolve(process.cwd(), "src/components/ui/ButtonLink.tsx"),
-  path.resolve(process.cwd(), "src/components/ui/TextLink.tsx"),
 ]);
 
 // ============================================================
@@ -57,7 +56,7 @@ const BANNED_PATTERNS = [
   {
     name: "Direct next/link import",
     re: /from\s+["']next\/link["']/g,
-    fix: "Use AppLink, ButtonLink, or TextLink",
+    fix: "Use AppLink or ButtonLink",
   },
 ];
 
@@ -68,28 +67,21 @@ const REDUNDANCY_PATTERNS = [
   // Import multiple link components when one would suffice
   {
     name: "Multiple link component imports",
-    re: /import\s+(?:AppLink|ButtonLink|TextLink)[^;]*;[^]*import\s+(?:AppLink|ButtonLink|TextLink)[^;]*;/g,
+    re: /import\s+(?:AppLink|ButtonLink)[^;]*;[^]*import\s+(?:AppLink|ButtonLink)[^;]*;/g,
     fix: "Consider consolidating link component usage",
     severity: "info",  // Not a violation, just info
-  },
-  // Using both ButtonLink and TextLink for same purpose
-  {
-    name: "Mixed CTA types",
-    re: /<ButtonLink[^>]*>[^<]*<\/ButtonLink>[^]*<TextLink[^>]*>[^<]*<\/TextLink>|<TextLink[^>]*>[^<]*<\/TextLink>[^]*<ButtonLink[^>]*>[^<]*<\/ButtonLink>/g,
-    fix: "Consider consistent CTA style (buttons or text links)",
-    severity: "info",
   },
   // Nested links (accessibility issue)
   {
     name: "Nested link components",
-    re: /<AppLink[^>]*>(?:(?!<\/AppLink>)[^])*<AppLink|<ButtonLink[^>]*>(?:(?!<\/ButtonLink>)[^])*<ButtonLink|<TextLink[^>]*>(?:(?!<\/TextLink>)[^])*<TextLink/g,
+    re: /<AppLink[^>]*>(?:(?!<\/AppLink>)[^])*<AppLink|<ButtonLink[^>]*>(?:(?!<\/ButtonLink>)[^])*<ButtonLink/g,
     fix: "Links should not be nested (accessibility issue)",
     severity: "error",
   },
   // Link wrapping non-link semantic element
   {
     name: "Link wrapping button",
-    re: /<AppLink[^>]*>\s*<button|<ButtonLink[^>]*>\s*<button|<TextLink[^>]*>\s*<button/g,
+    re: /<AppLink[^>]*>\s*<button|<ButtonLink[^>]*>\s*<button/g,
     fix: "Don't wrap <button> in link, use ButtonLink instead",
     severity: "error",
   },
@@ -101,7 +93,7 @@ const REDUNDANCY_PATTERNS = [
 function lint() {
   const violations = [];
   const redundancies = [];
-  const stats = { filesScanned: 0, appLinkUsages: 0, buttonLinkUsages: 0, textLinkUsages: 0 };
+  const stats = { filesScanned: 0, appLinkUsages: 0, buttonLinkUsages: 0 };
 
   const files = listFiles(ROOT);
 
@@ -114,7 +106,6 @@ function lint() {
     // Count proper link usages
     if (/import.*AppLink|<AppLink/.test(src)) stats.appLinkUsages++;
     if (/import.*ButtonLink|<ButtonLink/.test(src)) stats.buttonLinkUsages++;
-    if (/import.*TextLink|<TextLink/.test(src)) stats.textLinkUsages++;
 
     // Check banned patterns
     for (const { name, re, fix } of BANNED_PATTERNS) {
@@ -149,7 +140,6 @@ function lint() {
   console.log(`   Files scanned:      ${stats.filesScanned}`);
   console.log(`   AppLink usages:     ${stats.appLinkUsages}`);
   console.log(`   ButtonLink usages:  ${stats.buttonLinkUsages}`);
-  console.log(`   TextLink usages:    ${stats.textLinkUsages}`);
 
   console.log("\n📁 Allowlisted Files:");
   for (const allowed of ALLOWLIST) {
@@ -172,7 +162,7 @@ function lint() {
       console.error(`     Issue: ${v.rule}`);
       console.error(`     Fix: ${v.fix}`);
     }
-    console.error("\nFix: Replace next/link with AppLink (navigation), ButtonLink (CTA), or TextLink (editorial).\n");
+    console.error("\nFix: Replace next/link with AppLink (navigation) or ButtonLink (CTA).\n");
     process.exit(1);
   }
 

@@ -16,11 +16,6 @@ export type ProductFilters = {
 };
 
 /**
- * Initial empty filter state
- */
-
-
-/**
  * Check if a product matches the current filters
  */
 function matchesFilters(product: Product, filters: ProductFilters): boolean {

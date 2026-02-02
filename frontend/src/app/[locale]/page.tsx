@@ -256,7 +256,7 @@ export default async function HomePage({
                 </ul>
               </div>
 
-              {/* For Salons and Barbers */}
+              {/* For Salon & Barber */}
               <div className="p-8 rounded-3xl bg-background" style={{ boxShadow: "var(--shadow-elegant)" }}>
                 <h3 className="type-h2 text-foreground mb-6">{tx.home.partnership.salonsTitle}</h3>
                 <ul className="space-y-4">
