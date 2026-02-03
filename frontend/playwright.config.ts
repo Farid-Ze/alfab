@@ -47,6 +47,10 @@ export default defineConfig({
         // Website runtime config for e2e.
         NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001",
 
+        // E2E uses `next start`. Disable `output: "standalone"` for this build to avoid
+        // standalone/start mismatch warnings and Windows output tracing issues.
+        NEXT_DISABLE_STANDALONE: "true",
+
         // Ensure WhatsApp CTA produces a wa.me link in UI smoke tests.
         NEXT_PUBLIC_WHATSAPP_NUMBER: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "6281234567890",
         NEXT_PUBLIC_WHATSAPP_PREFILL:

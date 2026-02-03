@@ -13,7 +13,8 @@ async function advanceToStep4(page: any, businessName: string) {
   await expect(page.getByLabel(/contact name/i)).toBeVisible();
   await page.getByLabel(/contact name/i).fill("Dewi");
   await page.getByLabel(/email/i).fill("dewi@example.com");
-  await page.getByLabel(/whatsapp/i).fill("081234567890");
+  // Be specific: avoid matching the sticky WhatsApp CTA link (aria-label contains WhatsApp).
+  await page.getByLabel(/whatsapp number/i).fill("081234567890");
   await page.getByRole("button", { name: /continue/i }).click();
 
   // Step 3 (optional)
@@ -36,7 +37,7 @@ test("Become Partner form can submit successfully", async ({ page }) => {
   await submit.click();
 
   await expect(page.getByText(/thank you/i)).toBeVisible();
-  await expect(page.getByText(/we received your details/i)).toBeVisible();
+  await expect(page.getByText(/partnership inquiry has been submitted/i)).toBeVisible();
 });
 
 test("Become Partner form requires consent before enabling submit", async ({ page }) => {

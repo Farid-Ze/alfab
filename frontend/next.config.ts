@@ -1,12 +1,21 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
+const projectRoot = process.cwd();
+const disableStandalone = process.env.NEXT_DISABLE_STANDALONE === "true";
+
 const nextConfig: NextConfig = {
   // Hardening (Phase 16)
   poweredByHeader: false, // Security: Hide Next.js version header
   compress: true, // Performance: Enable Gzip/Brotli
   reactStrictMode: true, // Quality: Catch double-renders
-  output: "standalone", // Deployment: Generate standalone folder for Docker
+  // Deployment: Generate standalone folder for Docker (can be disabled for local e2e).
+  output: disableStandalone ? undefined : "standalone",
+  // Prevent Next from inferring the wrong root when multiple lockfiles exist on disk.
+  outputFileTracingRoot: projectRoot,
+  turbopack: {
+    root: projectRoot,
+  },
 
   images: {
     formats: ["image/avif", "image/webp"],

@@ -31,12 +31,23 @@ export default function HeaderNav() {
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     useEffect(() => {
+        let rafId = 0;
+
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+            if (rafId) return;
+            rafId = window.requestAnimationFrame(() => {
+                rafId = 0;
+                const next = window.scrollY > 50;
+                setIsScrolled((prev) => (prev === next ? prev : next));
+            });
         };
 
+        handleScroll();
         window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            if (rafId) window.cancelAnimationFrame(rafId);
+        };
     }, []);
 
     return (

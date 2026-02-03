@@ -63,7 +63,7 @@ export default async function EducationArticlesPage({
               className="group"
             >
               <div
-                className="aspect-video rounded-2xl bg-gradient-to-br from-zinc-100 to-zinc-200 mb-4 overflow-hidden"
+                className="aspect-video rounded-2xl bg-gradient-to-br from-subtle to-subtle-hover mb-4 overflow-hidden"
                 style={{ boxShadow: "var(--shadow-elegant)" }}
               >
                 <div className="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-[var(--transition-elegant)]">

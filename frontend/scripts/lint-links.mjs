@@ -64,13 +64,6 @@ const BANNED_PATTERNS = [
 // Redundancy Patterns
 // ============================================================
 const REDUNDANCY_PATTERNS = [
-  // Import multiple link components when one would suffice
-  {
-    name: "Multiple link component imports",
-    re: /import\s+(?:AppLink|ButtonLink)[^;]*;[^]*import\s+(?:AppLink|ButtonLink)[^;]*;/g,
-    fix: "Consider consolidating link component usage",
-    severity: "info",  // Not a violation, just info
-  },
   // Nested links (accessibility issue)
   {
     name: "Nested link components",

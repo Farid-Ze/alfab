@@ -4,10 +4,25 @@ import type { NextRequest } from "next/server";
 export function handleI18nRouting(request: NextRequest): NextResponse | null {
     const pathname = request.nextUrl.pathname;
 
-    // 1. Root Redirect -> Default to /id
+    // Never locale-prefix internal/API routes.
+    if (
+        pathname.startsWith("/api/") ||
+        pathname === "/api" ||
+        pathname.startsWith("/maintenance") ||
+        pathname === "/robots.txt" ||
+        pathname === "/sitemap.xml" ||
+        pathname === "/manifest.webmanifest"
+    ) {
+        return null;
+    }
+
+    const cookieLocale = request.cookies.get("alfab_locale")?.value;
+    const preferredLocale = cookieLocale === "id" || cookieLocale === "en" ? cookieLocale : "en";
+
+    // 1. Root Redirect -> Default to cookie locale (fallback: /en)
     if (pathname === "/") {
         const url = request.nextUrl.clone();
-        url.pathname = "/id";
+        url.pathname = `/${preferredLocale}`;
         return NextResponse.redirect(url);
     }
 
@@ -17,10 +32,10 @@ export function handleI18nRouting(request: NextRequest): NextResponse | null {
         (locale) => !pathname.startsWith(`${locale}/`) && pathname !== locale
     );
 
-    // Redirect if locale is missing (e.g. /products -> /id/products)
+    // Redirect if locale is missing (e.g. /products -> /en/products)
     if (pathnameIsMissingLocale) {
         const url = request.nextUrl.clone();
-        url.pathname = `/id${pathname.startsWith("/") ? "" : "/"}${pathname}`;
+        url.pathname = `/${preferredLocale}${pathname.startsWith("/") ? "" : "/"}${pathname}`;
         return NextResponse.redirect(url);
     }
 

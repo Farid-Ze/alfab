@@ -51,7 +51,7 @@ export default function Preloader() {
                 transition={{ duration: 0.3 }}
                 className="text-center"
             >
-                <h1 className="type-footer-brand text-background mb-2">ALFA BEAUTY</h1>
+                    <div className="type-footer-brand text-background mb-2">ALFA BEAUTY</div>
                 <motion.div
                     className="w-12 h-0.5 bg-background/30 mx-auto overflow-hidden"
                 >

@@ -75,40 +75,63 @@ const BANNED_PATTERNS = [
 ];
 
 // ============================================================
-// Redundancy Patterns (conflicting/duplicate tokens)
+// Redundancy Checks (conflicting/duplicate tokens)
 // ============================================================
-const REDUNDANCY_PATTERNS = [
-  // Multiple text colors on same element
-  {
-    name: "Redundant text colors",
-    re: /className="[^"]*\btext-foreground\b[^"]*\btext-foreground-muted\b[^"]*"|className="[^"]*\btext-foreground-muted\b[^"]*\btext-foreground\b[^"]*"/g,
-    fix: "Use only one text color token",
-  },
-  // Multiple bg colors
-  {
-    name: "Redundant background colors",
-    re: /className="[^"]*\bbg-background\b[^"]*\bbg-panel\b[^"]*"|className="[^"]*\bbg-panel\b[^"]*\bbg-background\b[^"]*"/g,
-    fix: "Use only one background token",
-  },
-  // Opacity override on same property
-  {
-    name: "Conflicting opacity modifiers",
-    re: /className="[^"]*\b(text|bg|border)-[a-z]+\/\d+\b[^"]*\b\1-[a-z]+\/\d+\b[^"]*"/g,
-    fix: "Use only one opacity modifier per property type",
-  },
-  // Duplicate exact tokens
-  {
-    name: "Duplicate token",
-    re: /(?<![-\w])(text-foreground|bg-background|bg-panel|border-border)(?![-\w])[^"]*(?<![-\w])\1(?![-\w])/g,
-    fix: "Remove duplicate token",
-  },
-  // Conflicting hover states
-  {
-    name: "Conflicting hover colors",
-    re: /className="[^"]*\bhover:text-[a-z-]+\b[^"]*\bhover:text-[a-z-]+\b[^"]*"/g,
-    fix: "Use only one hover text color",
-  },
-];
+const DESIGN_TEXT_TOKENS = new Set([
+  "text-foreground",
+  "text-foreground-muted",
+  "text-muted",
+  "text-muted-strong",
+  "text-muted-soft",
+  "text-success",
+  "text-error",
+  "text-warning",
+  "text-info",
+  "text-indicator-fixed",
+]);
+
+const DESIGN_BG_TOKENS = new Set([
+  "bg-background",
+  "bg-panel",
+  "bg-subtle",
+  "bg-subtle-hover",
+  "bg-success-bg",
+  "bg-error-bg",
+  "bg-warning-bg",
+  "bg-info-bg",
+  "bg-whatsapp",
+  "bg-whatsapp-hover",
+]);
+
+function isVariantToken(token) {
+  return token.includes(":");
+}
+
+function stripImportant(token) {
+  return token.startsWith("!") ? token.slice(1) : token;
+}
+
+function extractClassNameStringLiterals(src) {
+  // This intentionally only analyzes double-quoted literals.
+  // Dynamic className usage is out of scope for this lint.
+  const out = [];
+  const re = /className\s*=\s*"([^"]*)"/g;
+  let match;
+  while ((match = re.exec(src)) !== null) {
+    const before = src.substring(0, match.index);
+    const line = before.split("\n").length;
+    out.push({ line, value: match[1] });
+    if (match.index === re.lastIndex) re.lastIndex++;
+  }
+  return out;
+}
+
+function splitTokens(classValue) {
+  return classValue
+    .split(/\s+/g)
+    .map(stripImportant)
+    .filter(Boolean);
+}
 
 // ============================================================
 // Main
@@ -150,20 +173,69 @@ function lint() {
     }
 
     // Check redundancy patterns
-    for (const { name, re, fix } of REDUNDANCY_PATTERNS) {
-      re.lastIndex = 0;
-      let match;
-      while ((match = re.exec(raw)) !== null) {
-        const line = raw.substring(0, match.index).split("\n").length;
+    for (const { line, value } of extractClassNameStringLiterals(raw)) {
+      const tokens = splitTokens(value);
+
+      // Duplicate exact tokens (variant-safe)
+      const seen = new Set();
+      for (const tok of tokens) {
+        if (seen.has(tok)) {
+          redundancies.push({
+            file: rel(file),
+            line,
+            rule: "Duplicate token",
+            context: value,
+            fix: "Remove duplicate token",
+          });
+          break;
+        }
+        seen.add(tok);
+      }
+
+      // Redundant base text color tokens (ignore variants like hover: / group-hover:)
+      const baseText = tokens.filter((tok) => !isVariantToken(tok) && DESIGN_TEXT_TOKENS.has(tok));
+      if (new Set(baseText).size > 1) {
         redundancies.push({
           file: rel(file),
           line,
-          rule: name,
-          context: takeContext(raw, match.index, 100),
-          fix,
+          rule: "Redundant text colors",
+          context: value,
+          fix: "Use only one base text color token; keep variants (hover/group-hover) if needed",
         });
-        if (match.index === re.lastIndex) re.lastIndex++;
-        if (redundancies.length > 20) break;
+      }
+
+      // Redundant base background tokens (ignore variants)
+      const baseBg = tokens.filter((tok) => !isVariantToken(tok) && DESIGN_BG_TOKENS.has(tok));
+      if (new Set(baseBg).size > 1) {
+        redundancies.push({
+          file: rel(file),
+          line,
+          rule: "Redundant background colors",
+          context: value,
+          fix: "Use only one base background token; keep variants (hover/group-hover) if needed",
+        });
+      }
+
+      // Conflicting opacity modifiers on same base property (ignore variants)
+      const baseOpacityTokens = tokens.filter((tok) => !isVariantToken(tok) && /^(text|bg|border)-[a-z-]+\/\d+$/.test(tok));
+      const byRoot = new Map();
+      for (const tok of baseOpacityTokens) {
+        const root = tok.replace(/\/\d+$/, "");
+        const list = byRoot.get(root) ?? [];
+        list.push(tok);
+        byRoot.set(root, list);
+      }
+      for (const [, list] of byRoot) {
+        if (list.length > 1) {
+          redundancies.push({
+            file: rel(file),
+            line,
+            rule: "Conflicting opacity modifiers",
+            context: value,
+            fix: "Use only one base opacity modifier per property/color (variants are OK)",
+          });
+          break;
+        }
       }
     }
   }
@@ -185,7 +257,7 @@ function lint() {
       console.log(`     Issue: ${r.rule}`);
       console.log(`     Fix: ${r.fix}`);
     }
-    if (redundancies.length > 5) console.log(`   ... and ${redundancies.length - 5} more`);
+    if (redundancies.length > 15) console.log(`   ... and ${redundancies.length - 15} more`);
   }
 
   if (violations.length > 0) {

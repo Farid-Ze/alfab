@@ -11,18 +11,32 @@ import { t } from "@/lib/i18n";
  * Design V2 pattern - subtle, professional, not intrusive.
  */
 export default function WhatsAppCTA() {
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(() => {
+        if (typeof window === "undefined") return false;
+        return window.scrollY >= 500;
+    });
     const { locale } = useLocale();
     const tx = t(locale);
 
     useEffect(() => {
-        // Show after scrolling past hero
+        // Show after scrolling past hero (throttled to animation frames)
+        let rafId = 0;
+
         const handleScroll = () => {
-            setIsVisible(window.scrollY > 500);
+            if (rafId) return;
+            rafId = window.requestAnimationFrame(() => {
+                rafId = 0;
+                const next = window.scrollY >= 500;
+                setIsVisible((prev) => (prev === next ? prev : next));
+            });
         };
 
+        handleScroll();
         window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            if (rafId) window.cancelAnimationFrame(rafId);
+        };
     }, []);
 
     const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
@@ -46,7 +60,7 @@ export default function WhatsAppCTA() {
             initial={{ scale: 0, opacity: 0 }}
             animate={isVisible ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
-            className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 bg-[#25D366] text-white rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 ${isVisible ? "" : "pointer-events-none"}`}
+            className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 bg-whatsapp hover:bg-whatsapp-hover text-indicator-fixed rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ${isVisible ? "" : "pointer-events-none"}`}
             aria-label={tx.ui.contactViaWhatsapp}
             aria-hidden={!isVisible}
             tabIndex={isVisible ? 0 : -1}

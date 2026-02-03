@@ -44,6 +44,7 @@ export default function LocaleToggle({ tone = "default" }: { tone?: LocaleToggle
       <button
         type="button"
         onClick={() => navigate("en")}
+        data-testid="locale-toggle-en"
         className={`${baseBtn} ${locale === "en" ? activeClass : inactiveClass}`}
         aria-pressed={locale === "en"}
         aria-label={tx.ui?.switchToEnglish ?? "Switch to English"}
@@ -56,6 +57,7 @@ export default function LocaleToggle({ tone = "default" }: { tone?: LocaleToggle
       <button
         type="button"
         onClick={() => navigate("id")}
+        data-testid="locale-toggle-id"
         className={`${baseBtn} ${locale === "id" ? activeClass : inactiveClass}`}
         aria-pressed={locale === "id"}
         aria-label={tx.ui?.switchToIndonesian ?? "Switch to Indonesian"}

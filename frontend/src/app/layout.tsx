@@ -1,11 +1,16 @@
 import { headers } from "next/headers";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
+import type { Metadata } from "next";
 import { env } from "@/lib/env";
 import { fontSans, fontSerif } from "@/lib/fonts";
 import "./globals.css";
 
 // Metadata and Viewport omitted...
+
+export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
+};
 
 export default async function RootLayout({
   children,

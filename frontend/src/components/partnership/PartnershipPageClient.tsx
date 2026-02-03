@@ -120,7 +120,7 @@ export default function PartnershipPageClient() {
           {/* Fallback to simple link if WhatsAppLink is missing/broken, but try to use standard one */}
           <WhatsAppLink
             prefill={tx.leadForm?.success?.whatsappPrefill || "Hello"}
-            className="inline-block px-8 py-4 bg-[#25D366] text-white rounded-full type-nav"
+            className="inline-block px-8 py-4 bg-whatsapp hover:bg-whatsapp-hover text-indicator-fixed rounded-full type-nav transition-colors"
           >
             {tx.partnership.success.cta}
           </WhatsAppLink>
@@ -181,8 +181,10 @@ export default function PartnershipPageClient() {
                 <h2 className="type-h3 text-foreground mb-6">{tx.partnership.form.step1.title}</h2>
 
                 <div>
-                  <label className="type-data text-muted block mb-2">{tx.partnership.form.step1.businessName} *</label>
+                  <label htmlFor="lead-business-name" className="type-data text-muted block mb-2">{tx.partnership.form.step1.businessName} *</label>
                   <input
+                    id="lead-business-name"
+                    name="businessName"
                     type="text"
                     value={values.businessName}
                     onChange={(e) => setField("businessName", e.target.value)}
@@ -213,8 +215,10 @@ export default function PartnershipPageClient() {
                 </div>
 
                 <div>
-                  <label className="type-data text-muted block mb-2">{tx.partnership.form.step1.city} *</label>
+                  <label htmlFor="lead-city" className="type-data text-muted block mb-2">{tx.partnership.form.step1.city} *</label>
                   <input
+                    id="lead-city"
+                    name="city"
                     type="text"
                     value={values.city}
                     onChange={(e) => setField("city", e.target.value)}
@@ -232,8 +236,10 @@ export default function PartnershipPageClient() {
                 <h2 className="type-h3 text-foreground mb-6">{tx.partnership.form.step2.title}</h2>
 
                 <div>
-                  <label className="type-data text-muted block mb-2">{tx.partnership.form.step2.contactName} *</label>
+                  <label htmlFor="lead-contact-name" className="type-data text-muted block mb-2">{tx.partnership.form.step2.contactName} *</label>
                   <input
+                    id="lead-contact-name"
+                    name="contactName"
                     type="text"
                     value={values.contactName}
                     onChange={(e) => setField("contactName", e.target.value)}
@@ -244,8 +250,10 @@ export default function PartnershipPageClient() {
                 </div>
 
                 <div>
-                  <label className="type-data text-muted block mb-2">{tx.partnership.form.step2.email} *</label>
+                  <label htmlFor="lead-email" className="type-data text-muted block mb-2">{tx.partnership.form.step2.email} *</label>
                   <input
+                    id="lead-email"
+                    name="email"
                     type="email"
                     value={values.email}
                     onChange={(e) => setField("email", e.target.value)}
@@ -255,8 +263,10 @@ export default function PartnershipPageClient() {
                 </div>
 
                 <div>
-                  <label className="type-data text-muted block mb-2">{tx.partnership.form.step2.phone} *</label>
+                  <label htmlFor="lead-phone-whatsapp" className="type-data text-muted block mb-2">{tx.partnership.form.step2.phone} *</label>
                   <input
+                    id="lead-phone-whatsapp"
+                    name="phoneWhatsApp"
                     type="tel"
                     value={values.phoneWhatsApp}
                     onChange={(e) => setField("phoneWhatsApp", e.target.value)}
@@ -274,8 +284,10 @@ export default function PartnershipPageClient() {
                 <h2 className="type-h3 text-foreground mb-6">{tx.partnership.form.step3.title}</h2>
 
                 <div>
-                  <label className="type-data text-muted block mb-2">{tx.partnership.form.step3.currentBrands}</label>
+                  <label htmlFor="lead-current-brands" className="type-data text-muted block mb-2">{tx.partnership.form.step3.currentBrands}</label>
                   <textarea
+                    id="lead-current-brands"
+                    name="currentBrandsUsed"
                     value={values.currentBrandsUsed}
                     onChange={(e) => setField("currentBrandsUsed", e.target.value)}
                     rows={3}

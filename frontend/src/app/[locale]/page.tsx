@@ -173,7 +173,7 @@ export default async function HomePage({
                   className="group p-8 rounded-2xl bg-background transition-all duration-[var(--transition-elegant)] hover:scale-105 block"
                   style={{ boxShadow: "var(--shadow-elegant)" }}
                 >
-                  <div className="aspect-video flex items-center justify-center bg-zinc-100 rounded-lg mb-4">
+                  <div className="aspect-video flex items-center justify-center bg-subtle rounded-lg mb-4">
                     <span className="type-ui-sm text-muted">{tx.home.brands.logoLabel}</span>
                   </div>
                   <h3 className="type-h4 text-foreground">{brand.name}</h3>

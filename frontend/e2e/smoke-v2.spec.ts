@@ -31,12 +31,12 @@ test.describe("V2 Homepage", () => {
     });
 
     test("should have working navigation", async ({ page }) => {
-        // Desktop nav should be visible
-        const nav = page.locator("nav");
+        // Desktop nav should be visible (scope to header to avoid strict-mode collisions)
+        const nav = page.locator("header nav").first();
         await expect(nav).toBeVisible();
 
         // Logo should link to home
-        const logo = page.locator("nav a").first();
+        const logo = page.locator("header a").first();
         await expect(logo).toBeVisible();
     });
 
