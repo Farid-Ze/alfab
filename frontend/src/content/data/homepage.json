@@ -1,20 +1,20 @@
 {
-    "categoryLabels": {
-        "en": {
-            "shampoo": "Hair Care",
-            "styling": "Styling",
-            "color": "Color",
-            "treatment": "Treatment",
-            "tools": "Tools",
-            "accessories": "Accessories"
-        },
-        "id": {
-            "shampoo": "Perawatan",
-            "styling": "Styling",
-            "color": "Pewarnaan",
-            "treatment": "Treatment",
-            "tools": "Alat",
-            "accessories": "Aksesoris"
-        }
+  "categoryLabels": {
+    "en": {
+      "shampoo": "Hair Care",
+      "styling": "Styling",
+      "color": "Color",
+      "treatment": "Treatment",
+      "tools": "Tools",
+      "accessories": "Accessories"
+    },
+    "id": {
+      "shampoo": "Perawatan",
+      "styling": "Styling",
+      "color": "Pewarnaan",
+      "treatment": "Treatment",
+      "tools": "Alat",
+      "accessories": "Aksesoris"
     }
+  }
 }

@@ -42,6 +42,12 @@ const envSchema = z.object({
     // Observability (OPS-01 ITIL4)
     NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
 
+    // Sanity CMS (optional)
+    NEXT_PUBLIC_SANITY_PROJECT_ID: z.string().optional(),
+    NEXT_PUBLIC_SANITY_DATASET: z.string().optional(),
+    NEXT_PUBLIC_SANITY_API_VERSION: z.string().optional(),
+    SANITY_API_TOKEN: z.string().optional(),
+
     // Distributed Rate Limiting (OWASP API4:2023)
     // Optional: If configured, enables Redis-backed rate limiting for multi-instance deployments
     UPSTASH_REDIS_REST_URL: z.string().url().optional(),

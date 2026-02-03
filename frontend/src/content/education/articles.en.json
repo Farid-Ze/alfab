@@ -1,24 +1,24 @@
 [
   {
-    "slug": "consultation-script-for-professionals",
-    "title": "A Simple Consultation Script for Professionals",
-    "excerpt": "A repeatable, no-fluff structure to understand client needs and recommend the right routine.",
-    "date": "2026-01-12",
     "body": [
       "Start with outcomes: what does the client want to see and feel after 2–4 weeks?",
       "Confirm constraints: time, budget range (without public pricing), and daily habits.",
-      "Recommend a minimal routine first, then scale with add-ons if needed." 
-    ]
+      "Recommend a minimal routine first, then scale with add-ons if needed."
+    ],
+    "date": "2026-01-12",
+    "excerpt": "A repeatable, no-fluff structure to understand client needs and recommend the right routine.",
+    "slug": "consultation-script-for-professionals",
+    "title": "A Simple Consultation Script for Professionals"
   },
   {
-    "slug": "how-to-explain-aftercare",
-    "title": "How to Explain Aftercare Without Overwhelming Clients",
-    "excerpt": "Keep it professional, short, and measurable—so clients actually follow it.",
-    "date": "2026-01-12",
     "body": [
       "Use 3 rules max: wash frequency, conditioning strategy, and heat protection.",
       "Explain the 'why' in one sentence and the 'how' in one step.",
-      "Offer to follow up via WhatsApp if clients have questions." 
-    ]
+      "Offer to follow up via WhatsApp if clients have questions."
+    ],
+    "date": "2026-01-12",
+    "excerpt": "Keep it professional, short, and measurable—so clients actually follow it.",
+    "slug": "how-to-explain-aftercare",
+    "title": "How to Explain Aftercare Without Overwhelming Clients"
   }
 ]

@@ -18,6 +18,7 @@
     "lint:summary": "node scripts/lint-summary.mjs",
     "validate:products": "node scripts/validate-products.mjs",
     "validate:content": "node scripts/validate-content.js",
+    "sync:cms": "node scripts/sync-sanity-content.mjs",
     "license-check": "npx license-checker --summary --failOn 'GPL;AGPL;LGPL'",
     "lint": "npm run lint:typography && npm run lint:links && npm run lint:tokens && eslint",
     "type-check": "tsc --noEmit",
@@ -30,6 +31,7 @@
   },
   "dependencies": {
     "@next/third-parties": "16.1.6",
+    "@sanity/client": "^6.26.0",
     "@sentry/nextjs": "10.38.0",
     "@supabase/supabase-js": "2.93.3",
     "@vercel/analytics": "^1.6.1",
