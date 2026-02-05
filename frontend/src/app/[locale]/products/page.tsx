@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import StaggerReveal from "@/components/ui/StaggerReveal";
 import ProductFilters from "@/components/products/ProductFilters";
+import Page from "@/components/layout/Page";
+import Container from "@/components/layout/Container";
 import { normalizeLocale, t } from "@/lib/i18n";
 
 /**
@@ -41,8 +43,8 @@ export default async function ProductsPage({
   const dict = t(resolved);
 
   return (
-    <main className="min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-6 lg:px-12">
+    <Page>
+      <Container>
         {/* Header */}
         <StaggerReveal delay={0.1} className="mb-12">
           <p className="type-kicker text-muted mb-4">{dict.products.kicker}</p>
@@ -56,7 +58,7 @@ export default async function ProductsPage({
 
         {/* Dynamic Product Grid with Filters */}
         <ProductFilters />
-      </div>
-    </main>
+      </Container>
+    </Page>
   );
 }

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import type { Locale } from "@/lib/i18n";
 import { normalizeLocale, t } from "@/lib/i18n";
+import Page from "@/components/layout/Page";
+import Container from "@/components/layout/Container";
 
 export async function generateMetadata({
   params,
@@ -34,9 +36,10 @@ export default async function SecurityPolicyPage({
   const tx = t(locale);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
-      <div className="prose prose-zinc max-w-none">
-        <h1 className="type-h1 mb-8">{tx.legal.securityTitle}</h1>
+    <Page>
+      <Container className="max-w-4xl">
+        <div className="prose prose-zinc max-w-none">
+          <h1 className="type-h1 mb-8">{tx.legal.securityTitle}</h1>
 
         <section className="space-y-4 mb-10">
           <h2 className="type-h2">{tx.legal.securityPolicy.sections.disclosure.title}</h2>
@@ -71,7 +74,8 @@ export default async function SecurityPolicyPage({
             {tx.legal.securityPolicy.sections.response.body}
           </p>
         </section>
-      </div>
-    </div>
+        </div>
+      </Container>
+    </Page>
   );
 }

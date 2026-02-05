@@ -3,8 +3,11 @@ import { notFound } from "next/navigation";
 
 import EducationArticleDetailClient from "@/components/education/EducationArticleDetailClient";
 import ArticleSchema from "@/components/seo/ArticleSchema";
+import Container from "@/components/layout/Container";
+import Page from "@/components/layout/Page";
 import { getArticleBySlug, listArticles } from "@/lib/education";
 import type { Locale } from "@/lib/i18n";
+import { env } from "@/lib/env";
 
 export function generateStaticParams(): Array<{ locale: Locale; slug: string }> {
   return [
@@ -23,9 +26,9 @@ export async function generateMetadata({
   const article =
     getArticleBySlug(locale, slug) ?? getArticleBySlug(locale === "en" ? "id" : "en", slug);
   const path = `/${locale}/education/articles/${slug}`;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const fullUrl = `${siteUrl.replace(/\/$/, "")}${path}`;
-  const fallbackImage = `${siteUrl.replace(/\/$/, "")}/images/education/training-placeholder.jpg`;
+  const siteUrl = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  const fullUrl = `${siteUrl}${path}`;
+  const fallbackImage = `${siteUrl}/images/education/training-placeholder.jpg`;
 
   const title = article?.title ?? "Article";
   const description = article?.excerpt;
@@ -74,9 +77,11 @@ export default async function EducationArticleDetailPage({
   }
 
   return (
-    <div className="mx-auto max-w-[80rem] px-4 sm:px-6 lg:px-10 py-12">
-      <ArticleSchema article={article} locale={locale} />
-      <EducationArticleDetailClient slug={slug} />
-    </div>
+    <Page>
+      <Container size="wide">
+        <ArticleSchema article={article} locale={locale} />
+        <EducationArticleDetailClient slug={slug} />
+      </Container>
+    </Page>
   );
 }

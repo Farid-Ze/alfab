@@ -2,6 +2,7 @@
 
 import { motion, useInView, Variants } from "framer-motion";
 import { useRef } from "react";
+import { EASE_OUT_QUINT, MOTION_DURATION, VIEWPORT_MARGIN_REVEAL } from "@/lib/motion";
 
 type CardRevealProps = {
     children: React.ReactNode;
@@ -26,7 +27,7 @@ export default function CardReveal({
     distance = 60,
 }: CardRevealProps) {
     const ref = useRef<HTMLDivElement>(null);
-    const isInView = useInView(ref, { once, margin: "-15%" });
+    const isInView = useInView(ref, { once, margin: VIEWPORT_MARGIN_REVEAL });
 
     const getInitialPosition = () => {
         switch (direction) {
@@ -55,9 +56,9 @@ export default function CardReveal({
             y: 0,
             scale: 1,
             transition: {
-                duration: 0.8,
+                duration: MOTION_DURATION.reveal,
                 delay,
-                ease: [0.22, 1, 0.36, 1] as const, // Ineo-Sense easing
+                ease: EASE_OUT_QUINT,
             },
         },
     };

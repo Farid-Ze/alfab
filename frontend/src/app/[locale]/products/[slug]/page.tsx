@@ -8,9 +8,12 @@ export const revalidate = 3600;
 import ProductDetailContent from "@/components/products/ProductDetailContent";
 import ProductSchema from "@/components/seo/ProductSchema";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
+import Container from "@/components/layout/Container";
+import Page from "@/components/layout/Page";
 import { getProductBySlug, listProducts } from "@/lib/catalog";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
+import { env } from "@/lib/env";
 
 export function generateStaticParams(): Array<{ locale: Locale; slug: string }> {
   const slugs = listProducts().map((p) => p.slug);
@@ -28,14 +31,14 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const p = getProductBySlug(slug);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
   const path = `/${locale}/products/${slug}`;
-  const fullUrl = `${siteUrl.replace(/\/$/, "")}${path}`;
+  const fullUrl = `${siteUrl}${path}`;
 
   const imageUrl = p?.image?.url;
   const hasImage = Boolean(imageUrl && !imageUrl.includes("/placeholder"));
   const ogImage = hasImage
-    ? (imageUrl?.startsWith("http") ? imageUrl : `${siteUrl.replace(/\/$/, "")}${imageUrl}`)
+    ? (imageUrl?.startsWith("http") ? imageUrl : `${siteUrl}${imageUrl}`)
     : undefined;
 
   // Fallbacks for undefined product data (UAT-15: no empty metadata)
@@ -93,10 +96,12 @@ export default async function ProductDetailPage({
   ];
 
   return (
-    <div className="mx-auto max-w-[80rem] px-4 sm:px-6 lg:px-10 py-12">
-      <BreadcrumbSchema items={breadcrumbs} />
-      {p && <ProductSchema product={p} locale={locale} />}
-      <ProductDetailContent product={p ?? null} />
-    </div>
+    <Page>
+      <Container size="wide">
+        <BreadcrumbSchema items={breadcrumbs} />
+        {p && <ProductSchema product={p} locale={locale} />}
+        <ProductDetailContent product={p ?? null} />
+      </Container>
+    </Page>
   );
 }

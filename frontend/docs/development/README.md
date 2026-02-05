@@ -62,3 +62,22 @@ npm run test:all
 1. **Branch**: `feat/feature-name` or `fix/bug-issue`.
 2. **Commit**: Conventional Commits (`feat: add login`).
 3. **PR**: Must pass CI (Lint + Test).
+
+---
+
+## 5. CI/CD Pipeline
+
+**Workflow**: [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
+
+| Step | Command | Purpose |
+| :--- | :--- | :--- |
+| Security Audit | `npm audit` | Vulnerability check |
+| Lint | `npm run lint` | Code quality |
+| Unit Tests | `npm run test:unit` | Logic verification |
+| Type Check | `npm run type-check` | Type safety |
+| Build | `npm run build` | Production readiness |
+| E2E Tests | `npm run test:e2e` | User flow validation |
+
+---
+
+**Version**: 2.1 | **Last Updated**: 2026-02-04 | **Owner**: Tech Lead

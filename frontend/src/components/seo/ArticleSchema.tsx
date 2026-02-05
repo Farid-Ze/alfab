@@ -1,5 +1,6 @@
 import type { EducationArticle } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
+import { env } from "@/lib/env";
 
 type Props = {
     article: EducationArticle;
@@ -11,8 +12,8 @@ type Props = {
  * Provides rich snippets for search engines (Headline, Date, Author).
  */
 export default function ArticleSchema({ article, locale }: Props) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    const articleUrl = `${siteUrl.replace(/\/$/, "")}/${locale}/education/articles/${article.slug}`;
+    const siteUrl = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+    const articleUrl = `${siteUrl}/${locale}/education/articles/${article.slug}`;
 
     const schema = {
         "@context": "https://schema.org",

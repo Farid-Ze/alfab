@@ -1,7 +1,10 @@
+import Container from "@/components/layout/Container";
+import Page from "@/components/layout/Page";
+
 export default function Loading() {
     return (
-        <main className="min-h-screen pt-24 pb-16">
-            <div className="container mx-auto px-6 lg:px-12">
+        <Page>
+            <Container>
                 <div className="mb-16 space-y-4">
                     <div className="h-4 w-24 bg-subtle animate-pulse" />
                     <div className="h-12 w-full max-w-lg bg-subtle animate-pulse" />
@@ -48,7 +51,7 @@ export default function Loading() {
                         ))}
                     </div>
                 </div>
-            </div>
-        </main>
+            </Container>
+        </Page>
     );
 }

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { submitLead } from "@/actions/submit-lead";
+import { submitLead, type LeadRequest } from "@/actions/submit-lead";
 import { rateLimitAsync } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
+import crypto from "crypto";
 
 const MAX_BODY_BYTES = 100 * 1024; // 100 KB
 
@@ -18,6 +19,10 @@ function jsonResponse(body: Record<string, unknown>, status: number, extraHeader
 }
 
 export async function POST(request: Request) {
+    // ITIL: Request ID for distributed tracing (M03)
+    const requestId = crypto.randomUUID();
+    logger.setRequestId(requestId);
+
     const ip = (await headers()).get("x-forwarded-for") || "unknown";
 
     // COBIT: Rate Limit for API Abuse Prevention (Task 14)
@@ -58,7 +63,8 @@ export async function POST(request: Request) {
         return jsonResponse({ error: "invalid_json" }, 400);
     }
 
-    const result = await submitLead(payload as any);
+    // COBIT DSS05: Type-safe call (C01 fix - removed `as any`)
+    const result = await submitLead(payload as LeadRequest);
 
     if (result.success) {
         return jsonResponse({ success: true }, 200);

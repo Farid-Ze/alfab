@@ -39,7 +39,7 @@ Every Pull Request must pass:
 
 ---
 
-## 3. Security & Risk (COBIT APO12 / DSS05)
+## 3. Security & Risk (COBIT APO12 / DSS05 / OWASP API Top 10)
 
 ### Risk Register
 
@@ -48,6 +48,8 @@ Every Pull Request must pass:
 | **R01** | **Key Leak** | `env.ts` validation + CI checks. | DevOps |
 | **R02** | **Email Outage** | Fail-Open architecture (DB persist first). | Tech Lead |
 | **R03** | **DDoS** | Rate Limiting (5 req/hr/IP) in `submit-lead.ts`. | DevOps |
+| **R04** | **Third-Party Dependency** | Dependabot + license-check + vendor assessment. | Tech Lead |
+| **R05** | **Availability (Tier Limits)** | Vercel Pro upgrade path + Upstash Redis fallback. | DevOps |
 | **R06** | **PDP Violation** | Data Retention Policy (3 Years). | Legal |
 
 ### Access Control Matrix
@@ -55,7 +57,7 @@ Every Pull Request must pass:
 *Principle: Least Privilege.*
 
 | Role | Vercel (Hosting) | Supabase (DB) | GitHub (Code) |
-| :--- | :--- | :--- |
+| :--- | :--- | :--- | :--- |
 | **CTO** | Admin | Owner | Admin |
 | **DevOps** | Member | Admin | Maintainer |
 | **Frontend** | Viewer | Developer | Write |
@@ -78,7 +80,7 @@ Upon request (`privacy@alfabeauty.co.id`), verify identity and execute `DELETE` 
 
 ---
 
-## 5. Change Management (BAI06)
+## 5. Change Management (COBIT BAI06 / ITIL 4 Change Enablement)
 
 ### Change Log Policy
 
@@ -91,3 +93,17 @@ Upon request (`privacy@alfabeauty.co.id`), verify identity and execute `DELETE` 
 * **Allowed**: MIT, Apache-2.0, BSD, ISC.
 * **Forbidden**: GPL, AGPL (Viral).
 * **Audit**: Run `license-checker` before every major release.
+
+---
+
+## Related Documents
+
+| Document | Framework | Path |
+| :--- | :--- | :--- |
+| Definition of Done | Scrum/ITIL 4 | [`../../../docs/governance/definition-of-done.md`](../../../docs/governance/definition-of-done.md) |
+| Data Retention Policy | COBIT/GDPR | [`../../../docs/governance/data-retention-policy.md`](../../../docs/governance/data-retention-policy.md) |
+| Strategy 2026 | TOGAF | [`../../../docs/strategy-2026.md`](../../../docs/strategy-2026.md) |
+
+---
+
+**Version**: 2.1 | **Last Updated**: 2026-02-04 | **Owner**: CTO

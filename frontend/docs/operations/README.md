@@ -7,7 +7,7 @@
 
 ## 1. Service Catalogue (Request Fulfillment)
 
-**Base URL**: `https://alfabeauty.co.id`
+**Base URL**: `https://alfabeautycosmetica.com`
 
 | Service | Endpoint | SLA (P95) | Dependencies |
 | :--- | :--- | :--- | :--- |
@@ -70,3 +70,7 @@
 
 * **Routine**: Logs deleted after 90 days.
 * **User Request**: Execute `DELETE FROM leads WHERE email = $1`.
+
+---
+
+**Version**: 2.1 | **Last Updated**: 2026-02-04 | **Owner**: DevOps

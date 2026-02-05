@@ -1,5 +1,6 @@
 import type { EducationEvent } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
+import { env } from "@/lib/env";
 
 type Props = {
     event: EducationEvent;
@@ -11,8 +12,8 @@ type Props = {
  * Provides rich snippets for search engines (Name, Date, Location, Organizer).
  */
 export default function EventSchema({ event, locale }: Props) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    const eventUrl = `${siteUrl.replace(/\/$/, "")}/${locale}/education/events/${event.slug}`;
+    const siteUrl = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+    const eventUrl = `${siteUrl}/${locale}/education/events/${event.slug}`;
 
     const schema = {
         "@context": "https://schema.org",

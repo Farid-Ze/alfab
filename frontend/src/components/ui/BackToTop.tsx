@@ -21,12 +21,23 @@ export default function BackToTop() {
     const tx = t(locale);
 
     React.useEffect(() => {
+        let rafId = 0;
+
         const handleScroll = () => {
-            setVisible(window.scrollY > 400);
+            if (rafId) return;
+            rafId = window.requestAnimationFrame(() => {
+                rafId = 0;
+                const next = window.scrollY > 400;
+                setVisible((prev) => (prev === next ? prev : next));
+            });
         };
 
+        handleScroll();
         window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            if (rafId) window.cancelAnimationFrame(rafId);
+        };
     }, []);
 
     const scrollToTop = () => {

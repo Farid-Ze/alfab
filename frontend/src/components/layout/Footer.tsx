@@ -41,9 +41,7 @@ export default function Footer() {
     }));
 
     return (
-        <footer className="bg-panel border-t border-border relative">
-            {/* Gradient Border Effect */}
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border-strong to-transparent" aria-hidden="true" />
+        <footer className="bg-panel border-t border-border">
             {/* Main Footer */}
             <div className="container mx-auto px-6 lg:px-12 py-16">
                 <div className="grid lg:grid-cols-4 gap-12">
@@ -95,7 +93,7 @@ export default function Footer() {
                                 <AppLink
                                     key={link.href}
                                     href={link.href}
-                                    className="type-body text-muted hover:text-foreground transition-colors block underline-grow"
+                                    className="type-body text-muted hover:text-foreground transition-colors block"
                                 >
                                     {link.title}
                                 </AppLink>
@@ -111,7 +109,7 @@ export default function Footer() {
                                 <AppLink
                                     key={link.href}
                                     href={link.href}
-                                    className="type-body text-muted hover:text-foreground transition-colors block underline-grow"
+                                    className="type-body text-muted hover:text-foreground transition-colors block"
                                 >
                                     {link.title}
                                 </AppLink>

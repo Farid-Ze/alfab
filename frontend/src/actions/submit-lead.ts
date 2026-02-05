@@ -31,7 +31,7 @@ const partnerSchema = z.object({
 
 const leadSchema = partnerSchema;
 
-type LeadRequest = z.infer<typeof partnerSchema>;
+export type LeadRequest = z.infer<typeof partnerSchema>;
 
 /**
  * Server Action: Submit Lead

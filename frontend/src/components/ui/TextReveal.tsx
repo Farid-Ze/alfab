@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, useMemo } from "react";
+import { EASE_OUT_QUINT, MOTION_DURATION, VIEWPORT_MARGIN_REVEAL } from "@/lib/motion";
 
 type TextRevealProps = {
     children: string;
@@ -28,10 +29,18 @@ export default function TextReveal({
     direction = "up",
 }: TextRevealProps) {
     const ref = useRef<HTMLDivElement>(null);
-    const isInView = useInView(ref, { once, margin: "-10%" });
+    const isInView = useInView(ref, { once, margin: VIEWPORT_MARGIN_REVEAL });
 
-    // Split text by words for the reveal effect
-    const words = useMemo(() => children.split(" "), [children]);
+    // Support explicit line breaks ("\n") for parity with reference layouts.
+    // Each line is revealed word-by-word.
+    const lines = useMemo(
+        () =>
+            children
+                .split("\n")
+                .map((line) => line.trim())
+                .filter(Boolean),
+        [children]
+    );
 
     const containerVariants = {
         hidden: {},
@@ -52,8 +61,8 @@ export default function TextReveal({
             y: "0%",
             opacity: 1,
             transition: {
-                duration: 0.8,
-                ease: [0.22, 1, 0.36, 1] as const, // Ineo-Sense style easing
+                duration: MOTION_DURATION.reveal,
+                ease: EASE_OUT_QUINT,
             },
         },
     };
@@ -67,22 +76,29 @@ export default function TextReveal({
             className={`inline-flex flex-wrap ${className}`}
             aria-label={children}
         >
-            {words.map((word, index) => (
-                <span
-                    key={`${word}-${index}`}
-                    className="overflow-hidden inline-block"
-                    style={{ marginRight: "0.25em" }}
-                >
-                    <Component className="sr-only">{word}</Component>
-                    <motion.span
-                        variants={wordVariants}
-                        className="inline-block"
-                        aria-hidden="true"
+            {lines.map((line, lineIndex) => {
+                const words = line.split(/\s+/g).filter(Boolean);
+                return (
+                    <span
+                        key={`line-${lineIndex}`}
+                        className="block w-full"
+                        style={{ marginBottom: lineIndex < lines.length - 1 ? "0.08em" : undefined }}
                     >
-                        {word}
-                    </motion.span>
-                </span>
-            ))}
+                        {words.map((word, wordIndex) => (
+                            <span
+                                key={`${word}-${lineIndex}-${wordIndex}`}
+                                className="overflow-hidden inline-block"
+                                style={{ marginRight: "0.25em" }}
+                            >
+                                <Component className="sr-only">{word}</Component>
+                                <motion.span variants={wordVariants} className="inline-block" aria-hidden="true">
+                                    {word}
+                                </motion.span>
+                            </span>
+                        ))}
+                    </span>
+                );
+            })}
         </motion.div>
     );
 }

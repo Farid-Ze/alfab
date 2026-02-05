@@ -4,6 +4,7 @@ import { LeadRecord } from "@/lib/types";
  * Format lead data into text email body
  */
 export function formatLeadEmail(lead: LeadRecord): string {
+    const raw = lead.raw as Record<string, unknown> | undefined;
     const lines: string[] = [
         "=== New Lead Notification ===",
         "",
@@ -13,13 +14,13 @@ export function formatLeadEmail(lead: LeadRecord): string {
         `Message: ${lead.message || "-"}`,
         "",
         "--- Partner Profile ---",
-        `Business: ${(lead.raw as any).business_name || "-"}`,
-        `City: ${(lead.raw as any).city || "-"}`,
-        `Type: ${(lead.raw as any).salon_type || "-"}`,
-        `Chair Count: ${(lead.raw as any).chair_count || "-"}`,
-        `Specialization: ${(lead.raw as any).specialization || "-"}`,
-        `Brands: ${(lead.raw as any).current_brands_used || "-"}`,
-        `Spend: ${(lead.raw as any).monthly_spend_range || "-"}`,
+        `Business: ${String(raw?.business_name ?? "-")}`,
+        `City: ${String(raw?.city ?? "-")}`,
+        `Type: ${String(raw?.salon_type ?? "-")}`,
+        `Chair Count: ${String(raw?.chair_count ?? "-")}`,
+        `Specialization: ${String(raw?.specialization ?? "-")}`,
+        `Brands: ${String(raw?.current_brands_used ?? "-")}`,
+        `Spend: ${String(raw?.monthly_spend_range ?? "-")}`,
         "",
         "--- Tech Info ---",
         `IP: ${lead.ip_address || "-"}`,

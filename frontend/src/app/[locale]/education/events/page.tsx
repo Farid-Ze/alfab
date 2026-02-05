@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import StaggerReveal from "@/components/ui/StaggerReveal";
 import AppLink from "@/components/ui/AppLink";
+import Page from "@/components/layout/Page";
+import Container from "@/components/layout/Container";
 import { listEvents } from "@/lib/education";
 import { formatDate, normalizeLocale, t } from "@/lib/i18n";
 
@@ -42,8 +44,8 @@ export default async function EducationEventsPage({
   const events = listEvents(resolved);
 
   return (
-    <main className="min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-6 lg:px-12">
+    <Page>
+      <Container>
         <StaggerReveal delay={0.1} className="mb-12">
           <p className="type-kicker text-muted mb-4">{tx.education.hub.kicker}</p>
           <h1 className="type-h1 text-foreground mb-4">{tx.education.hub.sections.events}</h1>
@@ -57,8 +59,7 @@ export default async function EducationEventsPage({
             <AppLink
               key={event.slug}
               href={`/${resolved}/education/events/${event.slug}`}
-              className="group p-6 rounded-2xl bg-panel transition-all duration-[var(--transition-elegant)] hover:scale-[1.02] block"
-              style={{ boxShadow: "var(--shadow-elegant)" }}
+              className="group p-6 rounded-2xl bg-panel transition-all-elegant hover:scale-[1.02] block shadow-elegant-box"
             >
               <div className="inline-block px-3 py-1 rounded-full bg-background type-data text-muted mb-4">
                 {tx.education.hub.types[event.type.toLowerCase() as keyof typeof tx.education.hub.types] || event.type}
@@ -74,7 +75,7 @@ export default async function EducationEventsPage({
             </AppLink>
           ))}
         </div>
-      </div>
-    </main>
+      </Container>
+    </Page>
   );
 }

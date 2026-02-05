@@ -1,3 +1,5 @@
+import { env } from "@/lib/env";
+
 type BreadcrumbItem = {
     name: string;
     url: string;
@@ -12,8 +14,7 @@ type Props = {
  * Paket A SEO-04: "Organization + Breadcrumb; Product bila feasible"
  */
 export default function BreadcrumbSchema({ items }: Props) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    const baseUrl = siteUrl.replace(/\/$/, "");
+    const baseUrl = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
 
     const breadcrumbList = {
         "@context": "https://schema.org",

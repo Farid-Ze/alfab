@@ -125,7 +125,7 @@ export default function ProductDetailContent({ product }: Props) {
             <h2 className="type-h3">{tx.productDetail.sections.recommendedFor}</h2>
             <div className="space-y-4">
               <div className="space-y-2">
-                <p className="type-data-strong text-foreground uppercase">
+                <p className="type-data-strong text-foreground">
                   {tx.productDetail.labels.audience}
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -137,7 +137,7 @@ export default function ProductDetailContent({ product }: Props) {
                 </div>
               </div>
               <div className="space-y-2">
-                <p className="type-data-strong text-foreground uppercase">
+                <p className="type-data-strong text-foreground">
                   {tx.productDetail.labels.functions}
                 </p>
                 <div className="flex flex-wrap gap-2">

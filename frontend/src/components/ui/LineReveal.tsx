@@ -4,7 +4,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 type LineRevealProps = {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     delay?: number;
     className?: string;
     once?: boolean;

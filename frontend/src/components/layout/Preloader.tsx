@@ -43,7 +43,7 @@ export default function Preloader() {
                 ease: [0.22, 1, 0.36, 1] as const,
             }}
             style={{ transformOrigin: "top" }}
-            className="fixed inset-0 z-[100] bg-foreground flex items-center justify-center"
+            className="fixed inset-0 z-loading bg-foreground flex items-center justify-center"
         >
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -51,7 +51,7 @@ export default function Preloader() {
                 transition={{ duration: 0.3 }}
                 className="text-center"
             >
-                    <div className="type-footer-brand text-background mb-2">ALFA BEAUTY</div>
+                <div className="type-footer-brand text-background mb-2">ALFA BEAUTY</div>
                 <motion.div
                     className="w-12 h-0.5 bg-background/30 mx-auto overflow-hidden"
                 >

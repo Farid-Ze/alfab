@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import StaggerReveal from "@/components/ui/StaggerReveal";
 import AppLink from "@/components/ui/AppLink";
+import Page from "@/components/layout/Page";
+import Container from "@/components/layout/Container";
 import { listEvents, listArticles, calculateReadTime } from "@/lib/education";
 import { normalizeLocale, t } from "@/lib/i18n";
 
@@ -49,8 +51,8 @@ export default async function EducationPage({
   }));
 
   return (
-    <main className="min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-6 lg:px-12">
+    <Page>
+      <Container>
         {/* Header */}
         <StaggerReveal delay={0.1} className="mb-16">
           <p className="type-kicker text-muted mb-4">{dict.education.hub.kicker}</p>
@@ -97,8 +99,7 @@ export default async function EducationPage({
               <AppLink
                 key={event.slug}
                 href={`/${resolved}/education/events/${event.slug}`}
-                className="group p-6 rounded-2xl bg-panel transition-all duration-[var(--transition-elegant)] hover:scale-[1.02] block"
-                style={{ boxShadow: "var(--shadow-elegant)" }}
+                className="group p-6 rounded-2xl bg-panel transition-all-elegant hover:scale-[1.02] block shadow-elegant-box"
               >
                 {/* Event Type Badge */}
                 <div className="inline-block px-3 py-1 rounded-full bg-background type-data text-muted mb-4">
@@ -139,10 +140,9 @@ export default async function EducationPage({
               >
                 {/* Thumbnail */}
                 <div
-                  className="aspect-video rounded-2xl bg-gradient-to-br from-subtle to-subtle-hover mb-4 overflow-hidden"
-                  style={{ boxShadow: "var(--shadow-elegant)" }}
+                  className="aspect-video rounded-2xl bg-gradient-to-br from-subtle to-subtle-hover mb-4 overflow-hidden shadow-elegant-box"
                 >
-                  <div className="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-[var(--transition-elegant)]">
+                  <div className="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform-elegant">
                     <span className="type-ui-sm text-muted">{dict.education.hub.imageAlt}</span>
                   </div>
                 </div>
@@ -167,7 +167,7 @@ export default async function EducationPage({
             ))}
           </div>
         </section>
-      </div>
-    </main>
+      </Container>
+    </Page>
   );
 }

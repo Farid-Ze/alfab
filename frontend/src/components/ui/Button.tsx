@@ -29,7 +29,7 @@ export function getButtonClassName({
   className?: string;
 }) {
   return cn(
-    "type-ui-sm-strong ui-focus-ring ui-radius-none relative inline-flex items-center justify-center gap-3 border select-none disabled:cursor-not-allowed disabled:opacity-50 uppercase tracking-widest transition-all duration-300",
+    "type-ui-sm-strong ui-focus-ring ui-radius-pill relative inline-flex items-center justify-center gap-3 border select-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-300",
     variantClass[variant],
     sizeClass[size],
     className

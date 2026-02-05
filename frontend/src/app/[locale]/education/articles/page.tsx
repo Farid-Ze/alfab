@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import StaggerReveal from "@/components/ui/StaggerReveal";
 import AppLink from "@/components/ui/AppLink";
+import Page from "@/components/layout/Page";
+import Container from "@/components/layout/Container";
 import { listArticles, calculateReadTime } from "@/lib/education";
 import { formatDate, normalizeLocale, t } from "@/lib/i18n";
 
@@ -45,8 +47,8 @@ export default async function EducationArticlesPage({
   }));
 
   return (
-    <main className="min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-6 lg:px-12">
+    <Page>
+      <Container>
         <StaggerReveal delay={0.1} className="mb-12">
           <p className="type-kicker text-muted mb-4">{tx.education.hub.kicker}</p>
           <h1 className="type-h1 text-foreground mb-4">{tx.education.hub.sections.articles}</h1>
@@ -63,10 +65,9 @@ export default async function EducationArticlesPage({
               className="group"
             >
               <div
-                className="aspect-video rounded-2xl bg-gradient-to-br from-subtle to-subtle-hover mb-4 overflow-hidden"
-                style={{ boxShadow: "var(--shadow-elegant)" }}
+                className="aspect-video rounded-2xl bg-gradient-to-br from-subtle to-subtle-hover mb-4 overflow-hidden shadow-elegant-box"
               >
-                <div className="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-[var(--transition-elegant)]">
+                <div className="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform-elegant">
                   <span className="type-ui-sm text-muted">{tx.education.hub.imageAlt}</span>
                 </div>
               </div>
@@ -87,7 +88,7 @@ export default async function EducationArticlesPage({
             </AppLink>
           ))}
         </div>
-      </div>
-    </main>
+      </Container>
+    </Page>
   );
 }

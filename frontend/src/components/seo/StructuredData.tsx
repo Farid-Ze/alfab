@@ -1,14 +1,7 @@
-function getSiteUrl(): string {
-  const raw = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  try {
-    return new URL(raw).toString().replace(/\/$/, "");
-  } catch {
-    return "http://localhost:3000";
-  }
-}
+import { env } from "@/lib/env";
 
 export default function StructuredData() {
-  const siteUrl = getSiteUrl();
+  const siteUrl = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
   const contactPhone = (() => {
     const digits = whatsappNumber.replace(/\D/g, "");

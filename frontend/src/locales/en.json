@@ -42,6 +42,15 @@
             "ctaExplore": "Explore Our Brands",
             "ctaPartner": "Partner With Us"
         },
+        "roleIndustry": {
+            "title": "More Than a Distributor",
+            "body": "We act as a strategic bridge between international principals and Indonesia’s professional salon & barber industry by:",
+            "bullets": [
+                "Connecting global innovation with local market needs",
+                "Building brands through education and technical excellence",
+                "Supporting sustainable growth for salons, barbers, and professionals"
+            ]
+        },
         "about": {
             "kicker": "About Us",
             "title": "More Than a Distributor",
@@ -102,6 +111,27 @@
         },
         "closing": {
             "body": "PT Alfa Beauty Cosmetica is a trusted distribution partner for global professional haircare suppliers and a reliable supplier for salon & barber across Indonesia—committed to quality, education, and sustainable industry growth."
+        },
+        "sectors": {
+            "headline": "Professional beauty transforms salon experiences into drivers of growth and innovation.",
+            "cta": "View all our sectors",
+            "items": [
+                {
+                    "id": "salon",
+                    "title": "Salon Professional",
+                    "description": "Reinventing hair care services with premium Italian and Spanish brands."
+                },
+                {
+                    "id": "barber",
+                    "title": "Barber Excellence",
+                    "description": "Transforming barbershop experiences through innovation and quality products."
+                },
+                {
+                    "id": "education",
+                    "title": "Training & Education",
+                    "description": "Building skills and knowledge for sustainable industry growth."
+                }
+            ]
         }
     },
     "contact": {
@@ -346,7 +376,7 @@
         "hero": {
             "kicker": "Partnership",
             "title": "Become a Partner",
-                "body": "Join our network of professional salon & barber businesses and distributors."
+            "body": "Join our network of professional salon & barber businesses and distributors."
         },
         "steps": {
             "1": "Business Information",
@@ -386,7 +416,8 @@
             "nav": {
                 "back": "Back",
                 "continue": "Continue",
-                "submit": "Submit"
+                "submit": "Submit",
+                "submitting": "Submitting..."
             }
         },
         "success": {
@@ -444,7 +475,8 @@
         "skipToMainContent": "Skip to main content",
         "switchToEnglish": "Switch to English",
         "switchToIndonesian": "Switch to Indonesian",
-        "breadcrumbs": "Breadcrumb"
+        "breadcrumbs": "Breadcrumb",
+        "readMore": "Read more"
     },
     "footer": {
         "explore": "Explore",

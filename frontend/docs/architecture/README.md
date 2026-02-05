@@ -25,13 +25,13 @@ This architecture adheres to the **Jamstack 2.0** methodology, emphasizing Decou
 | **Compute** | Serverless / Edge | "Scale to Zero" cost model. |
 | **Database** | PostgreSQL | Managed via Supabase. |
 | **Secrets** | Vercel Env Vars | Encrypted. Rotated quarterly. |
-| **Monitoring**| Sentry + Vercel | Full Observability (Errors + Vitals). |
+| **Monitoring** | Sentry + Vercel | Full Observability (Errors + Vitals). |
 
 ### Rate Limiting (Resiliency)
 
-- **Mechanism**: In-Memory Token Bucket (Per-Lambda).
+- **Mechanism**: Distributed Token Bucket via Upstash Redis (memory fallback).
 - **Limit**: ~5 requests/hour per IP for Lead Submission.
-- **Upgrade Path**: Switch to Upstash Redis (Phase 2) if traffic > 1000 daily leads.
+- **Status**: ✅ Implemented (OWASP API4:2023 compliant).
 
 ---
 
@@ -101,3 +101,7 @@ This architecture is governed by the [2026 Strategic Framework](../../../docs/st
 - **ITIL 4 Lite**: For Service Level Management (Availability).
 - **Scrum**: For iterative feature delivery.
 - **COBIT 2019**: For Governance and Data Protection (UU PDP).
+
+---
+
+**Version**: 2.1 | **Last Updated**: 2026-02-04 | **Owner**: CTO

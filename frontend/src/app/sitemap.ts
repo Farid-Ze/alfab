@@ -5,7 +5,8 @@ import { allProductSlugs } from "@/lib/catalog";
 import { listArticles, listEvents } from "@/lib/education";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = (env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  // TOGAF: Use centralized env (already handles localhost fallback)
+  const siteUrl = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
 
   const locales: Array<"en" | "id"> = ["en", "id"];
   const staticRoutes = ["", "/products", "/education", "/education/events", "/education/articles", "/partnership", "/about", "/contact", "/privacy", "/terms", "/security-policy"];

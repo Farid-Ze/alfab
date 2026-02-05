@@ -4,11 +4,11 @@
  * HamburgerIcon Component
  * 
  * CK-style animated hamburger icon that morphs between 2 lines and X.
- * Uses pure CSS transforms for smooth 0.3s transitions.
+ * Uses CSS classes for transforms (Next.js 16 best practice - CSS over JS).
  * 
  * Features:
  * - 2-line design (modern, minimal)
- * - Smooth morph to X on open
+ * - Smooth morph to X on open using CSS classes
  * - Respects reduced motion preferences
  * - Accessible (used within button with aria-label)
  */
@@ -28,21 +28,13 @@ export default function HamburgerIcon({ isOpen, className = "" }: HamburgerIconP
         >
             {/* Top line - rotates to form top half of X */}
             <span
-                className="absolute h-[2px] w-5 bg-current transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
-                style={{
-                    transform: isOpen
-                        ? 'rotate(45deg) translateY(0)'
-                        : 'rotate(0) translateY(-4px)',
-                }}
+                className={`absolute h-[2px] w-5 bg-current transition-all duration-300 ease-elegant ${isOpen ? "hamburger-line-top-open" : "hamburger-line-top"
+                    }`}
             />
             {/* Bottom line - rotates to form bottom half of X */}
             <span
-                className="absolute h-[2px] w-5 bg-current transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
-                style={{
-                    transform: isOpen
-                        ? 'rotate(-45deg) translateY(0)'
-                        : 'rotate(0) translateY(4px)',
-                }}
+                className={`absolute h-[2px] w-5 bg-current transition-all duration-300 ease-elegant ${isOpen ? "hamburger-line-bottom-open" : "hamburger-line-bottom"
+                    }`}
             />
         </div>
     );

@@ -51,7 +51,8 @@ export default function GlobalError({
               Try again
             </button>
             {/* Hard reload for global error recovery */}
-            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            {/* TOGAF Design Decision: Hardcoded to /id as global-error has no LocaleProvider context.
+                This is intentional - global errors occur before context is available. */}
             <a
               href="/id"
               className="px-6 py-2.5 type-ui-strong text-foreground/70 hover:text-foreground transition-colors"

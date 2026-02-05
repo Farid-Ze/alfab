@@ -13,12 +13,18 @@ export default function ErrorPage({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Server-side logging is handled by infra/Sentry
-    console.error(error);
+    // ITIL OPS-01: Forward to Sentry for structured observability
+    if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+      import("@sentry/nextjs").then((Sentry) => {
+        Sentry.captureException(error);
+      });
+    }
   }, [error]);
 
   return (
     <div className="flex min-h-[50vh] items-center justify-center">
+      {/* TOGAF Design Decision: Root error.tsx is outside [locale] layout, 
+          so we default to /id (primary market). See [locale]/error.tsx for localized version. */}
       <ErrorState
         title="Something went wrong!"
         description="Please try again. If the issue persists, contact technical support."

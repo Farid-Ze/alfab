@@ -56,9 +56,9 @@ export default function HeaderNav() {
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-[var(--transition-elegant)] ${isScrolled
-                        ? "glass border-b border-border/50 shadow-sm"
-                        : "bg-transparent"
+                className={`fixed top-0 left-0 right-0 z-50 transition-all-elegant ${isScrolled
+                    ? "bg-background/80 backdrop-blur-xl border-b border-border shadow-sm"
+                    : "bg-transparent"
                     }`}
             >
                 <div className="container mx-auto px-6 lg:px-12">
@@ -76,7 +76,7 @@ export default function HeaderNav() {
                                     as="a"
                                     href={`${base}${link.href}`}
                                     strength={0.2}
-                                    className="type-nav text-foreground-muted hover:text-foreground transition-colors duration-[var(--transition-elegant)] underline-grow"
+                                    className="type-nav text-foreground-muted hover:text-foreground transition-colors-elegant"
                                 >
                                     {tx.nav[link.labelKey as keyof typeof tx.nav]}
                                 </MagneticButton>
@@ -116,9 +116,8 @@ export default function HeaderNav() {
                 initial={false}
                 animate={isMobileOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className={`fixed inset-0 z-40 bg-background ${isMobileOpen ? "pointer-events-auto" : "pointer-events-none"
+                className={`fixed inset-0 z-40 bg-background pt-header-offset ${isMobileOpen ? "pointer-events-auto" : "pointer-events-none"
                     }`}
-                style={{ paddingTop: "5rem" }}
                 aria-hidden={!isMobileOpen}
             >
                 <nav className="container mx-auto px-6 py-12 flex flex-col gap-6">

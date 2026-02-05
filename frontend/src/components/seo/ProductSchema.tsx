@@ -1,5 +1,6 @@
 import type { Product } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
+import { env } from "@/lib/env";
 
 type Props = {
     product: Product;
@@ -11,8 +12,8 @@ type Props = {
  * Provides rich snippets for search engines (Name, Description, Brand, Image).
  */
 export default function ProductSchema({ product, locale }: Props) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    const productUrl = `${siteUrl.replace(/\/$/, "")}/${locale}/products/${product.slug}`;
+    const siteUrl = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+    const productUrl = `${siteUrl}/${locale}/products/${product.slug}`;
     const imageUrl = product.image?.url
         ? (product.image.url.startsWith("http")
             ? product.image.url

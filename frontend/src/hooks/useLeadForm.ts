@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { submitLead } from "@/actions/submit-lead";
+import { submitLead, type LeadRequest } from "@/actions/submit-lead";
 import { trackEvent } from "@/lib/telemetry";
 import { getCurrentPageUrl, getInitialPageUrl } from "@/lib/telemetry";
 
@@ -217,11 +217,8 @@ export function useLeadForm(
             company: values.company.trim() || undefined,
         };
 
-        // Server Action Migration (Phase 37)
-        // Note: We cast to any because the exact Zod types are in the server action file,
-        // and duplicating them fully here is redundant given we have runtime validation there.
-        // The shape matches 'LeadRequest'.
-        const payload = body as any;
+        // COBIT DSS05: Type-safe payload (using imported LeadRequest type)
+        const payload = body as LeadRequest;
 
         try {
             const res = await submitLead(payload);

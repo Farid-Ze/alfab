@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { EASE_OUT_EXPO, MOTION_DURATION } from "@/lib/motion";
 
 type StaggerRevealProps = {
     children: ReactNode;
@@ -40,8 +41,8 @@ export default function StaggerReveal({
             opacity: 1,
             y: 0,
             transition: {
-                duration: 0.6,
-                ease: [0.16, 1, 0.3, 1] as const, // Elegant ease-out
+                duration: MOTION_DURATION.base,
+                ease: EASE_OUT_EXPO,
             },
         },
     };

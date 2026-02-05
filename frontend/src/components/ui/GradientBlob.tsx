@@ -12,10 +12,12 @@ type GradientBlobProps = {
 /**
  * GradientBlob: Animated mesh gradient background.
  * Creates organic, fluid motion for premium hero sections.
+ * 
+ * Uses CSS variables for default colors to match design tokens.
  */
 export default function GradientBlob({
     className = "",
-    colors = ["#f4f4f5", "#e4e4e7", "#d4d4d8"],
+    colors = ["var(--color-subtle)", "var(--color-subtle-hover)", "var(--color-border)"],
     blur = 100,
     opacity = 0.5,
 }: GradientBlobProps) {

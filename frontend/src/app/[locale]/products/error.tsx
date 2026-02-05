@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import ErrorState from "@/components/ui/ErrorState";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { t } from "@/lib/i18n";
+import Page from "@/components/layout/Page";
 
 export default function Error({
     error,
@@ -21,7 +22,7 @@ export default function Error({
     const base = `/${locale}`;
 
     return (
-        <main className="min-h-screen pt-24 pb-16 flex items-center justify-center">
+        <Page className="flex items-center justify-center">
             <ErrorState
                 title={locale === "id" ? "Gagal memuat produk" : "Unable to load products"}
                 description={
@@ -33,6 +34,6 @@ export default function Error({
                 homeHref={base}
                 homeLabel={tx.system.notFound.backHome}
             />
-        </main>
+        </Page>
     );
 }

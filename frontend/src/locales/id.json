@@ -42,6 +42,15 @@
             "ctaExplore": "Jelajahi Brand Kami",
             "ctaPartner": "Bermitra Dengan Kami"
         },
+        "roleIndustry": {
+            "title": "Lebih dari Sekadar Distributor",
+            "body": "Kami berperan sebagai penghubung strategis antara prinsipal internasional dan industri salon dan barber profesional di Indonesia dengan cara:",
+            "bullets": [
+                "Menyatukan inovasi global dengan kebutuhan pasar lokal",
+                "Membangun merek melalui edukasi dan keunggulan teknis",
+                "Mendukung pertumbuhan salon, barber, dan profesional secara berkelanjutan"
+            ]
+        },
         "about": {
             "kicker": "Tentang Kami",
             "title": "Lebih dari Sekadar Distributor",
@@ -102,6 +111,27 @@
         },
         "closing": {
             "body": "PT Alfa Beauty Cosmetica adalah mitra distribusi terpercaya bagi pemasok perawatan rambut profesional global serta pemasok andal bagi salon & barber di seluruh Indonesia—berkomitmen pada kualitas, edukasi, dan pertumbuhan industri yang berkelanjutan."
+        },
+        "sectors": {
+            "headline": "Kecantikan profesional mengubah pengalaman salon menjadi pendorong pertumbuhan dan inovasi.",
+            "cta": "Lihat semua sektor kami",
+            "items": [
+                {
+                    "id": "salon",
+                    "title": "Salon Profesional",
+                    "description": "Merevolusi layanan perawatan rambut dengan brand premium Italia dan Spanyol."
+                },
+                {
+                    "id": "barber",
+                    "title": "Keunggulan Barber",
+                    "description": "Mentransformasi pengalaman barbershop melalui inovasi dan produk berkualitas."
+                },
+                {
+                    "id": "education",
+                    "title": "Pelatihan & Edukasi",
+                    "description": "Membangun keterampilan dan pengetahuan untuk pertumbuhan industri berkelanjutan."
+                }
+            ]
         }
     },
     "contact": {
@@ -386,7 +416,8 @@
             "nav": {
                 "back": "Kembali",
                 "continue": "Lanjut",
-                "submit": "Kirim"
+                "submit": "Kirim",
+                "submitting": "Mengirim..."
             }
         },
         "success": {
@@ -444,7 +475,8 @@
         "skipToMainContent": "Lewati ke konten utama",
         "switchToEnglish": "Ganti ke bahasa Inggris",
         "switchToIndonesian": "Ganti ke bahasa Indonesia",
-        "breadcrumbs": "Breadcrumb"
+        "breadcrumbs": "Breadcrumb",
+        "readMore": "Baca selengkapnya"
     },
     "footer": {
         "explore": "Jelajahi",

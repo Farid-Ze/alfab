@@ -6,6 +6,8 @@ import StaggerReveal from "@/components/ui/StaggerReveal";
 import { useTranslations } from "@/hooks/useTranslations";
 import { useLeadForm, type SalonType } from "@/hooks/useLeadForm";
 import WhatsAppLink from "@/components/ui/WhatsAppLink";
+import Page from "@/components/layout/Page";
+import Container from "@/components/layout/Container";
 
 /**
  * Partnership Page
@@ -105,7 +107,7 @@ export default function PartnershipPageClient() {
   // Success Screen
   if (result.kind === "success") {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-foreground">
+      <div className="min-h-screen flex items-center justify-center bg-foreground">
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -125,13 +127,13 @@ export default function PartnershipPageClient() {
             {tx.partnership.success.cta}
           </WhatsAppLink>
         </motion.div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-6 lg:px-12 max-w-2xl">
+    <Page>
+      <Container className="max-w-2xl">
         {/* Header */}
         <StaggerReveal delay={0.1} className="mb-12 text-center">
           <p className="type-kicker text-muted mb-4">{tx.partnership.hero.kicker}</p>
@@ -148,7 +150,7 @@ export default function PartnershipPageClient() {
           {STEPS.map((s, i) => (
             <div key={s.id} className="flex items-center">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center type-data transition-all duration-[var(--transition-elegant)] ${step >= s.id
+                className={`w-10 h-10 rounded-full flex items-center justify-center type-data transition-all-elegant ${step >= s.id
                   ? "bg-foreground text-background"
                   : "bg-panel text-muted"
                   }`}
@@ -157,7 +159,7 @@ export default function PartnershipPageClient() {
               </div>
               {i < STEPS.length - 1 && (
                 <div
-                  className={`w-12 lg:w-24 h-0.5 mx-2 transition-all duration-[var(--transition-elegant)] ${step > s.id ? "bg-foreground" : "bg-border"
+                  className={`w-12 lg:w-24 h-0.5 mx-2 transition-all-elegant ${step > s.id ? "bg-foreground" : "bg-border"
                     }`}
                 />
               )}
@@ -202,7 +204,7 @@ export default function PartnershipPageClient() {
                         key={type}
                         type="button"
                         onClick={() => setField("salonType", type)}
-                        className={`px-4 py-3 rounded-xl type-data transition-all duration-[var(--transition-elegant)] ${values.salonType === type
+                        className={`px-4 py-3 rounded-xl type-data transition-all-elegant ${values.salonType === type
                           ? "bg-foreground text-background"
                           : "bg-panel text-foreground hover:bg-border"
                           }`}
@@ -311,7 +313,7 @@ export default function PartnershipPageClient() {
                             : [...current, brand];
                           setField("specialization", updated.join(","));
                         }}
-                        className={`px-4 py-3 rounded-xl type-data transition-all duration-[var(--transition-elegant)] ${values.specialization.includes(brand)
+                        className={`px-4 py-3 rounded-xl type-data transition-all-elegant ${values.specialization.includes(brand)
                           ? "bg-foreground text-background"
                           : "bg-panel text-foreground hover:bg-border"
                           }`}
@@ -329,7 +331,7 @@ export default function PartnershipPageClient() {
               <>
                 <h2 className="type-h3 text-foreground mb-6">{tx.partnership.form.step4.title}</h2>
 
-                <div className="p-6 rounded-2xl bg-panel" style={{ boxShadow: "var(--shadow-elegant)" }}>
+                <div className="p-6 rounded-2xl bg-panel shadow-elegant-box">
                   <h3 className="type-h4 text-foreground mb-4">{tx.partnership.form.step4.summary}</h3>
                   <dl className="space-y-2 type-body text-foreground-muted">
                     <div><span className="text-muted">{tx.partnership.form.step1.businessName}:</span> {values.businessName}</div>
@@ -381,7 +383,7 @@ export default function PartnershipPageClient() {
           <button
             onClick={prevStep}
             disabled={step === 1}
-            className={`px-6 py-3 rounded-full type-nav transition-all duration-[var(--transition-elegant)] ${step === 1
+            className={`px-6 py-3 rounded-full type-nav transition-all-elegant ${step === 1
               ? "opacity-0 pointer-events-none"
               : "bg-panel text-foreground hover:bg-border"
               }`}
@@ -392,7 +394,7 @@ export default function PartnershipPageClient() {
           {step < 4 ? (
             <button
               onClick={nextStep}
-              className="px-8 py-3 rounded-full type-nav bg-foreground text-background hover:opacity-90 transition-all duration-[var(--transition-elegant)]"
+              className="px-8 py-3 rounded-full type-nav bg-foreground text-background hover:opacity-90 transition-all-elegant"
             >
               {tx.partnership.form.nav.continue} →
             </button>
@@ -400,16 +402,16 @@ export default function PartnershipPageClient() {
             <button
               onClick={handleSubmit}
               disabled={!values.consent || result.kind === "submitting"}
-              className={`px-8 py-3 rounded-full type-nav transition-all duration-[var(--transition-elegant)] ${values.consent
+              className={`px-8 py-3 rounded-full type-nav transition-all-elegant ${values.consent
                 ? "bg-foreground text-background hover:opacity-90"
                 : "bg-panel text-muted cursor-not-allowed"
                 }`}
             >
-              {result.kind === "submitting" ? "Submitting..." : tx.partnership.form.nav.submit}
+              {result.kind === "submitting" ? tx.partnership.form.nav.submitting : tx.partnership.form.nav.submit}
             </button>
           )}
         </div>
-      </div>
-    </main>
+      </Container>
+    </Page>
   );
 }

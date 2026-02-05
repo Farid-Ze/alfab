@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
+import { MOTION_DURATION } from "@/lib/motion";
 
 type ScrollIndicatorProps = {
     className?: string;
@@ -24,9 +25,9 @@ export default function ScrollIndicator({
             style={{ opacity }}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.6 }}
+            transition={{ delay: 1.5, duration: MOTION_DURATION.base }}
         >
-            <span className="type-ui-xs text-muted uppercase tracking-widest">
+            <span className="type-ui-xs text-muted">
                 {text}
             </span>
             <motion.div

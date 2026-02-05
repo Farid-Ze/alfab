@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import StaggerReveal from "@/components/ui/StaggerReveal";
+import Page from "@/components/layout/Page";
+import Container from "@/components/layout/Container";
 import type { Locale } from "@/lib/i18n";
 import { normalizeLocale, t } from "@/lib/i18n";
 
@@ -40,8 +42,8 @@ export default async function PrivacyPage({
   const tx = t(locale);
 
   return (
-    <main className="min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-6 lg:px-12 max-w-3xl">
+    <Page>
+      <Container size="narrow">
         <StaggerReveal delay={0.1} className="mb-12">
           <p className="type-kicker text-muted mb-4">{tx.footer.legal}</p>
           <h1 className="type-h1 text-foreground mb-4">{tx.legal.privacyTitle}</h1>
@@ -102,7 +104,7 @@ export default async function PrivacyPage({
             </p>
           </section>
         </div>
-      </div>
-    </main>
+      </Container>
+    </Page>
   );
 }

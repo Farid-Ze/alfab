@@ -59,6 +59,16 @@ class Logger {
             });
         }
     }
+
+    /**
+     * Debug logging (M02 - ITIL Observability)
+     * Only outputs in development to avoid production log noise.
+     */
+    debug(message: string, context?: Record<string, unknown>) {
+        if (process.env.NODE_ENV === "development") {
+            this.log("debug", message, context);
+        }
+    }
 }
 
 export const logger = new Logger();

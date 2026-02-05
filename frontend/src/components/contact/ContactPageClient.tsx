@@ -8,6 +8,8 @@ import { submitContact } from "@/actions/submit-contact";
 import { formatWhatsAppDisplay } from "@/lib/whatsapp";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { t } from "@/lib/i18n";
+import Page from "@/components/layout/Page";
+import Container from "@/components/layout/Container";
 
 /**
  * Contact Page
@@ -90,8 +92,8 @@ export default function ContactPageClient() {
   const fallbackEmail = process.env.NEXT_PUBLIC_FALLBACK_EMAIL || "";
 
   return (
-    <main className="min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-6 lg:px-12">
+    <Page>
+      <Container>
         {/* Header */}
         <StaggerReveal delay={0.1} className="mb-16 max-w-2xl">
           <p className="type-kicker text-muted mb-4">{tx.contact.title}</p>
@@ -110,8 +112,8 @@ export default function ContactPageClient() {
             {formState.status !== "idle" && (
               <div
                 className={`p-4 rounded-xl ${formState.status === "success"
-                    ? "bg-success-bg text-success"
-                    : "bg-error-bg text-error"
+                  ? "bg-success-bg text-success"
+                  : "bg-error-bg text-error"
                   }`}
                 role="alert"
               >
@@ -222,14 +224,13 @@ export default function ContactPageClient() {
           <div className="space-y-8">
             {/* Map Placeholder */}
             <div
-              className="aspect-video rounded-2xl bg-gradient-to-br from-subtle to-subtle-hover flex items-center justify-center"
-              style={{ boxShadow: "var(--shadow-elegant)" }}
+              className="aspect-video rounded-2xl bg-gradient-to-br from-subtle to-subtle-hover flex items-center justify-center shadow-elegant-box"
             >
               <span className="type-ui text-muted">{tx.contact.location.title}</span>
             </div>
 
             {/* Contact Details */}
-            <div className="p-6 rounded-2xl bg-panel" style={{ boxShadow: "var(--shadow-elegant)" }}>
+            <div className="p-6 rounded-2xl bg-panel shadow-elegant-box">
               <h3 className="type-h4 text-foreground mb-4">{tx.contact.officeTitle}</h3>
               <dl className="space-y-3 type-body text-foreground-muted">
                 <div>
@@ -266,7 +267,7 @@ export default function ContactPageClient() {
             </WhatsAppLink>
           </div>
         </div>
-      </div>
-    </main>
+      </Container>
+    </Page>
   );
 }

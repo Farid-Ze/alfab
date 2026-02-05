@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import StaggerReveal from "@/components/ui/StaggerReveal";
 import ButtonLink from "@/components/ui/ButtonLink";
+import Page from "@/components/layout/Page";
+import Container from "@/components/layout/Container";
 import { normalizeLocale, t } from "@/lib/i18n";
 
 /**
@@ -40,8 +42,8 @@ export default async function AboutPage({
   const resolved = normalizeLocale(locale);
 
   return (
-    <main className="min-h-screen pt-24 pb-16">
-      <div className="container mx-auto px-6 lg:px-12">
+    <Page>
+      <Container>
         {/* Hero */}
         <StaggerReveal delay={0.1} className="mb-24 max-w-4xl">
           <p className="type-kicker text-muted mb-4">About Us</p>
@@ -56,8 +58,7 @@ export default async function AboutPage({
         {/* Story Section 1 */}
         <section className="grid lg:grid-cols-2 gap-16 items-center mb-24">
           <div
-            className="aspect-square rounded-3xl bg-gradient-to-br from-subtle to-subtle-hover"
-            style={{ boxShadow: "var(--shadow-elegant)" }}
+            className="aspect-square rounded-3xl bg-gradient-to-br from-subtle to-subtle-hover shadow-elegant-box"
           />
           <StaggerReveal delay={0.2}>
             <h2 className="type-h2 text-foreground mb-6">Our Story</h2>
@@ -88,13 +89,12 @@ export default async function AboutPage({
             </p>
           </StaggerReveal>
           <div
-            className="aspect-square rounded-3xl bg-gradient-to-br from-subtle to-subtle-hover lg:order-1"
-            style={{ boxShadow: "var(--shadow-elegant)" }}
+            className="aspect-square rounded-3xl bg-gradient-to-br from-subtle to-subtle-hover lg:order-1 shadow-elegant-box"
           />
         </section>
 
         {/* Values */}
-        <section className="py-16 px-8 rounded-3xl bg-panel mb-24" style={{ boxShadow: "var(--shadow-elegant)" }}>
+        <section className="py-16 px-8 rounded-3xl bg-panel mb-24 shadow-elegant-box">
           <StaggerReveal delay={0.1}>
             <h2 className="type-h2 text-foreground mb-12 text-center">Our Values</h2>
             <div className="grid md:grid-cols-3 gap-8">
@@ -123,13 +123,13 @@ export default async function AboutPage({
             <ButtonLink
               href={`/${resolved}/partnership`}
               variant="primary"
-              className="px-8 py-4 type-nav rounded-full inline-block transition-all duration-[var(--transition-elegant)]"
+              className="px-8 py-4 type-nav rounded-full inline-block transition-all-elegant"
             >
               Become a Partner
             </ButtonLink>
           </StaggerReveal>
         </section>
-      </div>
-    </main>
+      </Container>
+    </Page>
   );
 }

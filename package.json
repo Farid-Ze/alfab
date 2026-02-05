@@ -1,0 +1,12 @@
+{
+  "name": "alfa",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "dev:turbo": "npm --prefix frontend run dev:turbo",
+    "build": "npm --prefix frontend run build",
+    "type-check": "npm --prefix frontend run type-check",
+    "test:unit": "npm --prefix frontend run test:unit",
+    "lint": "npm --prefix frontend run lint"
+  }
+}

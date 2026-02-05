@@ -3,8 +3,11 @@ import { notFound } from "next/navigation";
 
 import EducationEventDetailClient from "@/components/education/EducationEventDetailClient";
 import EventSchema from "@/components/seo/EventSchema";
+import Container from "@/components/layout/Container";
+import Page from "@/components/layout/Page";
 import { getEventBySlug, listEvents } from "@/lib/education";
 import type { Locale } from "@/lib/i18n";
+import { env } from "@/lib/env";
 
 export function generateStaticParams(): Array<{ locale: Locale; slug: string }> {
   return [
@@ -22,9 +25,9 @@ export async function generateMetadata({
 
   const event = getEventBySlug(locale, slug) ?? getEventBySlug(locale === "en" ? "id" : "en", slug);
   const path = `/${locale}/education/events/${slug}`;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const fullUrl = `${siteUrl.replace(/\/$/, "")}${path}`;
-  const fallbackImage = `${siteUrl.replace(/\/$/, "")}/images/education/training-placeholder.jpg`;
+  const siteUrl = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  const fullUrl = `${siteUrl}${path}`;
+  const fallbackImage = `${siteUrl}/images/education/training-placeholder.jpg`;
 
   const title = event?.title ?? "Event";
   const description = event?.excerpt;
@@ -72,9 +75,11 @@ export default async function EducationEventDetailPage({
   }
 
   return (
-    <div className="mx-auto max-w-[80rem] px-4 sm:px-6 lg:px-10 py-12">
-      <EventSchema event={event} locale={locale} />
-      <EducationEventDetailClient slug={slug} />
-    </div>
+    <Page>
+      <Container size="wide">
+        <EventSchema event={event} locale={locale} />
+        <EducationEventDetailClient slug={slug} />
+      </Container>
+    </Page>
   );
 }
