@@ -33,18 +33,18 @@ export default function IneoCard({
             style={{ minHeight: `${minHeight}px` }}
         >
             {/* Title - Uses ineo-navy token */}
-            <h3 className="type-h2 text-ineo-navy mb-3 leading-tight">
+            <h3 className="type-h2 text-ineo-navy mb-content-sm leading-tight">
                 {title}
             </h3>
 
             {/* Body text - Uses design token */}
-            <p className="type-body text-muted mb-4">
+            <p className="type-body text-muted mb-content-sm">
                 {body}
             </p>
 
             {/* Illustration (optional) */}
             {image && (
-                <div className="flex-1 flex items-center justify-center my-4 min-h-[150px] relative w-full">
+                <div className="flex-1 flex items-center justify-center my-4 min-h-ineo-card-image relative w-full">
                     <Image
                         src={image}
                         alt={title}
@@ -60,9 +60,9 @@ export default function IneoCard({
             {/* Know more CTA */}
             <a
                 href={ctaHref}
-                className="inline-flex items-center gap-2 mt-auto transition-all duration-300 hover:gap-3 group text-ineo-teal type-ui-strong"
+                className="inline-flex items-center gap-2 mt-auto transition-all-elegant hover:gap-3 group text-ineo-teal type-ui-strong"
             >
-                <span className="transition-transform duration-300 group-hover:translate-x-1 text-xl">
+                <span className="transition-transform-elegant group-hover:translate-x-1 text-xl">
                     →
                 </span>
                 {ctaLabel}

@@ -15,6 +15,12 @@ interface ErrorStateProps {
 /**
  * Standardized Error UI Component
  * Used by error.tsx, global-error.tsx, and boundary fallbacks.
+ * 
+ * Uses design tokens:
+ * - type-* typography classes
+ * - pad-content for padding
+ * - gap-content for spacing
+ * - mb-content for margins
  */
 export default function ErrorState({
     title = "Something went wrong",
@@ -26,8 +32,8 @@ export default function ErrorState({
     className = "",
 }: ErrorStateProps) {
     return (
-        <div className={`flex min-h-[50vh] flex-col items-center justify-center p-6 text-center ${className}`}>
-            <div className="rounded-full bg-error/10 p-4 mb-6">
+        <div className={`flex min-h-page flex-col items-center justify-center pad-content text-center ${className}`}>
+            <div className="rounded-full bg-error/10 pad-content mb-content">
                 <svg
                     className="h-10 w-10 text-error"
                     fill="none"
@@ -45,9 +51,9 @@ export default function ErrorState({
             </div>
 
             <h2 className="type-h3 text-foreground mb-3">{title}</h2>
-            <p className="type-body text-muted max-w-md mb-8">{description}</p>
+            <p className="type-body text-muted max-w-md mb-content">{description}</p>
 
-            <div className="flex flex-wrap items-center justify-center gap-4">
+            <div className="flex flex-wrap items-center justify-center gap-content-sm">
                 {retry && (
                     <Button onClick={retry} variant="primary">
                         Try Again
@@ -57,7 +63,7 @@ export default function ErrorState({
                 {showHome && (
                     <AppLink
                         href={homeHref}
-                        className="type-ui-strong text-foreground/70 hover:text-foreground transition-colors border-b border-transparent hover:border-foreground"
+                        className="type-ui-strong text-foreground/70 hover:text-foreground transition-all-elegant border-b border-transparent hover:border-foreground"
                     >
                         {homeLabel}
                     </AppLink>

@@ -1,170 +1,118 @@
 "use client";
 
 import Image from "next/image";
-import type { Product } from "@/lib/types";
-import { t } from "@/lib/i18n";
-
+import { motion } from "framer-motion";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import AppLink from "@/components/ui/AppLink";
-import Card from "@/components/ui/Card";
-import { IconChevronRight, IconCheck, IconSparkle } from "@/components/ui/icons";
-import ScrollReveal from "@/components/ui/ScrollReveal";
-import ProductCTA from "@/components/products/ProductCTA";
+import { t } from "@/lib/i18n";
+import type { Product } from "@/lib/types";
 
-type Props = {
-  product: Product | null;
-};
+interface ProductDetailContentProps {
+    product: Product;
+}
 
-export default function ProductDetailContent({ product }: Props) {
-  const { locale } = useLocale();
-  const tx = t(locale);
-  const base = `/${locale}`;
+/**
+ * ProductDetailContent: Ineo-Sense inspired product detail layout
+ */
+export default function ProductDetailContent({ product }: ProductDetailContentProps) {
+    const { locale } = useLocale();
+    const tx = t(locale);
+    const { brand, name, summary, benefits, howToUse, image } = product;
 
-  if (!product) {
     return (
-      <div className="flex min-h-[40vh] flex-col items-center justify-center space-y-6 text-center animate-fade-in">
-        <div className="h-16 w-16 rounded-full bg-subtle flex items-center justify-center">
-          <IconSparkle className="h-8 w-8 text-muted" />
+        <div className="space-y-12">
+            {/* Hero Section */}
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+                {/* Image */}
+                <motion.div
+                    className="relative aspect-square bg-white rounded-3xl overflow-hidden border border-border/30"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                >
+                    {image?.url ? (
+                        <Image
+                            src={image.url}
+                            alt={name}
+                            fill
+                            className="object-cover"
+                            priority
+                        />
+                    ) : (
+                        <div className="absolute inset-0 flex items-center justify-center bg-surface-mint">
+                            <span className="type-display text-brand/20">{brand}</span>
+                        </div>
+                    )}
+                </motion.div>
+
+                {/* Content */}
+                <motion.div
+                    className="space-y-6"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 }}
+                >
+                    {/* Brand */}
+                    <span className="inline-block px-4 py-1.5 bg-surface-mint text-brand text-sm font-semibold rounded-full">
+                        {brand}
+                    </span>
+
+                    {/* Title */}
+                    <h1 className="type-display text-brand font-bold">{name}</h1>
+
+                    {/* Summary */}
+                    <p className="type-body-lg text-muted">{summary}</p>
+
+                    {/* CTA */}
+                    <motion.a
+                        href="#contact"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-secondary text-white rounded-full font-semibold hover:bg-secondary/90 transition-colors"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
+                        <span className="w-1.5 h-1.5 bg-white rounded-full" />
+                        {tx.productDetail?.consult?.title ?? "Konsultasi"}
+                    </motion.a>
+                </motion.div>
+            </div>
+
+            {/* How To Use Section */}
+            {howToUse && (
+                <motion.section
+                    className="bg-white rounded-3xl p-8 lg:p-12 border border-border/30"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    <h2 className="type-h2 text-brand font-bold mb-6">
+                        {tx.productDetail?.sections?.howToUse ?? "How To Use"}
+                    </h2>
+                    <p className="type-body text-muted">{howToUse}</p>
+                </motion.section>
+            )}
+
+            {/* Benefits Section */}
+            {benefits && benefits.length > 0 && (
+                <motion.section
+                    className="bg-white rounded-3xl p-8 lg:p-12 border border-border/30"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                >
+                    <h2 className="type-h2 text-brand font-bold mb-6">
+                        {tx.productDetail?.sections?.keyBenefits ?? "Benefits"}
+                    </h2>
+                    <ul className="grid md:grid-cols-2 gap-4">
+                        {benefits.map((benefit: string, idx: number) => (
+                            <li
+                                key={idx}
+                                className="flex items-start gap-3 p-4 bg-surface-mint rounded-2xl"
+                            >
+                                <span className="flex-shrink-0 w-2 h-2 mt-2 bg-secondary rounded-full" />
+                                <span className="type-body text-brand">{benefit}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </motion.section>
+            )}
         </div>
-        <div className="space-y-2">
-          <h2 className="type-h3">{tx.productDetail.notFound.body}</h2>
-          <p className="type-body text-muted max-w-md">
-            {locale === "id"
-              ? "Produk yang Anda cari mungkin telah dipindahkan atau tidak tersedia lagi."
-              : "The product you're looking for may have been moved or is no longer available."
-            }
-          </p>
-        </div>
-        <AppLink
-          href={`${base}/products`}
-          className="inline-flex items-center gap-2 type-body-strong text-foreground hover:underline"
-        >
-          ← {tx.productDetail.notFound.back}
-        </AppLink>
-      </div>
     );
-  }
-
-
-
-  return (
-    <div className="space-y-8 lg:space-y-12">
-      {/* Breadcrumb Navigation */}
-      <nav className="flex items-center gap-1 type-data text-muted" aria-label={tx.ui?.breadcrumbs ?? "Breadcrumb"}>
-        <AppLink
-          href={`${base}/products`}
-          className="hover:text-foreground transition-colors"
-        >
-          {tx.nav.products}
-        </AppLink>
-        <IconChevronRight className="h-4 w-4" aria-hidden="true" />
-        <span className="text-foreground truncate" aria-current="page">{product.name}</span>
-      </nav>
-
-      {/* Product Header */}
-      <header className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-        {/* Product Image */}
-        <div className="relative aspect-square bg-subtle border border-border overflow-hidden group">
-          <Image
-            src={product.image?.url && !product.image.url.includes("placeholder")
-              ? product.image.url
-              : "/images/products/product-placeholder.jpg"}
-            alt={`${product.brand} ${product.name}`}
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
-          />
-        </div>
-
-        {/* Product Info */}
-        <div className="flex flex-col justify-center space-y-6">
-          <div className="space-y-3">
-            <p className="type-kicker">{product.brand}</p>
-            <h1 className="type-h1">{product.name}</h1>
-            <p className="type-body text-muted-strong max-w-lg">{product.summary}</p>
-          </div>
-
-          {/* Quick Tags */}
-          <div className="flex flex-wrap gap-2">
-            {product.functions.slice(0, 3).map((fn) => (
-              <span key={fn} className="inline-flex items-center px-3 py-1 bg-subtle border border-border type-data">
-                {fn}
-              </span>
-            ))}
-          </div>
-
-          {/* CTA Section */}
-          <ProductCTA productName={product.name} variant="inline" />
-        </div>
-      </header>
-
-      {/* Product Details Grid */}
-      <ScrollReveal>
-        <section className="grid gap-6 lg:grid-cols-3 lg:gap-8">
-          {/* Benefits Card */}
-          <Card className="p-6 lg:p-8 space-y-4 lg:col-span-2">
-            <h2 className="type-h3 flex items-center gap-2">
-              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground text-background">
-                <IconCheck className="h-4 w-4" />
-              </span>
-              {tx.productDetail.sections.keyBenefits}
-            </h2>
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {product.benefits.map((benefit) => (
-                <li key={benefit} className="flex items-start gap-3 type-body">
-                  <IconCheck className="h-5 w-5 text-foreground shrink-0 mt-0.5" />
-                  <span>{benefit}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
-
-          {/* Recommended For Card */}
-          <Card className="p-6 lg:p-8 space-y-4 bg-subtle">
-            <h2 className="type-h3">{tx.productDetail.sections.recommendedFor}</h2>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <p className="type-data-strong text-foreground">
-                  {tx.productDetail.labels.audience}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {product.audience.map((aud) => (
-                    <span key={aud} className="inline-flex px-2.5 py-1 bg-background border border-border type-data">
-                      {aud}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="space-y-2">
-                <p className="type-data-strong text-foreground">
-                  {tx.productDetail.labels.functions}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {product.functions.map((fn) => (
-                    <span key={fn} className="inline-flex px-2.5 py-1 bg-background border border-border type-data">
-                      {fn}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* How To Use Card */}
-          <Card className="p-6 lg:p-8 space-y-4 lg:col-span-3">
-            <h2 className="type-h3">{tx.productDetail.sections.howToUse}</h2>
-            <div className="prose prose-neutral max-w-none">
-              <p className="type-body whitespace-pre-line">{product.howToUse}</p>
-            </div>
-          </Card>
-        </section>
-      </ScrollReveal>
-
-      {/* Bottom CTA */}
-      <ScrollReveal>
-        <ProductCTA productName={product.name} variant="block" />
-      </ScrollReveal>
-    </div>
-  );
 }

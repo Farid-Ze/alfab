@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getProducts } from "@/lib/cms";
 
 export const dynamic = "force-dynamic";
@@ -13,25 +14,25 @@ export default async function ProductsPage() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-content-sm">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">Products</h1>
+                    <h1 className="type-admin-h2">Products</h1>
                     <p className="text-muted text-sm mt-1">
                         Manage product catalog
                     </p>
                 </div>
                 <Link
                     href="/admin/products/new"
-                    className="px-4 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors font-medium"
+                    className="px-4 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-all-elegant type-ui-strong"
                 >
                     + Add Product
                 </Link>
             </div>
 
             {/* Products Table */}
-            <div className="bg-surface border border-border rounded-xl overflow-hidden">
+            <div className="ui-admin-section overflow-hidden p-0">
                 {products.length === 0 ? (
                     <div className="p-12 text-center">
                         <p className="text-muted">Belum ada produk</p>
@@ -69,10 +70,12 @@ export default async function ProductsPage() {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             {product.image_url ? (
-                                                <img
+                                                <Image
                                                     src={product.image_url}
                                                     alt={product.name}
-                                                    className="w-10 h-10 rounded-lg object-cover"
+                                                    width={40}
+                                                    height={40}
+                                                    className="rounded-lg object-cover"
                                                 />
                                             ) : (
                                                 <div className="w-10 h-10 rounded-lg bg-surface-elevated flex items-center justify-center text-muted">

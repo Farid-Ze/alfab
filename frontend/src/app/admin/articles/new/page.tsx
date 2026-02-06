@@ -19,7 +19,7 @@ export default function NewArticlePage() {
                     ← Back
                 </Link>
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">New Article</h1>
+                    <h1 className="type-admin-h2">New Article</h1>
                     <p className="text-muted text-sm mt-1">Create a new education article</p>
                 </div>
             </div>

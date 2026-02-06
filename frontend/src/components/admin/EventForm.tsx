@@ -126,7 +126,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
         <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Info */}
             <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
-                <h2 className="text-lg font-semibold text-foreground">Event Info</h2>
+                <h2 className="type-admin-section-h2">Event Info</h2>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -137,7 +137,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
                             name="locale"
                             value={formData.locale}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground"
+                            className="ui-input"
                         >
                             <option value="id">🇮🇩 Indonesian</option>
                             <option value="en">🇬🇧 English</option>
@@ -151,7 +151,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
                             name="event_type"
                             value={formData.event_type ?? "training"}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground capitalize"
+                            className="ui-input capitalize"
                         >
                             {EVENT_TYPES.map((t) => (
                                 <option key={t} value={t} className="capitalize">
@@ -171,7 +171,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
                         value={formData.title}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground"
+                        className="ui-input"
                     />
                 </div>
 
@@ -186,7 +186,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
                             onChange={handleChange}
                             required
                             pattern="[a-z0-9-]+"
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground"
+                            className="ui-input"
                             placeholder="event-url-slug"
                         />
                     </div>
@@ -199,7 +199,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
                             type="date"
                             value={formData.event_date ?? ""}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground"
+                            className="ui-input"
                         />
                     </div>
                 </div>
@@ -213,7 +213,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
                             name="brand"
                             value={formData.brand ?? ""}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground"
+                            className="ui-input"
                         />
                     </div>
                     <div>
@@ -224,7 +224,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
                             name="city"
                             value={formData.city ?? ""}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground"
+                            className="ui-input"
                         />
                     </div>
                 </div>
@@ -259,7 +259,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
                         value={formData.excerpt ?? ""}
                         onChange={handleChange}
                         rows={2}
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground resize-none"
+                        className="ui-input resize-none"
                     />
                 </div>
 
@@ -271,7 +271,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
                         name="cta_label"
                         value={formData.cta_label ?? ""}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground"
+                        className="ui-input"
                         placeholder="Daftar via WhatsApp"
                     />
                 </div>
@@ -279,7 +279,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
 
             {/* Body Content */}
             <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
-                <h2 className="text-lg font-semibold text-foreground">Description</h2>
+                <h2 className="type-admin-section-h2">Description</h2>
 
                 <div className="space-y-3">
                     {formData.body.map((paragraph, i) => (
@@ -336,7 +336,7 @@ export default function EventForm({ initialData, onSubmit, onDelete }: Props) {
                     <button
                         type="submit"
                         disabled={isPending}
-                        className="px-6 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+                        className="px-6 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-all-elegant disabled:opacity-50"
                     >
                         {isPending ? "Saving..." : initialData ? "Update Event" : "Create Event"}
                     </button>

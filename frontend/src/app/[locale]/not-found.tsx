@@ -17,22 +17,22 @@ export default function NotFound() {
     <Page>
       <Container className="max-w-2xl text-center" aria-labelledby="not-found-title">
         {/* 404 Visual Indicator */}
-        <p className="type-error-code text-muted/30 mb-8 select-none" aria-hidden="true">
+        <p className="type-error-code text-muted/30 mb-content select-none" aria-hidden="true">
           404
         </p>
 
         {/* Title */}
-        <h1 id="not-found-title" className="type-h2 mb-6 text-foreground">
+        <h1 id="not-found-title" className="type-h2 mb-content-sm text-foreground">
           {tx.system.notFound.title}
         </h1>
 
         {/* Description */}
-        <p className="type-body text-muted-strong mb-10 max-w-md mx-auto">
+        <p className="type-body text-muted-strong mb-section max-w-md mx-auto">
           {tx.system.notFound.body}
         </p>
 
         {/* Primary CTA */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-content-sm justify-center items-center">
           <ButtonLink href={base} className="inline-flex items-center gap-2 ui-radius-tight">
             {tx.system.notFound.backHome}
             <IconArrowRight className="h-4 w-4" />

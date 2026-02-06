@@ -1,0 +1,349 @@
+/* =============================================================================
+   Utilities: Interactive
+   
+   Buttons, cards, inputs, and interactive elements using component tokens.
+   ============================================================================= */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ui-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    height: var(--button-height-md);
+    padding: 0 var(--button-padding-x-md);
+    border-radius: var(--button-radius);
+    font-size: var(--button-font-size);
+    font-weight: var(--button-font-weight);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition:
+        background-color var(--motion-fast),
+        border-color var(--motion-fast),
+        color var(--motion-fast),
+        transform var(--motion-fast);
+}
+
+.ui-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.ui-btn:disabled {
+    cursor: not-allowed;
+    background-color: var(--button-disabled-bg);
+    color: var(--button-disabled-text);
+    border-color: var(--button-disabled-border);
+}
+
+/* Primary variant */
+.ui-btn-primary {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    border-color: var(--button-primary-border);
+}
+
+.ui-btn-primary:hover:not(:disabled) {
+    background-color: var(--button-primary-bg-hover);
+}
+
+/* Secondary variant */
+.ui-btn-secondary {
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+    border-color: var(--button-secondary-border);
+}
+
+.ui-btn-secondary:hover:not(:disabled) {
+    background-color: var(--button-secondary-bg-hover);
+    color: var(--button-secondary-text-hover);
+}
+
+/* Ghost variant */
+.ui-btn-ghost {
+    background-color: var(--button-ghost-bg);
+    color: var(--button-ghost-text);
+}
+
+.ui-btn-ghost:hover:not(:disabled) {
+    background-color: var(--button-ghost-bg-hover);
+}
+
+/* Brand variant */
+.ui-btn-brand {
+    background-color: var(--button-brand-bg);
+    color: var(--button-brand-text);
+}
+
+.ui-btn-brand:hover:not(:disabled) {
+    background-color: var(--button-brand-bg-hover);
+}
+
+/* Size variants */
+.ui-btn-sm {
+    height: var(--button-height-sm);
+    padding: 0 var(--button-padding-x-sm);
+    font-size: var(--text-xs);
+}
+
+.ui-btn-lg {
+    height: var(--button-height-lg);
+    padding: 0 var(--button-padding-x-lg);
+    font-size: var(--text-base);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CARDS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ui-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--card-radius);
+    padding: var(--card-padding);
+    box-shadow: var(--card-shadow);
+    transition:
+        background-color var(--motion-base),
+        border-color var(--motion-base),
+        box-shadow var(--motion-elegant),
+        transform var(--motion-elegant);
+}
+
+.ui-card-interactive {
+    cursor: pointer;
+}
+
+.ui-card-interactive:hover {
+    background-color: var(--card-bg-hover);
+    border-color: var(--card-border-hover);
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-4px);
+}
+
+.ui-card-interactive:active {
+    transform: translateY(-2px) scale(0.995);
+}
+
+.ui-card-flat {
+    box-shadow: none;
+    border: 1px solid var(--card-border);
+}
+
+.ui-card-elevated {
+    background-color: var(--surface-elevated);
+    box-shadow: var(--elevation-medium);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INPUTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ui-input {
+    width: 100%;
+    height: var(--input-height);
+    padding: var(--input-padding-y) var(--input-padding-x);
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--input-radius);
+    font-size: var(--input-font-size);
+    color: var(--input-text);
+    transition:
+        border-color var(--motion-fast),
+        box-shadow var(--motion-fast);
+}
+
+.ui-input::placeholder {
+    color: var(--input-text-placeholder);
+}
+
+.ui-input:hover:not(:disabled):not(:focus) {
+    border-color: var(--input-border-hover);
+}
+
+.ui-input:focus {
+    outline: none;
+    border-color: var(--input-border-focus);
+    box-shadow: var(--elevation-focus);
+}
+
+.ui-input:disabled {
+    background-color: var(--input-bg-disabled);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.ui-input-error {
+    border-color: var(--input-border-error);
+}
+
+.ui-input-error:focus {
+    box-shadow: var(--elevation-focus-error);
+}
+
+/* Textarea */
+.ui-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Select */
+.ui-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--input-padding-x) center;
+    padding-right: calc(var(--input-padding-x) + 24px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BADGES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ui-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--badge-padding-y) var(--badge-padding-x);
+    background-color: var(--badge-bg);
+    color: var(--badge-text);
+    font-size: var(--badge-font-size);
+    font-weight: var(--badge-font-weight);
+    border-radius: var(--badge-radius);
+}
+
+.ui-badge-brand {
+    background-color: var(--badge-brand-bg);
+    color: var(--badge-brand-text);
+}
+
+.ui-badge-success {
+    background-color: var(--feedback-success-bg);
+    color: var(--feedback-success-text);
+}
+
+.ui-badge-error {
+    background-color: var(--feedback-error-bg);
+    color: var(--feedback-error-text);
+}
+
+.ui-badge-warning {
+    background-color: var(--feedback-warning-bg);
+    color: var(--feedback-warning-text);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ALERTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ui-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--alert-gap);
+    padding: var(--alert-padding);
+    border-radius: var(--alert-radius);
+    border: 1px solid;
+}
+
+.ui-alert-success {
+    background-color: var(--alert-success-bg);
+    border-color: var(--alert-success-border);
+    color: var(--alert-success-text);
+}
+
+.ui-alert-error {
+    background-color: var(--alert-error-bg);
+    border-color: var(--alert-error-border);
+    color: var(--alert-error-text);
+}
+
+.ui-alert-warning {
+    background-color: var(--alert-warning-bg);
+    border-color: var(--alert-warning-border);
+    color: var(--alert-warning-text);
+}
+
+.ui-alert-info {
+    background-color: var(--alert-info-bg);
+    border-color: var(--alert-info-border);
+    color: var(--alert-info-text);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SKELETON / LOADING
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ui-skeleton {
+    background: var(--skeleton-bg);
+    border-radius: var(--skeleton-radius);
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.ui-spinner {
+    width: 1.25em;
+    height: 1.25em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: var(--radius-full);
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BRAND CARD
+   Special branded card with accent border
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ui-brand-card {
+    border: 3px solid var(--surface-brand-primary);
+    border-radius: var(--card-radius);
+    background-color: color-mix(in srgb, var(--surface-brand-secondary) 30%, transparent);
+    padding: var(--space-8);
+    transition: transform var(--motion-elegant), box-shadow var(--motion-elegant);
+}
+
+.ui-brand-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--elevation-elegant);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HAMBURGER ICON (Mobile Navigation)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.h-hamburger-line {
+    height: 2px;
+}
+
+.hamburger-line-top {
+    transform: translateY(-6px);
+}
+
+.hamburger-line-top-open {
+    transform: translateY(0) rotate(45deg);
+}
+
+.hamburger-line-bottom {
+    transform: translateY(6px);
+}
+
+.hamburger-line-bottom-open {
+    transform: translateY(0) rotate(-45deg);
+}

@@ -38,7 +38,7 @@ export default async function EditArticlePage({ params }: Props) {
                     ← Back
                 </Link>
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">Edit Article</h1>
+                    <h1 className="type-admin-h2">Edit Article</h1>
                     <p className="text-muted text-sm mt-1">
                         {article.locale === "id" ? "🇮🇩" : "🇬🇧"} {article.title}
                     </p>

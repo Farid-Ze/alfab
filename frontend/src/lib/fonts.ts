@@ -1,15 +1,26 @@
-import localFont from "next/font/local";
+/**
+ * Font Configuration
+ * 
+ * Uses next/font/local for optimal font loading:
+ * - Auto self-hosting (no external requests)
+ * - Zero layout shift (CLS = 0)
+ * - Automatic font-display: swap
+ * - CSS variable generation
+ */
 
-export const fontSans = localFont({
-    src: "../styles/fonts/Montserrat-Variable.ttf",
-    variable: "--font-body",
-    display: "swap",
-});
+import localFont from 'next/font/local'
 
-// Alias Serif to Sans (Montserrat) as users requested mostly Montserrat for digital.
-// We must declare it separately to assign the "--font-display" variable required by globals.css
-export const fontSerif = localFont({
-    src: "../styles/fonts/Montserrat-Variable.ttf",
-    variable: "--font-display",
-    display: "swap",
-});
+export const montserrat = localFont({
+    src: '../styles/fonts/Montserrat-Variable.ttf',
+    variable: '--font-montserrat',
+    display: 'swap',
+    weight: '100 900',
+    preload: true,
+})
+
+// Aliases for layout.tsx compatibility
+export const fontSans = montserrat
+export const fontSerif = montserrat // Using same font until brand serif is provided
+
+// Export combined font variables
+export const fontVariables = montserrat.variable

@@ -1,0 +1,142 @@
+/* =============================================================================
+   BASE: GLOBAL STYLES
+   
+   Global element styles that apply tokens to HTML elements.
+   ============================================================================= */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROOT ELEMENT
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body {
+    background: var(--surface-background);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LINKS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+a {
+    color: inherit;
+    text-decoration: inherit;
+    text-underline-offset: 0.2em;
+    transition: color var(--motion-fast);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SELECTION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+::selection {
+    background-color: var(--surface-brand-primary);
+    color: var(--color-neutral-0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLLBAR STYLING
+   Minimal, elegant scrollbars.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--surface-subtle);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) var(--surface-subtle);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FONT DISPLAY
+   Prevent FOIT (Flash of Invisible Text).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@font-face {
+    font-display: swap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CODE ELEMENTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+code,
+kbd,
+samp,
+pre {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+}
+
+code {
+    background: var(--surface-subtle);
+    padding: 0.125em 0.375em;
+    border-radius: var(--shape-sm);
+}
+
+pre {
+    overflow-x: auto;
+    padding: var(--space-4);
+    background: var(--surface-subtle);
+    border-radius: var(--shape-md);
+}
+
+pre code {
+    background: transparent;
+    padding: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HORIZONTAL RULE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+hr {
+    border: none;
+    border-top: 1px solid var(--border-default);
+    margin: var(--space-6) 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MARK / HIGHLIGHT
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+mark {
+    background: var(--surface-brand-secondary);
+    color: var(--text-brand);
+    padding: 0.125em 0.25em;
+    border-radius: var(--shape-sm);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BLOCKQUOTE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+blockquote {
+    border-left: 3px solid var(--surface-brand-primary);
+    padding-left: var(--space-4);
+    margin-left: 0;
+    color: var(--text-secondary);
+    font-style: italic;
+}

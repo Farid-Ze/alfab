@@ -98,7 +98,7 @@ export default function ArticleForm({ initialData, onSubmit, onDelete }: Props) 
         <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Info */}
             <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
-                <h2 className="text-lg font-semibold text-foreground">Article Info</h2>
+                <h2 className="type-admin-section-h2">Article Info</h2>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -109,7 +109,7 @@ export default function ArticleForm({ initialData, onSubmit, onDelete }: Props) 
                             name="locale"
                             value={formData.locale}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:ring-2 focus:ring-accent focus:border-transparent"
+                            className="ui-input"
                         >
                             <option value="id">🇮🇩 Indonesian</option>
                             <option value="en">🇬🇧 English</option>
@@ -124,7 +124,7 @@ export default function ArticleForm({ initialData, onSubmit, onDelete }: Props) 
                             type="date"
                             value={formData.date}
                             onChange={handleChange}
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:ring-2 focus:ring-accent focus:border-transparent"
+                            className="ui-input"
                         />
                     </div>
                 </div>
@@ -166,7 +166,7 @@ export default function ArticleForm({ initialData, onSubmit, onDelete }: Props) 
                         value={formData.excerpt ?? ""}
                         onChange={handleChange}
                         rows={2}
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:ring-2 focus:ring-accent focus:border-transparent resize-none"
+                        className="ui-input resize-none"
                         placeholder="Short description for previews..."
                     />
                 </div>
@@ -174,7 +174,7 @@ export default function ArticleForm({ initialData, onSubmit, onDelete }: Props) 
 
             {/* Body Content */}
             <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
-                <h2 className="text-lg font-semibold text-foreground">Body Content</h2>
+                <h2 className="type-admin-section-h2">Body Content</h2>
                 <p className="text-sm text-muted">
                     Each text area represents a paragraph in the article.
                 </p>
@@ -234,7 +234,7 @@ export default function ArticleForm({ initialData, onSubmit, onDelete }: Props) 
                     <button
                         type="submit"
                         disabled={isPending}
-                        className="px-6 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+                        className="px-6 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-all-elegant disabled:opacity-50"
                     >
                         {isPending ? "Saving..." : initialData ? "Update Article" : "Create Article"}
                     </button>

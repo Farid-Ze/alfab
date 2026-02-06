@@ -3,13 +3,14 @@ import type { Metadata } from "next";
 import StaggerReveal from "@/components/ui/StaggerReveal";
 import ButtonLink from "@/components/ui/ButtonLink";
 import Page from "@/components/layout/Page";
+import Section from "@/components/layout/Section";
 import Container from "@/components/layout/Container";
 import { normalizeLocale, t } from "@/lib/i18n";
 
 /**
  * About Page
  * Design V2: Editorial layout with story sections
- * Migrated from (v2) to production route.
+ * Uses design tokens for consistent spacing
  */
 export async function generateMetadata({
   params,
@@ -45,9 +46,9 @@ export default async function AboutPage({
     <Page>
       <Container>
         {/* Hero */}
-        <StaggerReveal delay={0.1} className="mb-24 max-w-4xl">
-          <p className="type-kicker text-muted mb-4">About Us</p>
-          <h1 className="type-hero text-foreground mb-6">
+        <StaggerReveal delay={0.1} className="mb-section max-w-4xl">
+          <p className="type-kicker text-muted mb-content">About Us</p>
+          <h1 className="type-hero text-foreground mb-content">
             More Than a Distributor
           </h1>
           <p className="type-hero-body text-foreground-muted">
@@ -56,13 +57,13 @@ export default async function AboutPage({
         </StaggerReveal>
 
         {/* Story Section 1 */}
-        <section className="grid lg:grid-cols-2 gap-16 items-center mb-24">
+        <Section as="div" spacing="none" className="grid lg:grid-cols-2 gap-section items-center mb-section">
           <div
-            className="aspect-square rounded-3xl bg-gradient-to-br from-subtle to-subtle-hover shadow-elegant-box"
+            className="aspect-square ui-radius-card bg-gradient-to-br from-subtle to-subtle-hover ui-shadow-elegant"
           />
           <StaggerReveal delay={0.2}>
-            <h2 className="type-h2 text-foreground mb-6">Our Story</h2>
-            <p className="type-body text-foreground-muted mb-4">
+            <h2 className="type-h2 text-foreground mb-content">Our Story</h2>
+            <p className="type-body text-foreground-muted mb-content">
               Founded with a vision to bring world-class professional haircare to Indonesia,
               PT Alfa Beauty Cosmetica has grown from a small importer to one of the nation&apos;s
               leading distributors of premium salon & barber brands.
@@ -73,13 +74,13 @@ export default async function AboutPage({
               professional excellence.
             </p>
           </StaggerReveal>
-        </section>
+        </Section>
 
         {/* Story Section 2 */}
-        <section className="grid lg:grid-cols-2 gap-16 items-center mb-24">
+        <Section as="div" spacing="none" className="grid lg:grid-cols-2 gap-section items-center mb-section">
           <StaggerReveal delay={0.2} className="lg:order-2">
-            <h2 className="type-h2 text-foreground mb-6">Our Mission</h2>
-            <p className="type-body text-foreground-muted mb-4">
+            <h2 className="type-h2 text-foreground mb-content">Our Mission</h2>
+            <p className="type-body text-foreground-muted mb-content">
               To empower Indonesian salon & barber professionals with access to the world&apos;s finest
               haircare products and the knowledge to use them effectively.
             </p>
@@ -89,46 +90,47 @@ export default async function AboutPage({
             </p>
           </StaggerReveal>
           <div
-            className="aspect-square rounded-3xl bg-gradient-to-br from-subtle to-subtle-hover lg:order-1 shadow-elegant-box"
+            className="aspect-square ui-radius-card bg-gradient-to-br from-subtle to-subtle-hover lg:order-1 ui-shadow-elegant"
           />
-        </section>
+        </Section>
 
         {/* Values */}
-        <section className="py-16 px-8 rounded-3xl bg-panel mb-24 shadow-elegant-box">
+        <Section as="div" spacing="none" className="pad-content-lg ui-radius-card bg-panel mb-section ui-shadow-elegant">
           <StaggerReveal delay={0.1}>
-            <h2 className="type-h2 text-foreground mb-12 text-center">Our Values</h2>
-            <div className="grid md:grid-cols-3 gap-8">
+            <h2 className="type-h2 text-foreground mb-content-lg text-center">Our Values</h2>
+            <div className="grid md:grid-cols-3 gap-content">
               {[
                 { icon: "🤝", title: "Trust", desc: "We build relationships based on integrity and reliability." },
                 { icon: "📚", title: "Education", desc: "We invest in knowledge sharing and professional development." },
                 { icon: "🌱", title: "Growth", desc: "We support sustainable success for our partners and their clients." },
               ].map((value) => (
                 <div key={value.title} className="text-center">
-                  <div className="type-h1 mb-4">{value.icon}</div>
+                  <div className="type-h1 mb-content-sm">{value.icon}</div>
                   <h3 className="type-h3 text-foreground mb-2">{value.title}</h3>
                   <p className="type-body text-muted">{value.desc}</p>
                 </div>
               ))}
             </div>
           </StaggerReveal>
-        </section>
+        </Section>
 
         {/* CTA */}
-        <section className="text-center">
+        <Section as="div" spacing="none" className="text-center">
           <StaggerReveal>
-            <h2 className="type-h2 text-foreground mb-4">Ready to Partner?</h2>
-            <p className="type-body text-muted mb-8">
+            <h2 className="type-h2 text-foreground mb-content-sm">Ready to Partner?</h2>
+            <p className="type-body text-muted mb-content">
               Join our network of professional salon & barber businesses and distributors.
             </p>
             <ButtonLink
               href={`/${resolved}/partnership`}
               variant="primary"
-              className="px-8 py-4 type-nav rounded-full inline-block transition-all-elegant"
+              size="lg"
+              className="transition-all-elegant"
             >
               Become a Partner
             </ButtonLink>
           </StaggerReveal>
-        </section>
+        </Section>
       </Container>
     </Page>
   );

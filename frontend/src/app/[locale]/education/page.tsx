@@ -54,7 +54,7 @@ export default async function EducationPage({
     <Page>
       <Container>
         {/* Header */}
-        <StaggerReveal delay={0.1} className="mb-16">
+        <StaggerReveal delay={0.1} className="mb-section">
           <p className="type-kicker text-muted mb-4">{dict.education.hub.kicker}</p>
           <h1 className="type-h1 text-foreground mb-4">
             {dict.education.hub.heroTitle}
@@ -65,7 +65,7 @@ export default async function EducationPage({
         </StaggerReveal>
 
         {/* Stats Bar (Reintegrated from EducationHub) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border-y border-border py-8 mb-16 animate-fade-in">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-content-sm border-y border-border py-8 mb-section animate-fade-in">
           <div className="text-center space-y-1">
             <p className="type-h2 font-mono">{events.length}</p>
             <p className="type-data text-muted">{dict.education.hub.sections.events}</p>
@@ -86,8 +86,8 @@ export default async function EducationPage({
         </div>
 
         {/* Events Section */}
-        <section className="mb-24">
-          <div className="flex items-center justify-between mb-8">
+        <section className="mb-section">
+          <div className="flex items-center justify-between mb-content">
             <h2 className="type-h2 text-foreground">{dict.education.hub.sections.events}</h2>
             <AppLink href={`/${resolved}/education/events`} className="type-nav text-muted hover:text-foreground transition-colors">
               {dict.education.hub.actions.viewAll}
@@ -124,7 +124,7 @@ export default async function EducationPage({
 
         {/* Articles Section */}
         <section>
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-content">
             <h2 className="type-h2 text-foreground">{dict.education.hub.sections.articles}</h2>
             <AppLink href={`/${resolved}/education/articles`} className="type-nav text-muted hover:text-foreground transition-colors">
               {dict.education.hub.actions.viewAll}

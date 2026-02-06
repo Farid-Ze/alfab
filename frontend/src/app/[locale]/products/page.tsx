@@ -46,9 +46,9 @@ export default async function ProductsPage({
     <Page>
       <Container>
         {/* Header */}
-        <StaggerReveal delay={0.1} className="mb-12">
-          <p className="type-kicker text-muted mb-4">{dict.products.kicker}</p>
-          <h1 className="type-h1 text-foreground mb-4">
+        <StaggerReveal delay={0.1} className="mb-section">
+          <p className="type-kicker text-muted mb-content">{dict.products.kicker}</p>
+          <h1 className="type-h1 text-foreground mb-content">
             {dict.products.heroTitle}
           </h1>
           <p className="type-body text-foreground-muted max-w-2xl">

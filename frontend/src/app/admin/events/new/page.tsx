@@ -19,7 +19,7 @@ export default function NewEventPage() {
                     ← Back
                 </Link>
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">New Event</h1>
+                    <h1 className="type-admin-h2">New Event</h1>
                     <p className="text-muted text-sm mt-1">Create a new education event</p>
                 </div>
             </div>

@@ -1,0 +1,12 @@
+/* =============================================================================
+   UTILITIES INDEX
+   
+   Barrel file for utility classes.
+   Import order: typography → layout → interactive → animation → admin
+   ============================================================================= */
+
+@import "./typography.css";
+@import "./layout.css";
+@import "./interactive.css";
+@import "./animation.css";
+@import "./admin.css";

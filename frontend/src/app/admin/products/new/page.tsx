@@ -19,7 +19,7 @@ export default function NewProductPage() {
                     ← Back
                 </Link>
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">New Product</h1>
+                    <h1 className="type-admin-h2">New Product</h1>
                     <p className="text-muted text-sm mt-1">Add a new product to catalog</p>
                 </div>
             </div>

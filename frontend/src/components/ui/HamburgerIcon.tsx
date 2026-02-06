@@ -28,12 +28,12 @@ export default function HamburgerIcon({ isOpen, className = "" }: HamburgerIconP
         >
             {/* Top line - rotates to form top half of X */}
             <span
-                className={`absolute h-[2px] w-5 bg-current transition-all duration-300 ease-elegant ${isOpen ? "hamburger-line-top-open" : "hamburger-line-top"
+                className={`absolute h-hamburger-line w-5 bg-current transition-all-elegant ease-elegant ${isOpen ? "hamburger-line-top-open" : "hamburger-line-top"
                     }`}
             />
             {/* Bottom line - rotates to form bottom half of X */}
             <span
-                className={`absolute h-[2px] w-5 bg-current transition-all duration-300 ease-elegant ${isOpen ? "hamburger-line-bottom-open" : "hamburger-line-bottom"
+                className={`absolute h-hamburger-line w-5 bg-current transition-all-elegant ease-elegant ${isOpen ? "hamburger-line-bottom-open" : "hamburger-line-bottom"
                     }`}
             />
         </div>

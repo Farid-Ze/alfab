@@ -36,17 +36,17 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="min-h-screen bg-background flex items-center justify-center pad-content">
             <div className="w-full max-w-md">
                 {/* Logo */}
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-foreground">Alfa CMS</h1>
+                <div className="text-center mb-content">
+                    <h1 className="type-admin-h1">Alfa CMS</h1>
                     <p className="text-muted mt-2">Login untuk manage konten</p>
                 </div>
 
                 {/* Login Form */}
-                <div className="bg-surface border border-border rounded-2xl p-8 shadow-lg">
-                    <form action={handleSubmit} className="space-y-6">
+                <div className="bg-surface border border-border rounded-2xl pad-content-lg shadow-lg">
+                    <form action={handleSubmit} className="space-y-content-sm">
                         {error && (
                             <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 text-sm">
                                 {error}
@@ -66,7 +66,7 @@ export default function LoginPage() {
                                 type="email"
                                 required
                                 autoComplete="email"
-                                className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                                className="ui-input focus:ring-2 focus:ring-accent focus:border-transparent"
                                 placeholder="admin@example.com"
                             />
                         </div>
@@ -84,7 +84,7 @@ export default function LoginPage() {
                                 type="password"
                                 required
                                 autoComplete="current-password"
-                                className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                                className="ui-input focus:ring-2 focus:ring-accent focus:border-transparent"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -92,7 +92,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isPending}
-                            className="w-full py-3 px-4 bg-accent text-accent-foreground font-medium rounded-lg hover:bg-accent/90 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background transition-all disabled:opacity-50"
+                            className="w-full py-3 px-4 bg-accent text-accent-foreground type-ui-strong rounded-lg hover:bg-accent/90 ui-focus-ring transition-all-elegant disabled:opacity-50"
                         >
                             {isPending ? "Loading..." : "Login"}
                         </button>

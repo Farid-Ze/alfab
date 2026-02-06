@@ -1,6 +1,6 @@
 import { requireAuth } from "@/actions/auth";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import "@/styles/globals.css";
+import "@/app/globals.css";
 
 export const metadata = {
     title: "Admin | Alfa Beauty CMS",
@@ -22,7 +22,7 @@ export default async function AdminLayout({
                 <AdminSidebar />
 
                 {/* Main Content */}
-                <main className="flex-1 ml-64 p-8">
+                <main className="flex-1 ml-64 pad-content-lg">
                     <div className="max-w-7xl mx-auto">{children}</div>
                 </main>
             </div>

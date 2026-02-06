@@ -1,0 +1,27 @@
+/* =============================================================================
+   MAIN.CSS - Design System Entry Point
+   
+   Single entry point for the entire design system.
+   
+   Layer Order:
+   1. Fonts
+   2. Tokens (primitives → system → components → themes)
+   3. Base (reset, global, a11y)
+   4. Utilities
+   5. Components (header, hero, card, form)
+   ============================================================================= */
+
+/* Custom Fonts */
+@import "./fonts/fonts.css";
+
+/* Design Tokens */
+@import "./tokens/index.css";
+
+/* Base Styles */
+@import "./base/index.css";
+
+/* Utility Classes */
+@import "./utilities/index.css";
+
+/* Component Patterns */
+@import "./components/index.css";

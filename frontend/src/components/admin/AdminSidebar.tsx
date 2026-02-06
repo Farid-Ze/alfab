@@ -17,15 +17,15 @@ export default function AdminSidebar() {
     return (
         <aside className="fixed left-0 top-0 h-screen w-64 bg-surface border-r border-border flex flex-col">
             {/* Logo */}
-            <div className="p-6 border-b border-border">
+            <div className="pad-content-lg border-b border-border">
                 <Link href="/admin" className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-foreground">Alfa CMS</span>
+                    <span className="type-admin-brand">Alfa CMS</span>
                 </Link>
                 <p className="text-sm text-muted mt-1">Content Management</p>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 p-4 space-y-1">
+            <nav className="flex-1 pad-content space-y-1">
                 {navItems.map((item) => {
                     const isActive =
                         pathname === item.href ||
@@ -51,7 +51,7 @@ export default function AdminSidebar() {
             </nav>
 
             {/* Footer */}
-            <div className="p-4 border-t border-border space-y-2">
+            <div className="pad-content border-t border-border space-y-2">
                 <Link
                     href="/"
                     target="_blank"

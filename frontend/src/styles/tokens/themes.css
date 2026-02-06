@@ -1,0 +1,14 @@
+/* =============================================================================
+   THEME TOKENS
+   Minimal theme setup - primarily Light Mode for Ineo-Sense aesthetic
+   ============================================================================= */
+
+/* Default overrides if necessary, currently sticking to root system tokens */
+[data-theme="dark"] {
+    /* Minimal dark mode fallbacks if user switches, 
+       but design is optimized for Light Mint */
+    --surface-background: var(--color-neutral-950);
+    --surface-mint: var(--color-neutral-900);
+    --text-primary: var(--color-neutral-0);
+    --text-body: var(--color-neutral-200);
+}

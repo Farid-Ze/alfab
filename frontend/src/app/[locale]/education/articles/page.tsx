@@ -49,7 +49,7 @@ export default async function EducationArticlesPage({
   return (
     <Page>
       <Container>
-        <StaggerReveal delay={0.1} className="mb-12">
+        <StaggerReveal delay={0.1} className="mb-section">
           <p className="type-kicker text-muted mb-4">{tx.education.hub.kicker}</p>
           <h1 className="type-h1 text-foreground mb-4">{tx.education.hub.sections.articles}</h1>
           <p className="type-body text-foreground-muted max-w-2xl">
@@ -57,7 +57,7 @@ export default async function EducationArticlesPage({
           </p>
         </StaggerReveal>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-content">
           {articles.map((article) => (
             <AppLink
               key={article.slug}

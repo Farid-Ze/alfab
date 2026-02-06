@@ -3,11 +3,17 @@ import { cn } from "@/lib/utils";
 /**
  * Reference-style list cards (ineo-sense inspired).
  * Centralize classnames here so sections stay visually consistent.
+ * 
+ * ✅ USES DESIGN SYSTEM TOKENS:
+ * - Typography via `type-*` semantic classes
+ * - Spacing via CSS custom properties
+ * - UI patterns via `ui-*` utility classes
  */
 
 export const REF_SECTION = {
   headerWrap: "flex items-start justify-between gap-8",
-  headerTitle: "text-balance text-[clamp(1.75rem,3.2vw,2.75rem)] leading-[1.04] font-semibold tracking-tight text-foreground",
+  // Use semantic type class instead of clamp() arbitrary value
+  headerTitle: "type-h2 text-balance text-foreground",
   headerAction: "w-12 h-12 ui-radius-input border border-border bg-background/70 backdrop-blur flex items-center justify-center",
   eyebrow: "type-ui-sm-strong text-muted",
 };
@@ -50,9 +56,9 @@ export const REF_CARD = {
     "w-14 h-14 md:w-16 md:h-16 ui-radius-input border border-border bg-background flex items-center justify-center shrink-0",
   logoText: "type-ui-sm-strong text-foreground",
 
-  title:
-    "text-balance text-[clamp(1.45rem,2.4vw,2.05rem)] leading-[1.06] font-semibold tracking-tight text-foreground",
-  body: "mt-3 type-body text-foreground-muted leading-relaxed max-w-[60ch]",
+  // Use semantic type class instead of clamp() arbitrary value
+  title: "type-h3 text-balance text-foreground",
+  body: "mt-3 type-body text-muted-strong max-w-prose",
 
   metaRow: "mt-5 flex items-center gap-3 flex-wrap",
   tag: "type-ui-xs text-muted",

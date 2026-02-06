@@ -19,10 +19,10 @@ interface FilterPillProps {
  * A pill-shaped toggle button used for quick filtering.
  * Used in ProductFilters for brand quick-filter bar.
  * 
- * Accessibility:
- * - Uses button element for proper keyboard interaction
- * - Visual state indicated by background color change
- * - Touch-friendly sizing on mobile
+ * Uses design tokens:
+ * - ui-radius-pill for rounded corners
+ * - transition-all-elegant for smooth transitions
+ * - type-data / type-data-strong for typography
  */
 const FilterPill = forwardRef<HTMLButtonElement, FilterPillProps>(
     ({ label, active, onClick, className = "" }, ref) => {
@@ -33,13 +33,19 @@ const FilterPill = forwardRef<HTMLButtonElement, FilterPillProps>(
                 onClick={onClick}
                 aria-pressed={active}
                 className={`
-          px-4 py-2 border transition-colors
-          ${active
+                    ui-radius-pill touch-target transition-all-elegant border
+                    ${active
                         ? "bg-foreground text-background border-foreground type-data-strong"
                         : "bg-background text-muted-strong border-border hover:bg-subtle hover:border-muted-strong hover:text-foreground type-data"
                     }
-          ${className}
-        `}
+                    ${className}
+                `}
+                style={{
+                    paddingLeft: "var(--space-4)",
+                    paddingRight: "var(--space-4)",
+                    paddingTop: "var(--space-2)",
+                    paddingBottom: "var(--space-2)",
+                }}
             >
                 {label}
             </button>

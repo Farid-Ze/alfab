@@ -59,7 +59,7 @@ export default function BackToTop() {
                        flex items-center justify-center
                        hover:bg-foreground/90
                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-foreground
-                       transition-all duration-300
+                       transition-all-elegant
                        animate-fade-in"
             aria-label={tx.ui?.backToTop ?? "Back to top"}
         >

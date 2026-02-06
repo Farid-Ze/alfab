@@ -97,7 +97,7 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
         <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Info */}
             <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
-                <h2 className="text-lg font-semibold text-foreground">Basic Info</h2>
+                <h2 className="type-admin-section-h2">Basic Info</h2>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -109,7 +109,7 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
                             value={formData.name}
                             onChange={handleChange}
                             required
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:ring-2 focus:ring-accent focus:border-transparent"
+                            className="ui-input"
                         />
                     </div>
                     <div>
@@ -122,7 +122,7 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
                             onChange={handleChange}
                             required
                             pattern="[a-z0-9-]+"
-                            className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:ring-2 focus:ring-accent focus:border-transparent"
+                            className="ui-input"
                             placeholder="product-name"
                         />
                     </div>
@@ -137,7 +137,7 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
                         value={formData.brand}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:ring-2 focus:ring-accent focus:border-transparent"
+                        className="ui-input"
                     />
                 </div>
 
@@ -150,14 +150,14 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
                         value={formData.summary ?? ""}
                         onChange={handleChange}
                         rows={3}
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:ring-2 focus:ring-accent focus:border-transparent resize-none"
+                        className="ui-input resize-none"
                     />
                 </div>
             </section>
 
             {/* Audience & Categories */}
             <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
-                <h2 className="text-lg font-semibold text-foreground">Classification</h2>
+                <h2 className="type-admin-section-h2">Classification</h2>
 
                 <div>
                     <label className="block text-sm font-medium text-muted mb-2">
@@ -170,8 +170,8 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
                                 type="button"
                                 onClick={() => toggleMultiSelect("audience", opt)}
                                 className={`px-4 py-2 rounded-lg border transition-colors ${formData.audience.includes(opt)
-                                        ? "bg-accent text-accent-foreground border-accent"
-                                        : "bg-background border-border text-muted hover:text-foreground"
+                                    ? "bg-accent text-accent-foreground border-accent"
+                                    : "bg-background border-border text-muted hover:text-foreground"
                                     }`}
                             >
                                 {opt}
@@ -191,8 +191,8 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
                                 type="button"
                                 onClick={() => toggleMultiSelect("categories", opt)}
                                 className={`px-4 py-2 rounded-lg border transition-colors capitalize ${formData.categories.includes(opt)
-                                        ? "bg-accent text-accent-foreground border-accent"
-                                        : "bg-background border-border text-muted hover:text-foreground"
+                                    ? "bg-accent text-accent-foreground border-accent"
+                                    : "bg-background border-border text-muted hover:text-foreground"
                                     }`}
                             >
                                 {opt}
@@ -204,7 +204,7 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
 
             {/* Benefits & Functions */}
             <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
-                <h2 className="text-lg font-semibold text-foreground">Benefits & Functions</h2>
+                <h2 className="type-admin-section-h2">Benefits & Functions</h2>
 
                 <div>
                     <label className="block text-sm font-medium text-muted mb-2">
@@ -273,20 +273,20 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
 
             {/* How to Use */}
             <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
-                <h2 className="text-lg font-semibold text-foreground">How to Use</h2>
+                <h2 className="type-admin-section-h2">How to Use</h2>
                 <textarea
                     name="how_to_use"
                     value={formData.how_to_use ?? ""}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:ring-2 focus:ring-accent focus:border-transparent resize-none"
+                    className="ui-input resize-none"
                     placeholder="Instructions for using the product..."
                 />
             </section>
 
             {/* Image */}
             <section className="bg-surface border border-border rounded-xl p-6 space-y-4">
-                <h2 className="text-lg font-semibold text-foreground">Image</h2>
+                <h2 className="type-admin-section-h2">Image</h2>
 
                 <div>
                     <label className="block text-sm font-medium text-muted mb-2">
@@ -296,7 +296,7 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
                         name="image_url"
                         value={formData.image_url ?? ""}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:ring-2 focus:ring-accent focus:border-transparent"
+                        className="ui-input"
                         placeholder="https://..."
                     />
                 </div>
@@ -309,7 +309,7 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
                         name="image_alt"
                         value={formData.image_alt ?? ""}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:ring-2 focus:ring-accent focus:border-transparent"
+                        className="ui-input"
                     />
                 </div>
             </section>
@@ -340,7 +340,7 @@ export default function ProductForm({ initialData, onSubmit, onDelete }: Props) 
                     <button
                         type="submit"
                         disabled={isPending}
-                        className="px-6 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+                        className="px-6 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-all-elegant disabled:opacity-50"
                     >
                         {isPending ? "Saving..." : initialData ? "Update Product" : "Create Product"}
                     </button>

@@ -1,322 +1,159 @@
-﻿"use client";
+"use client";
 
-import { useState, useEffect } from "react";
-
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useCallback, useMemo } from "react";
+import { motion } from "framer-motion";
+import { listProducts } from "@/lib/products";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { t } from "@/lib/i18n";
-import { useProductFilters } from "@/hooks/useProductFilters";
-import { getCategoryLabel } from "@/content/homepage";
-import FilterPill from "@/components/ui/FilterPill";
-import FilterCheckbox from "@/components/ui/FilterCheckbox";
-import ProductCard from "@/components/products/ProductCard";
-import { IconSearch, IconChevronDown } from "@/components/ui/icons";
+import ProductCard from "./ProductCard";
+import type { Product } from "@/lib/types";
 
+/**
+ * ProductFilters: Ineo-Sense inspired filter + grid component
+ * Self-contained: fetches products and manages filters internally
+ */
 export default function ProductFilters() {
-  const { locale } = useLocale();
-  const tx = t(locale);
-  const base = `/${locale}`;
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const { locale } = useLocale();
 
-  // Use the extracted hook for filter logic
-  /* Search Debounce Logic */
-  const {
-    filters,
-    searchQuery,
-    filtered,
-    hasFilters,
-    availableBrands,
-    availableCategories,
-    availableFunctions,
-    toggle,
-    setSearch,
-    clear,
-  } = useProductFilters();
+    // Get all products
+    const allProducts = listProducts(locale);
 
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(searchQuery);
+    // Extract unique brands and categories
+    const brands = useMemo(() => {
+        return [...new Set(allProducts.map((p: Product) => p.brand))].sort();
+    }, [allProducts]);
 
-  // Sync internal state with URL state (in case URL changes externally)
-  // But avoid race conditions if user is typing
-  // Simple approach: Only sync if URL changes and is different from local, OR init.
-  // actually, if we debounce, we just push.
+    const categories = useMemo(() => {
+        return [...new Set(allProducts.flatMap((p: Product) => p.categories ?? []))].sort();
+    }, [allProducts]);
 
-  // Hand-rolled debounce effect
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setSearch(searchTerm);
-    }, 300);
-    return () => window.clearTimeout(timer);
-  }, [searchTerm, setSearch]);
+    // Get active filters from URL
+    const activeBrands = searchParams.getAll("brand");
+    const activeCategories = searchParams.getAll("category");
 
-  // Sync URL -> Local (e.g. Back button)
-  useEffect(() => {
-    setSearchTerm(searchQuery);
-  }, [searchQuery]);
+    // Filter products
+    const filteredProducts = useMemo(() => {
+        return allProducts.filter((product: Product) => {
+            const matchesBrand = activeBrands.length === 0 || activeBrands.includes(product.brand);
+            const matchesCategory = activeCategories.length === 0 ||
+                (product.categories ?? []).some((c: string) => activeCategories.includes(c));
+            return matchesBrand && matchesCategory;
+        });
+    }, [allProducts, activeBrands, activeCategories]);
 
-  return (
-    <section>
-      {/* Search Bar */}
-      <div className="max-w-md mx-auto mb-8 relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <IconSearch className="h-5 w-5 text-muted" aria-hidden="true" />
-        </div>
-        <input
-          type="text"
-          className="type-ui ui-focus-ring ui-radius-tight block w-full border border-border-strong bg-panel pl-10 pr-4 py-3 text-foreground placeholder:text-muted-soft transition-colors"
-          placeholder={tx.products.filters.searchPlaceholder ?? "Search products..."}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          aria-label={tx.products.filters.searchAriaLabel ?? "Search products"} // Accessible name
-        />
-      </div>
+    const updateFilters = useCallback(
+        (key: string, value: string) => {
+            const params = new URLSearchParams(searchParams.toString());
+            const current = params.getAll(key);
 
-      {/* Brand Filter Pills - Quick filter bar (Desktop) */}
-      <div className="hidden md:block mb-8 border-b border-border pb-6">
-        <div className="flex flex-wrap items-center gap-2">
-          <FilterPill
-            label={tx.products.filters.allLabel ?? "All"}
-            active={!hasFilters}
-            onClick={clear}
-          />
-          {availableBrands.map((b) => (
-            <FilterPill
-              key={b}
-              label={b}
-              active={filters.brands.has(b)}
-              onClick={() => toggle("brands", b)}
-            />
-          ))}
-        </div>
-      </div>
+            if (current.includes(value)) {
+                params.delete(key);
+                current.filter((v) => v !== value).forEach((v) => params.append(key, v));
+            } else {
+                params.append(key, value);
+            }
 
-      {/* Mobile Filter Toggle Button */}
-      <div className="md:hidden mb-6 flex items-center justify-between">
-        <p className="type-data text-muted" aria-live="polite" aria-atomic="true">
-          {filtered.length} {filtered.length === 1 ? (tx.products.filters.countSingular ?? "product") : (tx.products.filters.countPlural ?? "products")}
-        </p>
-        <button
-          type="button"
-          onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-          className="touch-target inline-flex items-center gap-2 type-data-strong text-foreground border border-border bg-panel px-3 py-2 ui-radius-tight hover:bg-subtle transition-colors"
-          aria-expanded={mobileFiltersOpen}
-          aria-controls="mobile-product-filters"
-        >
-          {tx.products.filters.button}
-          <IconChevronDown
-            className={`h-4 w-4 transition-transform ${mobileFiltersOpen ? "rotate-180" : ""}`}
-            aria-hidden="true"
-          />
-        </button>
-      </div>
+            router.push(`${pathname}?${params.toString()}`, { scroll: false });
+        },
+        [router, pathname, searchParams]
+    );
 
-      {/* Collapsible Mobile Filters */}
-      {mobileFiltersOpen && (
-        <div
-          id="mobile-product-filters"
-          className="md:hidden mb-6 border border-border bg-panel p-4 ui-radius-tight space-y-5"
-        >
-          {/* Category Filter */}
-          {availableCategories.length > 0 && (
-            <div>
-              <p className="type-data-strong text-foreground">{tx.products.filters.groups.category}</p>
-              <div className="mt-2 space-y-1.5">
-                {availableCategories.map((c) => (
-                  <FilterCheckbox
-                    key={c}
-                    label={getCategoryLabel(locale, c)}
-                    checked={filters.categories.has(c)}
-                    onChange={() => toggle("categories", c)}
-                  />
+    const clearFilters = useCallback(() => {
+        router.push(pathname, { scroll: false });
+    }, [router, pathname]);
+
+    const hasActiveFilters = activeBrands.length > 0 || activeCategories.length > 0;
+
+    return (
+        <div className="space-y-8">
+            {/* Filter Bar */}
+            <div className="bg-white rounded-3xl p-6 border border-border/30 space-y-6">
+                {/* Brand Filters */}
+                {brands.length > 0 && (
+                    <div className="space-y-3">
+                        <h4 className="type-ui-sm font-semibold text-brand">Brands</h4>
+                        <div className="flex flex-wrap gap-2">
+                            {brands.map((brand) => (
+                                <motion.button
+                                    key={brand}
+                                    type="button"
+                                    onClick={() => updateFilters("brand", brand)}
+                                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${activeBrands.includes(brand)
+                                            ? "bg-secondary text-white"
+                                            : "bg-surface-mint text-brand hover:bg-secondary/10"
+                                        }`}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    {activeBrands.includes(brand) && (
+                                        <span className="w-1.5 h-1.5 bg-white rounded-full" />
+                                    )}
+                                    {brand}
+                                </motion.button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Category Filters */}
+                {categories.length > 0 && (
+                    <div className="space-y-3">
+                        <h4 className="type-ui-sm font-semibold text-brand">Categories</h4>
+                        <div className="flex flex-wrap gap-2">
+                            {categories.map((category) => (
+                                <motion.button
+                                    key={category}
+                                    type="button"
+                                    onClick={() => updateFilters("category", category)}
+                                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors capitalize ${activeCategories.includes(category)
+                                            ? "bg-secondary text-white"
+                                            : "bg-surface-mint text-brand hover:bg-secondary/10"
+                                        }`}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    {activeCategories.includes(category) && (
+                                        <span className="w-1.5 h-1.5 bg-white rounded-full" />
+                                    )}
+                                    {category}
+                                </motion.button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Clear Filters */}
+                {hasActiveFilters && (
+                    <motion.button
+                        type="button"
+                        onClick={clearFilters}
+                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted hover:text-brand transition-colors"
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <span>×</span>
+                        Clear all filters
+                    </motion.button>
+                )}
+            </div>
+
+            {/* Product Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map((product) => (
+                    <ProductCard
+                        key={product.slug}
+                        product={product}
+                        href={`/${locale}/products/${product.slug}`}
+                    />
                 ))}
-              </div>
             </div>
-          )}
 
-          {/* Brand Filter */}
-          <div>
-            <p className="type-data-strong text-foreground">{tx.products.filters.groups.brand}</p>
-            <div className="mt-2 space-y-1.5">
-              {availableBrands.map((b) => (
-                <FilterCheckbox
-                  key={b}
-                  label={b}
-                  checked={filters.brands.has(b)}
-                  onChange={() => toggle("brands", b)}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Audience Filter */}
-          <div>
-            <p className="type-data-strong text-foreground">{tx.products.filters.groups.audience}</p>
-            <div className="mt-2 space-y-1.5">
-              <FilterCheckbox
-                label={tx.products.filters.audience.salon}
-                checked={filters.audiences.has("SALON")}
-                onChange={() => toggle("audiences", "SALON")}
-              />
-              <FilterCheckbox
-                label={tx.products.filters.audience.barber}
-                checked={filters.audiences.has("BARBER")}
-                onChange={() => toggle("audiences", "BARBER")}
-              />
-            </div>
-          </div>
-
-          {/* Function Filter */}
-          <div>
-            <p className="type-data-strong text-foreground">{tx.products.filters.groups.function}</p>
-            <div className="mt-2 space-y-1.5">
-              {availableFunctions.map((f) => (
-                <FilterCheckbox
-                  key={f}
-                  label={f}
-                  checked={filters.functions.has(f)}
-                  onChange={() => toggle("functions", f)}
-                />
-              ))}
-            </div>
-          </div>
-
-          {hasFilters && (
-            <button
-              type="button"
-              onClick={clear}
-              className="w-full type-data-strong text-center text-muted hover:text-foreground underline decoration-dotted underline-offset-4 transition-colors py-2"
-            >
-              {tx.products.filters.clear}
-            </button>
-          )}
+            {/* Empty State */}
+            {filteredProducts.length === 0 && (
+                <div className="text-center py-12">
+                    <p className="type-body text-muted">No products match your filters.</p>
+                </div>
+            )}
         </div>
-      )}
-
-      {/* Grid: Desktop Sidebar + Content */}
-      <div className="grid gap-8 md:grid-cols-4">
-        {/* Desktop Filter Sidebar */}
-        <aside className="hidden md:block md:col-span-1">
-          <div className="border border-border bg-panel p-6 sticky top-24">
-            <div className="flex items-center justify-between">
-              <h2 className="type-data-strong text-foreground">{tx.products.filters.title}</h2>
-              {hasFilters && (
-                <button
-                  type="button"
-                  onClick={clear}
-                  className="type-data text-muted hover:text-foreground underline decoration-dotted underline-offset-4 transition-colors"
-                >
-                  {tx.products.filters.clear}
-                </button>
-              )}
-            </div>
-
-            <div className="mt-5 space-y-5">
-              {/* Category Filter */}
-              {availableCategories.length > 0 && (
-                <div>
-                  <p className="type-data-strong text-foreground">{tx.products.filters.groups.category}</p>
-                  <div className="mt-2 space-y-1.5">
-                    {availableCategories.map((c) => (
-                      <FilterCheckbox
-                        key={c}
-                        label={getCategoryLabel(locale, c)}
-                        checked={filters.categories.has(c)}
-                        onChange={() => toggle("categories", c)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Brand Filter */}
-              <div>
-                <p className="type-data-strong text-foreground">{tx.products.filters.groups.brand}</p>
-                <div className="mt-2 space-y-1.5">
-                  {availableBrands.map((b) => (
-                    <FilterCheckbox
-                      key={b}
-                      label={b}
-                      checked={filters.brands.has(b)}
-                      onChange={() => toggle("brands", b)}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Audience Filter */}
-              <div>
-                <p className="type-data-strong text-foreground">{tx.products.filters.groups.audience}</p>
-                <div className="mt-2 space-y-1.5">
-                  <FilterCheckbox
-                    label={tx.products.filters.audience.salon}
-                    checked={filters.audiences.has("SALON")}
-                    onChange={() => toggle("audiences", "SALON")}
-                  />
-                  <FilterCheckbox
-                    label={tx.products.filters.audience.barber}
-                    checked={filters.audiences.has("BARBER")}
-                    onChange={() => toggle("audiences", "BARBER")}
-                  />
-                </div>
-              </div>
-
-              {/* Function Filter */}
-              <div>
-                <p className="type-data-strong text-foreground">{tx.products.filters.groups.function}</p>
-                <div className="mt-2 space-y-1.5">
-                  {availableFunctions.map((f) => (
-                    <FilterCheckbox
-                      key={f}
-                      label={f}
-                      checked={filters.functions.has(f)}
-                      onChange={() => toggle("functions", f)}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
-
-        {/* Product Grid */}
-        <div className="md:col-span-3">
-          {/* Results count */}
-          {hasFilters && (
-            <p className="type-data text-muted mb-4 hidden md:block" aria-live="polite" aria-atomic="true">
-              {filtered.length} {filtered.length === 1 ? "product" : "products"}
-            </p>
-          )}
-
-          {filtered.length === 0 ? (
-            /* Empty State */
-            <div className="border border-border bg-panel p-8 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-subtle">
-                <IconSearch className="h-6 w-6 text-muted" />
-              </div>
-              <p className="mt-4 type-body-strong text-foreground">{tx.products.filters.empty.title}</p>
-              <p className="mt-2 type-body max-w-sm mx-auto">{tx.products.filters.empty.body}</p>
-              <button
-                type="button"
-                onClick={clear}
-                className="mt-4 type-data-strong text-foreground underline decoration-dotted underline-offset-4"
-              >
-                {tx.products.filters.clear}
-              </button>
-            </div>
-          ) : (
-            /* Product Cards */
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((p, i) => (
-                <ProductCard
-                  key={p.slug}
-                  product={p}
-                  href={`${base}/products/${p.slug}`}
-                  index={i}
-                  viewDetailsLabel={tx.cta.viewDetails}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  );
+    );
 }

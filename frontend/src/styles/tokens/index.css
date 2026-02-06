@@ -1,0 +1,14 @@
+/* =============================================================================
+   TOKENS INDEX
+   
+   Barrel file for design tokens.
+   Import order: primitives → system → components → themes
+   
+   NOTE: Old files (colors.css, typography.css, etc.) have been consolidated
+   into primitives.css for the 3-tier architecture.
+   ============================================================================= */
+
+@import "./primitives.css";
+@import "./system.css";
+@import "./components.css";
+@import "./themes.css";

@@ -44,7 +44,7 @@ export default async function TermsPage({
   return (
     <Page>
       <Container size="narrow">
-        <StaggerReveal delay={0.1} className="mb-12">
+        <StaggerReveal delay={0.1} className="mb-section">
           <p className="type-kicker text-muted mb-4">{tx.footer.legal}</p>
           <h1 className="type-h1 text-foreground mb-4">{tx.legal.termsTitle}</h1>
           <p className="type-data text-muted">{tx.legal.termsPolicy.intro.prefix}</p>

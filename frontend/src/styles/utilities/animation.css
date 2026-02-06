@@ -1,0 +1,341 @@
+/* =============================================================================
+   Utilities: Animation
+   
+   CSS animations and transitions using motion tokens.
+   ============================================================================= */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   KEYFRAMES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in-scale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slide-in-right {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-in-left {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ANIMATION UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.animate-fade-in {
+    animation: fade-in var(--duration-400) var(--ease-out) both;
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up var(--duration-500) var(--ease-out-expo) both;
+}
+
+.animate-fade-in-scale {
+    animation: fade-in-scale var(--duration-400) var(--ease-out) both;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLL-TRIGGERED REVEAL
+   Uses IntersectionObserver to add .visible class
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+        opacity var(--motion-reveal),
+        transform var(--motion-reveal);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Reveal from different directions */
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-24px);
+    transition:
+        opacity var(--motion-reveal),
+        transform var(--motion-reveal);
+}
+
+.reveal-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.reveal-right {
+    opacity: 0;
+    transform: translateX(24px);
+    transition:
+        opacity var(--motion-reveal),
+        transform var(--motion-reveal);
+}
+
+.reveal-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.95);
+    transition:
+        opacity var(--motion-reveal),
+        transform var(--motion-reveal);
+}
+
+.reveal-scale.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STAGGER CHILDREN
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.stagger>* {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+        opacity var(--duration-500) var(--ease-out-expo),
+        transform var(--duration-500) var(--ease-out-expo);
+}
+
+.stagger.visible>*:nth-child(1) {
+    transition-delay: 0ms;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stagger.visible>*:nth-child(2) {
+    transition-delay: 75ms;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stagger.visible>*:nth-child(3) {
+    transition-delay: 150ms;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stagger.visible>*:nth-child(4) {
+    transition-delay: 225ms;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stagger.visible>*:nth-child(5) {
+    transition-delay: 300ms;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stagger.visible>*:nth-child(6) {
+    transition-delay: 375ms;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stagger.visible>*:nth-child(7) {
+    transition-delay: 450ms;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stagger.visible>*:nth-child(8) {
+    transition-delay: 525ms;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TRANSITION UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.transition-none {
+    transition: none;
+}
+
+.transition-all {
+    transition: all var(--motion-base);
+}
+
+.transition-colors {
+    transition: color var(--motion-fast), background-color var(--motion-fast), border-color var(--motion-fast);
+}
+
+.transition-opacity {
+    transition: opacity var(--motion-fast);
+}
+
+.transition-transform {
+    transition: transform var(--motion-base);
+}
+
+.transition-shadow {
+    transition: box-shadow var(--motion-base);
+}
+
+/* Duration modifiers */
+.duration-fast {
+    transition-duration: var(--duration-100);
+}
+
+.duration-base {
+    transition-duration: var(--duration-200);
+}
+
+.duration-slow {
+    transition-duration: var(--duration-400);
+}
+
+.duration-slower {
+    transition-duration: var(--duration-700);
+}
+
+/* Easing modifiers */
+.ease-out {
+    transition-timing-function: var(--ease-out);
+}
+
+.ease-out-expo {
+    transition-timing-function: var(--ease-out-expo);
+}
+
+.ease-spring {
+    transition-timing-function: var(--ease-spring);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GLASS EFFECTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.glass {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-subtle {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.glass-dark {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(9, 9, 11, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ANIMATION DELAYS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.delay-0 {
+    animation-delay: 0ms;
+}
+
+.delay-75 {
+    animation-delay: 75ms;
+}
+
+.delay-100 {
+    animation-delay: 100ms;
+}
+
+.delay-150 {
+    animation-delay: 150ms;
+}
+
+.delay-200 {
+    animation-delay: 200ms;
+}
+
+.delay-300 {
+    animation-delay: 300ms;
+}
+
+.delay-500 {
+    animation-delay: 500ms;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HOVER ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.hover-lift {
+    transition: transform var(--motion-elegant);
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+}
+
+.hover-scale {
+    transition: transform var(--motion-fast);
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+.hover-glow {
+    transition: box-shadow var(--motion-elegant);
+}
+
+.hover-glow:hover {
+    box-shadow: var(--elevation-elegant);
+}

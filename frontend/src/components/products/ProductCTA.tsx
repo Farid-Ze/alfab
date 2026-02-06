@@ -1,77 +1,56 @@
 "use client";
 
-import { t } from "@/lib/i18n";
+import { motion } from "framer-motion";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import WhatsAppLink from "@/components/ui/WhatsAppLink";
-import ButtonLink from "@/components/ui/ButtonLink";
-import { getButtonClassName } from "@/components/ui/Button";
-import { IconWhatsApp } from "@/components/ui/icons";
+import { t } from "@/lib/i18n";
+import { buildWhatsAppHref } from "@/lib/whatsapp";
 
 interface ProductCTAProps {
-    productName: string;
-    variant?: "inline" | "block";
+    productName?: string;
     className?: string;
 }
 
-export default function ProductCTA({
-    productName,
-    variant = "inline",
-    className = ""
-}: ProductCTAProps) {
+/**
+ * ProductCTA: Ineo-Sense inspired call-to-action section
+ */
+export default function ProductCTA({ productName, className = "" }: ProductCTAProps) {
     const { locale } = useLocale();
     const tx = t(locale);
-    const base = `/${locale}`;
+    const consult = tx.productDetail?.consult;
 
-    // Custom prefill message for this product
-    const prefill = tx.productDetail.consult.prefill.replace("{{product}}", productName);
+    const whatsappMessage = productName
+        ? `Halo, saya tertarik dengan produk ${productName}. Bisa info lebih lanjut?`
+        : consult?.prefill ?? "Halo, saya tertarik dengan produk Anda.";
 
-    if (variant === "block") {
-        // Large full-width block (bottom of page)
-        return (
-            <section className={`border-t border-border pt-8 lg:pt-12 ${className}`}>
-                <div className="ui-section-dark p-6 lg:p-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                    <div className="space-y-2">
-                        <h3 className="type-h3">{tx.productDetail.consult.title}</h3>
-                        <p className="type-body opacity-80 max-w-lg">
-                            {tx.productDetail.consult.body}
-                        </p>
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-                        <WhatsAppLink
-                            className={getButtonClassName({ variant: "inverted", size: "lg" }) + " gap-2"}
-                            prefill={prefill}
-                        >
-                            <IconWhatsApp className="h-5 w-5" />
-                            {tx.cta.whatsappConsult}
-                        </WhatsAppLink>
-                    </div>
-                </div>
-            </section>
-        );
-    }
-
-    // Default: Inline (next to product info)
     return (
-        <div className={`pt-4 space-y-4 border-t border-border ${className}`}>
-            <div className="flex flex-col sm:flex-row gap-3">
-                <WhatsAppLink
-                    className={getButtonClassName({ variant: "primary", size: "lg" }) + " flex-1 sm:flex-none"}
-                    prefill={prefill}
+        <motion.section
+            id="contact"
+            className={`bg-surface-mint rounded-3xl p-8 lg:p-12 text-center ${className}`}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+        >
+            <div className="max-w-2xl mx-auto space-y-6">
+                <h2 className="type-display text-brand font-bold">
+                    {consult?.title ?? "Let's connect!"}
+                </h2>
+
+                <p className="type-body-lg text-muted">
+                    {consult?.body ?? "Hubungi kami untuk informasi lebih lanjut tentang produk dan kemitraan."}
+                </p>
+
+                <motion.a
+                    href={buildWhatsAppHref({ message: whatsappMessage, number: "6281234567890" })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-secondary text-white rounded-full font-semibold text-lg hover:bg-secondary/90 transition-colors"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                 >
-                    {tx.cta.whatsappConsult}
-                </WhatsAppLink>
-                <ButtonLink
-                    href={`${base}/partnership`}
-                    variant="secondary"
-                    size="lg"
-                    className="flex-1 sm:flex-none"
-                >
-                    {tx.cta.becomePartner}
-                </ButtonLink>
+                    <span className="w-2 h-2 bg-white rounded-full" />
+                    {tx.ui?.contactViaWhatsapp ?? "Hubungi via WhatsApp"}
+                </motion.a>
             </div>
-            <p className="type-data text-muted">
-                {tx.productDetail.consult.body}
-            </p>
-        </div>
+        </motion.section>
     );
 }

@@ -16,29 +16,29 @@ export default async function EventsPage() {
     const idEvents = events.filter((e) => e.locale === "id");
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-content-sm">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-foreground">Events</h1>
+                    <h1 className="type-admin-h2">Events</h1>
                     <p className="text-muted text-sm mt-1">
                         Manage education events (EN/ID)
                     </p>
                 </div>
                 <Link
                     href="/admin/events/new"
-                    className="px-4 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors font-medium"
+                    className="px-4 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-all-elegant type-ui-strong"
                 >
                     + Add Event
                 </Link>
             </div>
 
             {/* Locale Tabs */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-content-sm">
                 {/* Indonesian Events */}
-                <div className="bg-surface border border-border rounded-xl overflow-hidden">
+                <div className="ui-admin-section overflow-hidden p-0">
                     <div className="px-6 py-4 border-b border-border bg-surface-elevated">
-                        <h2 className="font-semibold text-foreground flex items-center gap-2">
+                        <h2 className="type-admin-locale-h2">
                             🇮🇩 Indonesian ({idEvents.length})
                         </h2>
                     </div>
@@ -73,9 +73,9 @@ export default async function EventsPage() {
                 </div>
 
                 {/* English Events */}
-                <div className="bg-surface border border-border rounded-xl overflow-hidden">
+                <div className="ui-admin-section overflow-hidden p-0">
                     <div className="px-6 py-4 border-b border-border bg-surface-elevated">
-                        <h2 className="font-semibold text-foreground flex items-center gap-2">
+                        <h2 className="type-admin-locale-h2">
                             🇬🇧 English ({enEvents.length})
                         </h2>
                     </div>

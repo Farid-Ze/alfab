@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import AppLink from "@/components/ui/AppLink";
+import Container from "@/components/layout/Container";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { t } from "@/lib/i18n";
 
@@ -18,7 +19,12 @@ const LEGAL = [
 
 /**
  * Footer: Elegant footer with sitemap, social links, and branding.
- * Design V2 pattern for professional closure.
+ * 
+ * Uses design tokens:
+ * - Container for consistent padding
+ * - type-* typography classes
+ * - gap-content for spacing
+ * - transition-all-elegant for animations
  */
 export default function Footer() {
     const { locale } = useLocale();
@@ -43,26 +49,26 @@ export default function Footer() {
     return (
         <footer className="bg-panel border-t border-border">
             {/* Main Footer */}
-            <div className="container mx-auto px-6 lg:px-12 py-16">
-                <div className="grid lg:grid-cols-4 gap-12">
+            <Container className="section-lg">
+                <div className="grid lg:grid-cols-4 gap-content-lg">
                     {/* Brand Column */}
                     <div className="lg:col-span-2">
-                        <AppLink href={base} className="type-footer-brand text-foreground block mb-4">
+                        <AppLink href={base} className="type-footer-brand text-foreground block mb-content">
                             ALFA BEAUTY
                         </AppLink>
-                        <p className="type-body text-muted max-w-md mb-6">
+                        <p className="type-body text-muted max-w-md mb-content">
                             {tx.footer.blurb}
                         </p>
 
                         {/* Social Links */}
-                        <div className="flex gap-4">
+                        <div className="flex gap-content-sm">
                             {SOCIAL_LINKS.map((social) => (
                                 <a
                                     key={social.name}
                                     href={social.href}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-muted hover:text-foreground hover:bg-border transition-all duration-[var(--transition-elegant)]"
+                                    className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-muted hover:text-foreground hover:bg-border transition-all-elegant"
                                     aria-label={social.name}
                                 >
                                     {social.icon === "instagram" && (
@@ -87,13 +93,13 @@ export default function Footer() {
 
                     {/* Sitemap Column */}
                     <div>
-                        <h3 className="type-h4 text-foreground mb-4">{tx.footer.explore}</h3>
+                        <h3 className="type-h4 text-foreground mb-content">{tx.footer.explore}</h3>
                         <nav className="space-y-3">
                             {sitemap.map((link) => (
                                 <AppLink
                                     key={link.href}
                                     href={link.href}
-                                    className="type-body text-muted hover:text-foreground transition-colors block"
+                                    className="type-body text-muted hover:text-foreground transition-all-elegant block"
                                 >
                                     {link.title}
                                 </AppLink>
@@ -103,13 +109,13 @@ export default function Footer() {
 
                     {/* Legal Column */}
                     <div>
-                        <h3 className="type-h4 text-foreground mb-4">{tx.footer.legal}</h3>
+                        <h3 className="type-h4 text-foreground mb-content">{tx.footer.legal}</h3>
                         <nav className="space-y-3">
                             {legal.map((link) => (
                                 <AppLink
                                     key={link.href}
                                     href={link.href}
-                                    className="type-body text-muted hover:text-foreground transition-colors block"
+                                    className="type-body text-muted hover:text-foreground transition-all-elegant block"
                                 >
                                     {link.title}
                                 </AppLink>
@@ -117,18 +123,18 @@ export default function Footer() {
                         </nav>
                     </div>
                 </div>
-            </div>
+            </Container>
 
             {/* Bottom Bar */}
             <div className="border-t border-border">
-                <div className="container mx-auto px-6 lg:px-12 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <Container className="py-6 flex flex-col md:flex-row justify-between items-center gap-content-sm">
                     <p className="type-legal text-muted text-center md:text-left">
                         © 2026 PT Alfa Beauty Cosmetica. {tx.footer.copyrightSuffix}
                     </p>
                     <p className="type-legal text-muted text-center md:text-right">
                         {tx.footer.distributorNote}
                     </p>
-                </div>
+                </Container>
             </div>
         </footer>
     );

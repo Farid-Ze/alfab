@@ -46,7 +46,7 @@ export default async function EducationEventsPage({
   return (
     <Page>
       <Container>
-        <StaggerReveal delay={0.1} className="mb-12">
+        <StaggerReveal delay={0.1} className="mb-section">
           <p className="type-kicker text-muted mb-4">{tx.education.hub.kicker}</p>
           <h1 className="type-h1 text-foreground mb-4">{tx.education.hub.sections.events}</h1>
           <p className="type-body text-foreground-muted max-w-2xl">
@@ -54,7 +54,7 @@ export default async function EducationEventsPage({
           </p>
         </StaggerReveal>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-content">
           {events.map((event) => (
             <AppLink
               key={event.slug}

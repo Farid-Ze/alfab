@@ -1,94 +1,66 @@
 "use client";
 
-import { getArticleBySlug } from "@/lib/education";
-import { useTranslations } from "@/hooks/useTranslations";
-import { formatDate } from "@/lib/i18n";
+import { motion } from "framer-motion";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import AppLink from "@/components/ui/AppLink";
-import ButtonLink from "@/components/ui/ButtonLink";
-import Card from "@/components/ui/Card";
-import { IconChevronRight, IconDocument } from "@/components/ui/icons";
+import { t } from "@/lib/i18n";
+import { getArticleBySlug } from "@/lib/education";
 
-export default function EducationArticleDetailClient({ slug }: { slug: string }) {
-  const { locale } = useLocale();
-  const tx = useTranslations();
-  const base = `/${locale}`;
-  const article = slug ? getArticleBySlug(locale, slug) : null;
+interface EducationArticleDetailClientProps {
+    slug: string;
+}
 
-  if (!article) {
+/**
+ * EducationArticleDetailClient: Ineo-Sense inspired article detail
+ */
+export default function EducationArticleDetailClient({ slug }: EducationArticleDetailClientProps) {
+    const { locale } = useLocale();
+    const tx = t(locale);
+
+    const article = getArticleBySlug(locale, slug) ?? getArticleBySlug(locale === "en" ? "id" : "en", slug);
+
+    if (!article) {
+        return null;
+    }
+
+    const { title, excerpt, body, date } = article;
+
+    const formattedDate = new Date(date).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+
     return (
-      <div className="flex min-h-[40vh] flex-col items-center justify-center space-y-6 text-center">
-        <div className="h-16 w-16 rounded-full bg-subtle flex items-center justify-center">
-          <IconDocument className="h-8 w-8 text-muted" />
-        </div>
-        <div className="space-y-2">
-          <h1 className="type-h3">{tx.education.article.notFound.title}</h1>
-          <p className="type-body text-muted max-w-md">{tx.education.article.notFound.body}</p>
-        </div>
-        <AppLink
-          href={`${base}/education`}
-          className="inline-flex items-center gap-2 type-body-strong text-foreground hover:underline"
-        >
-          ← {tx.education.common.backToEducation}
-        </AppLink>
-      </div>
+        <article className="space-y-12">
+            {/* Hero */}
+            <motion.header
+                className="text-center max-w-3xl mx-auto space-y-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+            >
+                <p className="type-ui-sm font-semibold text-secondary uppercase tracking-wide">
+                    {tx.education?.articles?.title ?? "Article"}
+                </p>
+                <h1 className="type-display text-brand font-bold">{title}</h1>
+                <p className="type-body-lg text-muted">{excerpt}</p>
+                <p className="type-ui-sm text-muted">{formattedDate}</p>
+            </motion.header>
+
+            {/* Content */}
+            <motion.div
+                className="bg-white rounded-3xl p-8 lg:p-12 border border-border/30 max-w-3xl mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+            >
+                <div className="prose prose-lg max-w-none">
+                    {body?.map((para, idx) => (
+                        <p key={idx} className="type-body text-muted mb-6 leading-relaxed">
+                            {para}
+                        </p>
+                    ))}
+                </div>
+            </motion.div>
+        </article>
     );
-  }
-
-  return (
-    <div className="space-y-8 lg:space-y-12">
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-1 type-data text-muted">
-        <AppLink
-          href={`${base}/education`}
-          className="hover:text-foreground transition-colors"
-        >
-          {tx.nav.education}
-        </AppLink>
-        <IconChevronRight className="h-4 w-4" />
-        <span className="text-foreground truncate">{article.title}</span>
-      </nav>
-
-      {/* Article Content */}
-      <article className="grid gap-8 lg:grid-cols-3 lg:gap-12">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-8">
-          <header className="space-y-4">
-            <div className="flex items-center gap-3 type-data text-muted">
-              <span>{formatDate(article.date, locale)}</span>
-              <span>•</span>
-              <span>{article.readTime} {tx.education.article.meta.readTime}</span>
-            </div>
-            <h1 className="type-h1">{article.title}</h1>
-            <p className="type-body text-muted-strong">{article.excerpt}</p>
-          </header>
-
-          <div className="space-y-6 border-t border-border pt-8">
-            {article.body.map((p, idx) => (
-              <p key={idx} className="type-body text-muted-strong">
-                {p}
-              </p>
-            ))}
-          </div>
-
-          <footer className="border-t border-border pt-6">
-            <p className="type-data text-muted">{tx.education.article.footer}</p>
-          </footer>
-        </div>
-
-        {/* Sidebar */}
-        <aside className="space-y-6">
-          <Card className="p-6 space-y-4 sticky top-24">
-            <h2 className="type-h3">{tx.education.hub.sections.articles}</h2>
-            <p className="type-body text-muted-strong">
-              {tx.education.article.sidebar.body}
-            </p>
-            <ButtonLink href={`${base}/education`} variant="secondary" size="sm">
-              {tx.education.common.backToEducation}
-            </ButtonLink>
-          </Card>
-        </aside>
-      </article>
-    </div>
-  );
 }
