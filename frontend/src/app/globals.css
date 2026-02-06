@@ -1,65 +1,168 @@
-/* =============================================================================
-   Global Styles - Application Entry Point
-   
-   This file imports Tailwind CSS and the modular design system.
-   This is the only CSS file that should be imported in your app.
-   ============================================================================= */
-
-/* Tailwind CSS */
 @import "tailwindcss";
+@import "../styles/tokens.css";
 
-/* Design System (tokens, base, utilities) */
-@import "../styles/main.css";
+/* ============================================
+ * TAILWIND THEME EXTENSION
+ * Map CSS tokens to Tailwind utilities
+ * ============================================ */
 
-/* =============================================================================
-   Tailwind Theme Integration
-   
-   Exposes design tokens to Tailwind for utility class generation.
-   ============================================================================= */
+@theme {
+  /* Colors */
+  --color-primary: var(--color-primary-800);
+  --color-secondary: var(--color-secondary-500);
+  --color-accent: var(--color-secondary-500);
 
-@theme inline {
-  /* Brand Colors */
-  --color-brand-primary: var(--surface-brand-primary);
-  --color-brand-secondary: var(--surface-brand-secondary);
-  --color-brand-tertiary: var(--surface-brand-tertiary);
-
-  /* Semantic Colors */
+  /* Semantic */
   --color-background: var(--surface-background);
-  --color-panel: var(--surface-panel);
   --color-foreground: var(--text-primary);
-  --color-foreground-muted: var(--text-muted);
   --color-muted: var(--text-muted);
-  --color-border: var(--border-default);
-  --color-success: var(--feedback-success-text);
-  --color-error: var(--feedback-error-text);
-  --color-warning: var(--feedback-warning-text);
-  --color-info: var(--feedback-info-text);
 
-  /* Shape */
-  --radius: var(--radius-lg);
+  /* Feedback */
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
 
-  /* Fonts */
+  /* Font */
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
 }
 
-/* =============================================================================
-   Layout Utilities
-   These extend the design system for specific use cases.
-   ============================================================================= */
+/* ============================================
+ * BASE STYLES
+ * ============================================ */
 
-.min-h-ineo-card-image {
-  min-height: 150px;
+html {
+  scroll-behavior: smooth;
 }
 
-.max-w-container-wide {
-  max-width: 80rem;
+body {
+  font-family: var(--font-sans);
+  background-color: var(--surface-background);
+  color: var(--text-primary);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.min-h-line {
-  min-height: 2px;
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
 }
 
-.hover\:scale-102:hover {
-  transform: scale(1.02);
+/* Selection */
+::selection {
+  background-color: var(--color-secondary-200);
+  color: var(--color-primary-900);
+}
+
+/* ============================================
+ * TYPOGRAPHY UTILITIES
+ * ============================================ */
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-primary);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-tight);
+}
+
+/* Links */
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-default);
+}
+
+a:hover {
+  color: var(--text-link-hover);
+}
+
+/* ============================================
+ * COMPONENT UTILITIES
+ * ============================================ */
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-weight: var(--font-semibold);
+  border-radius: var(--radius-lg);
+  transition: all var(--duration-fast) var(--ease-default);
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+}
+
+.btn-primary:hover {
+  background-color: var(--btn-primary-bg-hover);
+}
+
+.btn-secondary {
+  background-color: var(--btn-secondary-bg);
+  border: 1px solid var(--btn-secondary-border);
+  color: var(--btn-secondary-text);
+}
+
+.btn-secondary:hover {
+  background-color: var(--btn-secondary-hover-bg);
+}
+
+/* Cards */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+}
+
+/* Section spacing */
+.section {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-top: var(--space-24);
+    padding-bottom: var(--space-24);
+  }
 }

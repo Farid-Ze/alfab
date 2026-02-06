@@ -1,39 +1,43 @@
-import en from "@/locales/en.json";
-import id from "@/locales/id.json";
+/**
+ * i18n Library
+ * 
+ * Simple translation helper for bilingual EN/ID support
+ */
+
+import en from "../../messages/en.json";
+import id from "../../messages/id.json";
 
 export type Locale = "en" | "id";
 
-export function normalizeLocale(input: string | null | undefined): Locale {
-  const v = (input ?? "").toLowerCase();
-  if (v.startsWith("id")) return "id";
-  return "en";
+const messages = { en, id } as const;
+
+/**
+ * Get translations for a given locale
+ */
+export function getTranslations(locale: Locale) {
+    return messages[locale] ?? messages.en;
 }
 
-// Type for locale dictionary - inferred from the JSON structure
-export type LocaleDict = typeof en;
-
-const dict: Record<Locale, LocaleDict> = {
-  en,
-  id,
-} as const;
-
-export function t(locale: Locale): LocaleDict {
-  return dict[locale];
+/**
+ * Type-safe translation getter
+ */
+export function t(locale: Locale) {
+    return getTranslations(locale);
 }
 
-// getLocalizedPath removed (Revert to Standard Sub-path Strategy)
+/**
+ * Get all supported locales
+ */
+export const locales: Locale[] = ["en", "id"];
 
-export function formatDate(dateStr: string, locale: Locale): string {
-  if (!dateStr) return "";
-  try {
-    const date = new Date(dateStr);
-    return new Intl.DateTimeFormat(locale === "id" ? "id-ID" : "en-US", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(date);
-  } catch (e) {
-    return dateStr;
-  }
+/**
+ * Default locale
+ */
+export const defaultLocale: Locale = "en";
+
+/**
+ * Check if a string is a valid locale
+ */
+export function isValidLocale(value: string): value is Locale {
+    return locales.includes(value as Locale);
 }
-

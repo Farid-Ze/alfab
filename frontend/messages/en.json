@@ -1,0 +1,44 @@
+{
+    "nav": {
+        "home": "Home",
+        "products": "Products",
+        "education": "Education",
+        "partnership": "Partnership",
+        "about": "About",
+        "contact": "Contact"
+    },
+    "home": {
+        "hero": {
+            "title": "Professional Beauty Distribution Partner",
+            "subtitle": "Products, Education, and Technical Support for Salons & Barbershops in Indonesia",
+            "cta": {
+                "products": "Explore Products",
+                "partner": "Become a Partner"
+            }
+        },
+        "pillars": {
+            "title": "Three Pillars of Excellence",
+            "products": {
+                "title": "Premium Products",
+                "description": "Carefully selected international brands for professional results"
+            },
+            "education": {
+                "title": "Expert Education",
+                "description": "Technical training and certification programs"
+            },
+            "partnership": {
+                "title": "Strategic Partnership",
+                "description": "Business support and growth opportunities"
+            }
+        }
+    },
+    "cta": {
+        "whatsapp": "WhatsApp Consult",
+        "learnMore": "Learn More"
+    },
+    "footer": {
+        "copyright": "© 2026 PT Alfa Beauty Cosmetica. All rights reserved.",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service"
+    }
+}

@@ -1,77 +1,111 @@
 import { z } from "zod";
 
-const envSchema = z.object({
-    // Core
+/**
+ * Environment Variables Schema
+ * 
+ * Type-safe environment variable validation using Zod
+ * Validates at build/startup time to catch misconfigurations early
+ */
+
+// Server-side environment variables (not exposed to browser)
+const serverEnvSchema = z.object({
+    // Supabase
+    SUPABASE_URL: z.string().url().optional(),
+    SUPABASE_ANON_KEY: z.string().min(1).optional(),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+
+    // Email
+    EMAIL_FROM: z.string().email().optional(),
+    EMAIL_TO: z.string().email().optional(),
+
+    // Node environment
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-    // Vercel / Core
-    // Vercel auto-sets NEXT_PUBLIC_VERCEL_URL. We prefer NEXT_PUBLIC_SITE_URL if set (Canonical).
-    NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
-    NEXT_PUBLIC_VERCEL_URL: z.string().optional(), // Vercel Preview URL (no protocol)
-
-    // Supabase (Service Role is optional for client, mandatory for admin)
-    NEXT_PUBLIC_SUPABASE_URL: z.string().optional(),
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
-    SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
-
-    // Email (SMTP) - Optional (Fail-Open)
-    SMTP_HOST: z.string().optional(),
-    SMTP_PORT: z.string().optional(),
-    SMTP_USER: z.string().optional(),
-    SMTP_PASS: z.string().optional(),
-    SMTP_FROM: z.string().optional(),
-    SMTP_TO: z.string().optional(),
-
-    // Features / Security
-    // OWASP A07: Admin Token strongly recommended in production (min 32 chars)
-    // Validated at endpoint-level to avoid build-time failures
-    LEAD_API_ADMIN_TOKEN: z.string().min(32, "Admin token must be at least 32 characters").optional(),
-
-    // ISO 27001 A.9: Health check token for deep monitoring access
-    HEALTH_CHECK_TOKEN: z.string().min(16, "Health check token must be at least 16 characters").optional(),
-
-    NEXT_PUBLIC_GA_ID: z.string().optional(),
-
-    // ITIL 4: Service Management
-    MAINTENANCE_MODE: z.enum(["true", "false"]).optional(),
-
-    // Contact / Business (Critical B2B)
-    NEXT_PUBLIC_WHATSAPP_NUMBER: z.string().optional(),
-    NEXT_PUBLIC_WHATSAPP_PREFILL: z.string().optional(),
-    NEXT_PUBLIC_FALLBACK_EMAIL: z.string().email().optional(),
-
-    // Observability (OPS-01 ITIL4)
-    NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
-
-    // Sanity CMS (optional)
-    NEXT_PUBLIC_SANITY_PROJECT_ID: z.string().optional(),
-    NEXT_PUBLIC_SANITY_DATASET: z.string().optional(),
-    NEXT_PUBLIC_SANITY_API_VERSION: z.string().optional(),
-    SANITY_API_TOKEN: z.string().optional(),
-
-    // Distributed Rate Limiting (OWASP API4:2023)
-    // Optional: If configured, enables Redis-backed rate limiting for multi-instance deployments
-    UPSTASH_REDIS_REST_URL: z.string().url().optional(),
-    UPSTASH_REDIS_REST_TOKEN: z.string().min(10).optional(),
 });
 
-// Parse and validate process.env
-// In Next.js, process.env contains all loaded env vars.
-// We use safeParse to avoid crashing the build if some non-critical vars are missing,
-// but for critical ones (like SITE_URL), we want to know.
-const _env = envSchema.safeParse(process.env);
+// Client-side environment variables (exposed to browser via NEXT_PUBLIC_ prefix)
+const clientEnvSchema = z.object({
+    NEXT_PUBLIC_SITE_URL: z
+        .string()
+        .url()
+        .default("https://alfabeauty.co.id/"),
 
-if (!_env.success) {
-    console.error("❌ Invalid environment variables:", _env.error.format());
-    throw new Error("Invalid environment variables");
+    NEXT_PUBLIC_WHATSAPP_NUMBER: z
+        .string()
+        .regex(/^\+?[0-9]{10,15}$/, "Invalid WhatsApp number format")
+        .optional(),
+
+    NEXT_PUBLIC_WHATSAPP_MESSAGE: z.string().optional(),
+
+    NEXT_PUBLIC_GA4_MEASUREMENT_ID: z
+        .string()
+        .regex(/^G-[A-Z0-9]+$/, "Invalid GA4 measurement ID")
+        .optional(),
+});
+
+// Combined schema
+const envSchema = serverEnvSchema.merge(clientEnvSchema);
+
+// Type exports
+export type ServerEnv = z.infer<typeof serverEnvSchema>;
+export type ClientEnv = z.infer<typeof clientEnvSchema>;
+export type Env = z.infer<typeof envSchema>;
+
+/**
+ * Validated environment variables
+ * 
+ * Access via: import { env } from "@/lib/env"
+ */
+function validateEnv(): Env {
+    // In development, we're more lenient with missing vars
+    const isDev = process.env.NODE_ENV === "development";
+
+    const parsed = envSchema.safeParse({
+        // Server
+        SUPABASE_URL: process.env.SUPABASE_URL,
+        SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+        SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+        EMAIL_FROM: process.env.EMAIL_FROM,
+        EMAIL_TO: process.env.EMAIL_TO,
+        NODE_ENV: process.env.NODE_ENV,
+
+        // Client
+        NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+        NEXT_PUBLIC_WHATSAPP_NUMBER: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER,
+        NEXT_PUBLIC_WHATSAPP_MESSAGE: process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE,
+        NEXT_PUBLIC_GA4_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID,
+    });
+
+    if (!parsed.success) {
+        const errors = parsed.error.flatten().fieldErrors;
+        const errorMessages = Object.entries(errors)
+            .map(([key, value]) => `  ${key}: ${value?.join(", ")}`)
+            .join("\n");
+
+        // In production, throw error for invalid env
+        if (!isDev) {
+            throw new Error(
+                `❌ Invalid environment variables:\n${errorMessages}\n\nPlease check your .env file.`
+            );
+        }
+
+        // In development, log warning but continue
+        console.warn(
+            `⚠️ Environment variable issues (non-blocking in dev):\n${errorMessages}`
+        );
+    }
+
+    return parsed.data ?? ({} as Env);
 }
 
-// TOGAF: Dynamic Environment Resolution
-// Vercel previews don't have SITE_URL set, but provide VERCEL_URL (without https://)
-const raw = _env.data;
-const siteUrl = raw.NEXT_PUBLIC_SITE_URL ??
-    (raw.NEXT_PUBLIC_VERCEL_URL ? `https://${raw.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000");
+export const env = validateEnv();
 
-export const env = {
-    ...raw,
-    NEXT_PUBLIC_SITE_URL: siteUrl
+/**
+ * Type-safe access to client environment variables
+ * Safe to use in client components
+ */
+export const clientEnv: ClientEnv = {
+    NEXT_PUBLIC_SITE_URL: env.NEXT_PUBLIC_SITE_URL,
+    NEXT_PUBLIC_WHATSAPP_NUMBER: env.NEXT_PUBLIC_WHATSAPP_NUMBER,
+    NEXT_PUBLIC_WHATSAPP_MESSAGE: env.NEXT_PUBLIC_WHATSAPP_MESSAGE,
+    NEXT_PUBLIC_GA4_MEASUREMENT_ID: env.NEXT_PUBLIC_GA4_MEASUREMENT_ID,
 };

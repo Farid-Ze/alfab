@@ -1,70 +1,56 @@
 /**
- * Next.js Instrumentation Hook
- * OPS-01: Observability (ITIL4)
+ * Next.js Instrumentation
  * 
- * This file is automatically loaded by Next.js 16+ for server-side instrumentation.
- * It initializes Sentry before any request is processed.
+ * This file is called once when a new Next.js server instance is initiated.
+ * Used for:
+ * - Setting up OpenTelemetry
+ * - Initializing logging
+ * - Registering monitoring hooks
+ * 
+ * @see https://nextjs.org/docs/app/building-your-application/optimizing/instrumentation
  */
-export async function register() {
-    const isProd = process.env.NODE_ENV === "production";
-    const hasSentry = !!process.env.NEXT_PUBLIC_SENTRY_DSN;
-    if (!isProd || !hasSentry) return;
 
+export async function register() {
+    // Only run on server
     if (process.env.NEXT_RUNTIME === "nodejs") {
-        // Initialize Sentry only on Node.js runtime (production only)
-        const mod = await import("./lib/sentry-server");
-        mod.initSentryServer();
+        // Initialize server-side services
+        const { initializeLogger } = await import("@/lib/logger");
+        initializeLogger();
+
+        console.log("[instrumentation] Server initialized", {
+            nodeVersion: process.version,
+            env: process.env.NODE_ENV,
+            timestamp: new Date().toISOString(),
+        });
     }
 
+    // Edge runtime specific initialization
     if (process.env.NEXT_RUNTIME === "edge") {
-        // Edge runtime: Sentry has limited support (skip for now)
+        console.log("[instrumentation] Edge runtime initialized");
     }
 }
 
 /**
- * onRequestError Hook (Next.js 16+)
- * Automatically captures unhandled errors in API routes and pages.
+ * Called when uncaught exception occurs
+ * Useful for error reporting services like Sentry
  */
 export function onRequestError(
-    error: { digest: string } & Error,
-    request: {
-        path: string;
-        method: string;
-        headers: Record<string, string>;
-    },
-    context: {
-        routerKind: "Pages Router" | "App Router";
-        routePath: string | undefined;
-        routeType: "render" | "route";
-        renderSource: "react-server-components" | "react-server-components-payload" | undefined;
-        revalidateReason: "on-demand" | "stale" | undefined;
-        renderType: "dynamic" | "dynamic-resume" | undefined;
-    }
+    error: Error,
+    request: { path: string; method: string },
+    context: { routerKind: string; routePath: string; revalidateReason: string }
 ) {
-    // Log structured error for CloudWatch/Datadog ingestion
-    console.error(JSON.stringify({
-        timestamp: new Date().toISOString(),
-        level: "error",
-        message: error.message,
-        digest: error.digest,
+    // Log error with context
+    console.error("[instrumentation] Request error", {
+        error: error.message,
+        stack: error.stack,
         path: request.path,
         method: request.method,
-        routerKind: context.routerKind,
         routePath: context.routePath,
-        routeType: context.routeType,
-    }));
+        routerKind: context.routerKind,
+    });
 
-    // Forward to Sentry only in production (avoid noisy dev bundling warnings).
-    if (process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_SENTRY_DSN) {
-        import("@sentry/nextjs").then((Sentry) => {
-            Sentry.captureException(error, {
-                extra: {
-                    path: request.path,
-                    method: request.method,
-                    routerKind: context.routerKind,
-                    routePath: context.routePath,
-                },
-            });
-        });
-    }
+    // TODO: Send to error reporting service (Sentry, etc.)
+    // if (typeof Sentry !== "undefined") {
+    //     Sentry.captureException(error, { extra: context });
+    // }
 }

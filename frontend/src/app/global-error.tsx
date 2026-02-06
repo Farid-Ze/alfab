@@ -1,73 +1,61 @@
 "use client";
 
-import { useEffect } from "react";
-import "./globals.css";
-
-// Note: We avoid next/font/google here to prevent build-time fetch timeouts.
-// Instead, we rely on the manual CSS import in globals.css.
-
+/**
+ * Global Error Boundary
+ * 
+ * Catches errors in the root layout that other error boundaries can't handle
+ * Must include html and body tags since root layout may have failed
+ */
 export default function GlobalError({
-  error,
-  reset,
+    error,
+    reset,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
+    error: Error & { digest?: string };
+    reset: () => void;
 }) {
-  useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_SENTRY_DSN) return;
-    import("@sentry/nextjs").then((Sentry) => {
-      Sentry.captureException(error);
-    });
-  }, [error]);
-
-  return (
-    <html lang="en">
-      <body className="antialiased bg-background text-foreground min-h-screen flex items-center justify-center font-sans">
-        {/* Manually replicating ErrorState.tsx style since we can't easily import complex components in global-error if they depend on Contexts not available at root */}
-        <div className="text-center p-6 max-w-md">
-          <div className="inline-flex rounded-full bg-error/10 p-4 mb-6">
-            <svg
-              className="h-10 w-10 text-error"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          </div>
-
-          <h1 className="type-h2 mb-2">System Error</h1>
-          <p className="type-body text-muted mb-8">
-            A critical error occurred. Please try again.
-          </p>
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <button
-              type="button"
-              onClick={() => reset()}
-              className="ui-btn-primary ui-radius-tight px-6 py-2.5"
-            >
-              Try again
-            </button>
-            {/* Hard reload for global error recovery */}
-            {/* TOGAF Design Decision: Hardcoded to /id as global-error has no LocaleProvider context.
-                This is intentional - global errors occur before context is available. */}
-            <a
-              href="/id"
-              className="px-6 py-2.5 type-ui-strong text-foreground/70 hover:text-foreground transition-colors"
-            >
-              Return Home
-            </a>
-          </div>
-
-          {error.digest && (
-            <div className="mt-8 p-3 bg-subtle rounded text-left">
-              <p className="type-ui-xs font-mono text-muted">Error ID: <span className="select-all">{error.digest}</span></p>
-            </div>
-          )}
-        </div>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <body>
+                <div style={{
+                    minHeight: "100vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "2rem",
+                    fontFamily: "system-ui, sans-serif",
+                }}>
+                    <div style={{ textAlign: "center", maxWidth: "400px" }}>
+                        <h1 style={{
+                            fontSize: "1.5rem",
+                            fontWeight: "bold",
+                            marginBottom: "1rem",
+                            color: "#1a1a1a",
+                        }}>
+                            Application Error
+                        </h1>
+                        <p style={{
+                            color: "#666",
+                            marginBottom: "1.5rem",
+                        }}>
+                            A critical error occurred. Please refresh the page.
+                        </p>
+                        <button
+                            onClick={reset}
+                            style={{
+                                padding: "0.75rem 1.5rem",
+                                backgroundColor: "#1a1a1a",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "0.5rem",
+                                cursor: "pointer",
+                                fontWeight: "500",
+                            }}
+                        >
+                            Try again
+                        </button>
+                    </div>
+                </div>
+            </body>
+        </html>
+    );
 }

@@ -1,29 +1,26 @@
-import { MetadataRoute } from "next";
-import { env } from "@/lib/env";
+import type { MetadataRoute } from "next";
 
 /**
- * Enterprise Robots.txt (ITIL Knowledge Management)
- * Explicitly controls crawler access.
- * - Allows: Google, Bing (Search Engines)
- * - Blocks: GPTBot, CCBot (AI Scrapers - IP Protection)
+ * Dynamic Robots.txt
+ * 
+ * Generates robots.txt for search engine crawlers
+ * Per paket-a.md SEO requirements (A4-02)
  */
 export default function robots(): MetadataRoute.Robots {
-  // TOGAF: Centralized Configuration (Phase 2)
-  // URL is strictly derived from env.ts (which handles Vercel preview URLs logic)
-  const baseUrl = env.NEXT_PUBLIC_SITE_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://alfabeauty.co.id/";
 
-  return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: ["/api/", "/private/", "/_next/", "/api/leads/export", "/admin/", "/dashboard/"],
-      },
-      {
-        userAgent: ["GPTBot", "CCBot", "ChatGPT-User"],
-        disallow: "/",
-      }
-    ],
-    sitemap: `${baseUrl}/sitemap.xml`,
-  };
+    return {
+        rules: [
+            {
+                userAgent: "*",
+                allow: "/",
+                disallow: [
+                    "/api/",
+                    "/_next/",
+                    "/admin/",
+                ],
+            },
+        ],
+        sitemap: `${baseUrl}/sitemap.xml`,
+    };
 }

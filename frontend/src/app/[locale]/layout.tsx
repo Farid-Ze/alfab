@@ -1,48 +1,84 @@
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
+import { SiteHeader, SiteFooter } from "@/components/site";
+import { type Locale, locales, isValidLocale, t } from "@/lib/i18n";
+import { notFound } from "next/navigation";
+import "../globals.css";
 
-import StructuredData from "@/components/seo/StructuredData";
-import { LocaleProvider } from "@/components/i18n/LocaleProvider";
-import LayoutWrapper from "@/components/layout/LayoutWrapper";
-import type { Locale } from "@/lib/i18n";
+const montserrat = Montserrat({
+    subsets: ["latin"],
+    variable: "--font-montserrat",
+    display: "swap",
+});
 
+/**
+ * Generate static params for all locales
+ * This enables static generation for all locale routes
+ */
+export function generateStaticParams() {
+    return locales.map((locale) => ({ locale }));
+}
+
+/**
+ * Generate metadata per locale for SEO
+ */
 export async function generateMetadata({
-  params,
+    params,
 }: {
-  params: Promise<{ locale: string }>;
+    params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
-  if (locale !== "en" && locale !== "id") return {};
+    const { locale } = await params;
 
-  return {
-    openGraph: {
-      locale: locale === "id" ? "id_ID" : "en_US",
-    },
-  };
+    const isId = locale === "id";
+
+    return {
+        title: {
+            default: isId
+                ? "Alfa Beauty Cosmetica - Mitra Distribusi Kecantikan Profesional"
+                : "Alfa Beauty Cosmetica - Professional Beauty Distribution Partner",
+            template: isId ? "%s | Alfa Beauty" : "%s | Alfa Beauty",
+        },
+        description: isId
+            ? "Produk, edukasi, dan dukungan teknis untuk salon & barbershop di Indonesia"
+            : "Products, education, and technical support for salons & barbershops in Indonesia",
+        alternates: {
+            canonical: `/${locale}`,
+            languages: {
+                en: "/en",
+                id: "/id",
+            },
+        },
+    };
 }
 
-export function generateStaticParams(): Array<{ locale: Locale }> {
-  return [{ locale: "en" }, { locale: "id" }];
-}
-
+/**
+ * Locale Layout
+ * 
+ * Root layout for locale routes with proper html lang attribute
+ * Following Next.js 16 pattern: params is a Promise
+ */
 export default async function LocaleLayout({
-  children,
-  params,
+    children,
+    params,
 }: {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+    children: React.ReactNode;
+    params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
-  if (locale !== "en" && locale !== "id") notFound();
+    const { locale } = await params;
 
-  // Skip to content link is included in LayoutWrapper (SkipLink component)
+    // Validate locale
+    if (!isValidLocale(locale)) {
+        notFound();
+    }
 
-  return (
-    <LocaleProvider defaultLocale={locale}>
-      <StructuredData />
-      <LayoutWrapper>
-        {children}
-      </LayoutWrapper>
-    </LocaleProvider>
-  );
+    return (
+        <html lang={locale} className={montserrat.variable}>
+            <body className="font-sans antialiased">
+                <SiteHeader locale={locale} />
+                <main className="min-h-screen">{children}</main>
+                <SiteFooter locale={locale} />
+            </body>
+        </html>
+    );
 }
+

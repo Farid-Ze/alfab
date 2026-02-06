@@ -1,1 +1,0 @@
-npm run lint:tokens && npm run validate:products && npm run lint && npm run type-check

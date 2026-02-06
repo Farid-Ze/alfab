@@ -1,75 +1,90 @@
-export type LogLevel = "info" | "warn" | "error" | "debug";
-
-type LogEntry = {
-    timestamp: string;
-    level: LogLevel;
-    message: string;
-    requestId?: string;
-    context?: Record<string, unknown>;
-};
+import pino from "pino";
 
 /**
- * Structured Logger (ITIL Observability - OPS-01)
- * Outputs JSON logs for ingestion by Datadog/Splunk/CloudWatch.
- * Handles automatic timestamping, request ID propagation, and Sentry forwarding.
+ * Structured Logger
+ * 
+ * Enterprise-grade logging with:
+ * - JSON format for production (machine-readable)
+ * - Pretty format for development (human-readable)
+ * - Log levels (trace, debug, info, warn, error, fatal)
+ * - Request ID tracking
+ * - Automatic timestamp
  */
-class Logger {
-    private requestId?: string;
 
-    /**
-     * Set the request ID for the current context.
-     * Call this in middleware or at the start of an API route.
-     */
-    setRequestId(id: string) {
-        this.requestId = id;
-    }
+// Logger configuration
+const isDev = process.env.NODE_ENV === "development";
 
-    private log(level: LogLevel, message: string, context?: Record<string, unknown>) {
-        const entry: LogEntry = {
-            timestamp: new Date().toISOString(),
-            level,
-            message,
-            requestId: this.requestId,
-            context,
-        };
-        // In production, this would go to stdout (container log collector)
-        console.log(JSON.stringify(entry));
-    }
+// Create base logger
+const baseLogger = pino({
+    level: process.env.LOG_LEVEL || (isDev ? "debug" : "info"),
 
-    info(message: string, context?: Record<string, unknown>) {
-        this.log("info", message, context);
-    }
+    // Add default fields to all logs
+    base: {
+        env: process.env.NODE_ENV,
+        service: "alfa-beauty-web",
+    },
 
-    warn(message: string, context?: Record<string, unknown>) {
-        this.log("warn", message, context);
-    }
+    // Custom timestamp format
+    timestamp: pino.stdTimeFunctions.isoTime,
 
-    error(message: string, context?: Record<string, unknown>) {
-        this.log("error", message, context);
+    // Pretty print in development
+    ...(isDev && {
+        transport: {
+            target: "pino/file",
+            options: { destination: 1 }, // stdout
+        },
+    }),
 
-        // Forward to Sentry if available (OPS-01)
-        if (typeof window === "undefined" && process.env.NEXT_PUBLIC_SENTRY_DSN) {
-            import("@sentry/nextjs").then((Sentry) => {
-                Sentry.captureMessage(message, {
-                    level: "error",
-                    extra: { ...context, requestId: this.requestId },
-                });
-            }).catch(() => {
-                // Sentry not available, fail silently
-            });
-        }
-    }
+    // Redact sensitive fields
+    redact: {
+        paths: [
+            "password",
+            "token",
+            "authorization",
+            "cookie",
+            "*.password",
+            "*.token",
+        ],
+        censor: "[REDACTED]",
+    },
+});
 
-    /**
-     * Debug logging (M02 - ITIL Observability)
-     * Only outputs in development to avoid production log noise.
-     */
-    debug(message: string, context?: Record<string, unknown>) {
-        if (process.env.NODE_ENV === "development") {
-            this.log("debug", message, context);
-        }
-    }
+// Logger type
+export type Logger = pino.Logger;
+
+// Export logger instance
+export const logger = baseLogger;
+
+/**
+ * Create child logger with request context
+ */
+export function createRequestLogger(requestId: string, path?: string) {
+    return logger.child({
+        requestId,
+        path,
+    });
 }
 
-export const logger = new Logger();
+/**
+ * Initialize logger (called from instrumentation.ts)
+ */
+export function initializeLogger() {
+    logger.info({
+        msg: "Logger initialized",
+        logLevel: process.env.LOG_LEVEL || (isDev ? "debug" : "info"),
+    });
+}
 
+/**
+ * Log levels helper
+ */
+export const log = {
+    trace: (msg: string, data?: object) => logger.trace(data, msg),
+    debug: (msg: string, data?: object) => logger.debug(data, msg),
+    info: (msg: string, data?: object) => logger.info(data, msg),
+    warn: (msg: string, data?: object) => logger.warn(data, msg),
+    error: (msg: string, data?: object) => logger.error(data, msg),
+    fatal: (msg: string, data?: object) => logger.fatal(data, msg),
+};
+
+export default logger;

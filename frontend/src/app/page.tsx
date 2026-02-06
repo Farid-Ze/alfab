@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation";
+import { defaultLocale } from "@/lib/i18n";
 
 /**
- * Root Page Redirect
+ * Root Homepage
  * 
- * Fixes critical UX failure (404 at /).
- * Redirects to default locale (ID) until suffix strategy is fully implemented.
+ * Redirects to default locale
  */
-export default function RootPage() {
-    redirect("/id");
+export default function HomePage() {
+  redirect(`/${defaultLocale}`);
 }

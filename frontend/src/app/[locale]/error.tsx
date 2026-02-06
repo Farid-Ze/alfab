@@ -1,50 +1,56 @@
 "use client";
 
-import { useEffect } from "react";
-
-import { t } from "@/lib/i18n";
-
-import { useLocale } from "@/components/i18n/LocaleProvider";
-import Button from "@/components/ui/Button";
-import ButtonLink from "@/components/ui/ButtonLink";
-import Container from "@/components/layout/Container";
-import Page from "@/components/layout/Page";
-
-export default function LocaleError({
-  error,
-  reset,
+/**
+ * Error Boundary for locale routes
+ * 
+ * Handles runtime errors gracefully with a user-friendly UI
+ * Must be a Client Component to use error/reset props
+ */
+export default function Error({
+    error,
+    reset,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
+    error: Error & { digest?: string };
+    reset: () => void;
 }) {
-  const { locale } = useLocale();
-  const tx = t(locale);
-  const base = `/${locale}`;
-
-  useEffect(() => {
-    // ITIL OPS-01: Forward to Sentry for structured observability
-    if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
-      import("@sentry/nextjs").then((Sentry) => {
-        Sentry.captureException(error);
-      });
-    }
-  }, [error]);
-
-  return (
-    <Page className="flex items-center justify-center">
-      <Container className="max-w-2xl space-y-3">
-        <h1 className="type-h2">{tx.system.error.title}</h1>
-        <p className="type-body">{tx.system.error.body}</p>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <Button type="button" onClick={() => reset()}>
-            {tx.system.error.actions.tryAgain}
-          </Button>
-          <ButtonLink href={base} variant="secondary">
-            {tx.system.error.actions.goHome}
-          </ButtonLink>
+    return (
+        <div className="section">
+            <div className="container">
+                <div className="max-w-md mx-auto text-center">
+                    <div className="w-16 h-16 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center">
+                        <svg
+                            className="w-8 h-8 text-red-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                            />
+                        </svg>
+                    </div>
+                    <h1 className="text-2xl font-bold text-primary-800 mb-4">
+                        Something went wrong
+                    </h1>
+                    <p className="text-neutral-600 mb-8">
+                        We encountered an unexpected error. Please try again.
+                    </p>
+                    <button
+                        onClick={reset}
+                        className="btn btn-primary"
+                    >
+                        Try again
+                    </button>
+                    {process.env.NODE_ENV === "development" && error.message && (
+                        <p className="mt-4 text-sm text-red-600 font-mono">
+                            {error.message}
+                        </p>
+                    )}
+                </div>
+            </div>
         </div>
-        {error?.digest ? <p className="type-data text-muted-soft">{tx.system.error.ref}: {error.digest}</p> : null}
-      </Container>
-    </Page>
-  );
+    );
 }

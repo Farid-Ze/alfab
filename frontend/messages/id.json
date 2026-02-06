@@ -1,0 +1,44 @@
+{
+    "nav": {
+        "home": "Beranda",
+        "products": "Produk",
+        "education": "Edukasi",
+        "partnership": "Kemitraan",
+        "about": "Tentang",
+        "contact": "Kontak"
+    },
+    "home": {
+        "hero": {
+            "title": "Mitra Distribusi Kecantikan Profesional",
+            "subtitle": "Produk, Edukasi, dan Dukungan Teknis untuk Salon & Barbershop di Indonesia",
+            "cta": {
+                "products": "Jelajahi Produk",
+                "partner": "Jadi Mitra"
+            }
+        },
+        "pillars": {
+            "title": "Tiga Pilar Keunggulan",
+            "products": {
+                "title": "Produk Premium",
+                "description": "Brand internasional pilihan untuk hasil profesional"
+            },
+            "education": {
+                "title": "Edukasi Ahli",
+                "description": "Pelatihan teknis dan program sertifikasi"
+            },
+            "partnership": {
+                "title": "Kemitraan Strategis",
+                "description": "Dukungan bisnis dan peluang pertumbuhan"
+            }
+        }
+    },
+    "cta": {
+        "whatsapp": "Konsultasi WhatsApp",
+        "learnMore": "Pelajari Lebih Lanjut"
+    },
+    "footer": {
+        "copyright": "© 2026 PT Alfa Beauty Cosmetica. Hak cipta dilindungi.",
+        "privacy": "Kebijakan Privasi",
+        "terms": "Syarat Layanan"
+    }
+}
