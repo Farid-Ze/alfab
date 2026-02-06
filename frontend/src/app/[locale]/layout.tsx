@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import { SiteHeader, SiteFooter } from "@/components/site";
+import { WhatsAppCTA } from "@/components/ui";
 import { type Locale, locales, isValidLocale, t } from "@/lib/i18n";
 import { notFound } from "next/navigation";
 import "../globals.css";
@@ -77,6 +78,7 @@ export default async function LocaleLayout({
                 <SiteHeader locale={locale} />
                 <main className="min-h-screen">{children}</main>
                 <SiteFooter locale={locale} />
+                <WhatsAppCTA />
             </body>
         </html>
     );

@@ -1,5 +1,10 @@
 import type { NextConfig } from "next";
 
+// Bundle analyzer for performance monitoring
+const withBundleAnalyzer = process.env.ANALYZE === "true"
+  ? require("@next/bundle-analyzer")({ enabled: true })
+  : (config: NextConfig) => config;
+
 /**
  * Next.js 16 Configuration
  * 
@@ -7,6 +12,7 @@ import type { NextConfig } from "next";
  * - Turbopack enabled by default
  * - Security headers (per paket-a.md §15)
  * - Image optimization
+ * - Bundle analyzer (npm run analyze)
  */
 const nextConfig: NextConfig = {
   // Enable React strict mode
@@ -55,4 +61,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

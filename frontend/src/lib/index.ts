@@ -30,3 +30,6 @@ export * from "./schemas";
 
 // Animations
 export * from "./animations";
+
+// Image utilities
+export * from "./image";
