@@ -26,7 +26,7 @@ export function BrandShowcase({ locale }: BrandShowcaseProps) {
                 </div>
 
                 <div className="mt-12 text-center">
-                    <Link href={`/${locale}/products`} className="text-primary-600 font-medium hover:text-primary-800 transition-colors inline-flex items-center gap-2">
+                    <Link href={`/${locale}/products` as `/${string}`} className="text-primary-600 font-medium hover:text-primary-800 transition-colors inline-flex items-center gap-2">
                         {locale === "id" ? "Lihat Semua Brand" : "View All Brands"}
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

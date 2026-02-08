@@ -240,4 +240,15 @@
     --nav-height: 4rem;
     --nav-bg: var(--color-neutral-0);
     --nav-border: var(--color-neutral-200);
+
+    /* Header - Enterprise Level */
+    --header-topbar-height: 2.5rem;
+    --header-main-height: 4.5rem;
+    --header-total-height: calc(var(--header-topbar-height) + var(--header-main-height));
+    --header-bg: var(--color-neutral-0);
+    --header-topbar-bg: var(--color-primary-900);
+    --header-topbar-text: var(--color-neutral-0);
+    --header-mega-bg: var(--color-neutral-0);
+    --header-mega-shadow: var(--shadow-xl);
+    --header-mega-border: var(--color-neutral-100);
 }

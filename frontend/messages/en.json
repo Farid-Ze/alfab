@@ -5,7 +5,32 @@
         "education": "Education",
         "partnership": "Partnership",
         "about": "About",
-        "contact": "Contact"
+        "contact": "Contact",
+        "findSalon": "Find Your Salon",
+        "search": "Search",
+        "categories": "Categories",
+        "brands": "Brands",
+        "services": "Services",
+        "allProducts": "All Products",
+        "explore": "Explore"
+    },
+    "products": {
+        "category1": "Hair Color",
+        "category2": "Hair Care",
+        "category3": "Styling",
+        "category4": "Treatment",
+        "category5": "Tools"
+    },
+    "brands": {
+        "alfaparf": "Alfaparf Milano",
+        "farmavita": "Farmavita",
+        "montibello": "Montibello",
+        "gamma": "Gamma+ Professional"
+    },
+    "services": {
+        "coloring": "Coloring Service",
+        "treatment": "Treatment Service",
+        "styling": "Styling Service"
     },
     "home": {
         "hero": {

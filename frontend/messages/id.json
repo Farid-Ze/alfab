@@ -5,7 +5,32 @@
         "education": "Edukasi",
         "partnership": "Kemitraan",
         "about": "Tentang",
-        "contact": "Kontak"
+        "contact": "Kontak",
+        "findSalon": "Temukan Salon Anda",
+        "search": "Cari",
+        "categories": "Kategori",
+        "brands": "Merek",
+        "services": "Layanan",
+        "allProducts": "Semua Produk",
+        "explore": "Jelajahi"
+    },
+    "products": {
+        "category1": "Warna Rambut",
+        "category2": "Perawatan Rambut",
+        "category3": "Styling",
+        "category4": "Treatment",
+        "category5": "Alat"
+    },
+    "brands": {
+        "alfaparf": "Alfaparf Milano",
+        "farmavita": "Farmavita",
+        "montibello": "Montibello",
+        "gamma": "Gamma+ Professional"
+    },
+    "services": {
+        "coloring": "Layanan Pewarnaan",
+        "treatment": "Layanan Treatment",
+        "styling": "Layanan Styling"
     },
     "home": {
         "hero": {

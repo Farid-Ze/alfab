@@ -25,10 +25,10 @@ export function Hero({ locale }: HeroProps) {
                         {content.subheadline}
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link href={`/${locale}/products`} className="btn btn-primary">
+                        <Link href={`/${locale}/products` as `/${string}`} className="btn btn-primary">
                             {hero.cta.products}
                         </Link>
-                        <Link href={`/${locale}/partnership`} className="btn btn-secondary">
+                        <Link href={`/${locale}/partnership` as `/${string}`} className="btn btn-secondary">
                             {hero.cta.partner}
                         </Link>
                     </div>
