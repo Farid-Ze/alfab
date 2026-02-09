@@ -291,6 +291,184 @@ footer a:hover {
 }
 
 /* ============================================
+ * SKIP NAVIGATION - Enterprise A11Y
+ * Visually hidden until focused, then appears
+ * above everything for keyboard users.
+ * ============================================ */
+
+.skip-nav-link {
+    position: fixed;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--skip-nav-bg);
+    color: var(--skip-nav-text);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    text-decoration: none;
+    transition: top var(--duration-fast) var(--ease-default);
+    white-space: nowrap;
+}
+
+.skip-nav-link:focus {
+    top: 0;
+    outline: 2px solid var(--skip-nav-focus-ring);
+    outline-offset: 2px;
+}
+
+/* ============================================
+ * SCROLL PROGRESS BAR
+ * Thin progress indicator at top of header
+ * ============================================ */
+
+.scroll-progress-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--progress-bar-height);
+    background: var(--progress-bar-track);
+    overflow: hidden;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.scroll-progress-bar {
+    width: 100%;
+    height: 100%;
+    background: var(--progress-bar-bg);
+    transform-origin: left;
+    will-change: transform;
+    transition: none;
+}
+
+/* ============================================
+ * MEGA MENU BACKDROP OVERLAY
+ * Semi-transparent overlay behind mega menu
+ * ============================================ */
+
+.mega-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    background: var(--mega-backdrop-bg);
+    z-index: calc(var(--z-sticky) + 1);
+    pointer-events: auto;
+    animation: fadeIn var(--duration-normal) var(--ease-default);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ============================================
+ * BACK TO TOP BUTTON
+ * Fixed position bottom-right scroll-to-top
+ * ============================================ */
+
+.back-to-top-btn {
+    position: fixed;
+    bottom: 6rem;
+    right: 1.5rem;
+    z-index: var(--z-sticky);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--back-to-top-size);
+    height: var(--back-to-top-size);
+    background: var(--back-to-top-bg);
+    color: var(--back-to-top-text);
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-full);
+    box-shadow: var(--back-to-top-shadow);
+    cursor: pointer;
+    transition: box-shadow var(--duration-fast) var(--ease-default),
+                border-color var(--duration-fast) var(--ease-default),
+                color var(--duration-fast) var(--ease-default);
+}
+
+.back-to-top-btn:hover {
+    box-shadow: var(--back-to-top-hover-shadow);
+    border-color: var(--color-neutral-300);
+    color: var(--color-neutral-900);
+}
+
+.back-to-top-btn:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+/* ============================================
+ * TRUST BADGES SECTION
+ * Scroll-reveal credibility indicators
+ * ============================================ */
+
+.trust-badges-section {
+    background: var(--surface-background);
+    border-top: 1px solid var(--border-default);
+}
+
+.trust-badge-item {
+    opacity: 1;
+    transition: opacity var(--duration-slow) var(--ease-default),
+                transform var(--duration-slow) var(--ease-default);
+}
+
+.trust-badge-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--trust-badge-icon-size);
+    height: var(--trust-badge-icon-size);
+    border-radius: var(--radius-full);
+    background: var(--trust-badge-icon-bg);
+    color: var(--trust-badge-icon-color);
+    margin-bottom: var(--space-2);
+}
+
+/* ============================================
+ * PAYMENT METHOD BADGES
+ * Small labels for accepted payment platforms
+ * ============================================ */
+
+.payment-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-1) var(--space-3);
+    font-size: 0.6875rem;
+    font-weight: var(--font-medium);
+    color: var(--payment-badge-text);
+    background: var(--payment-badge-bg);
+    border: 1px solid var(--payment-badge-border);
+    border-radius: var(--radius-sm);
+    letter-spacing: var(--tracking-wide);
+    white-space: nowrap;
+    user-select: none;
+}
+
+/* ============================================
+ * SOCIAL ICON LINKS — Hover animation
+ * ============================================ */
+
+.social-icon-link {
+    transition: color var(--duration-fast) var(--ease-default),
+                background-color var(--duration-fast) var(--ease-default),
+                transform var(--duration-fast) var(--ease-default);
+}
+
+.social-icon-link:hover {
+    transform: translateY(-1px);
+}
+
+.social-icon-link:active {
+    transform: translateY(0);
+}
+
+/* ============================================
  * HEADER - Data-Attribute Driven States
  * Controlled via JS data-* attributes; styled via CSS.
  * Eliminates inline style object re-creation on scroll.
@@ -390,4 +568,79 @@ footer a:hover {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
+
+    .scroll-progress-bar {
+        transition: none !important;
+    }
+
+    .mega-menu-backdrop {
+        animation: none !important;
+    }
+
+    .trust-badge-item {
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .social-icon-link:hover {
+        transform: none !important;
+    }
+}
+
+/* ============================================
+ * PRINT STYLES - Enterprise requirement
+ * ============================================ */
+
+@media print {
+    .topbar,
+    #site-header,
+    .mega-menu-backdrop,
+    .back-to-top-btn,
+    .skip-nav-link {
+        display: none !important;
+    }
+
+    .site-footer {
+        background: white !important;
+        color: #111 !important;
+        page-break-inside: avoid;
+    }
+
+    .site-footer a {
+        color: #111 !important;
+        text-decoration: underline;
+    }
+
+    .trust-badges-section {
+        border: none !important;
+    }
+
+    .payment-badge {
+        background: transparent !important;
+        border-color: #ccc !important;
+        color: #333 !important;
+    }
+
+    /* Ensure main content is printable */
+    #main-content {
+        padding: 0 !important;
+    }
+}
+
+/* ============================================
+ * SR-ONLY UTILITY
+ * Screen reader only content — visually hidden
+ * ============================================ */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
 }

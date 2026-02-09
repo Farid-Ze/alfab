@@ -114,7 +114,9 @@ export default async function LocaleLayout({
 
                 <SiteHeader locale={locale} />
 
-                {children}
+                <main id="main-content" tabIndex={-1}>
+                    {children}
+                </main>
 
                 <SiteFooter locale={locale} />
                 <WhatsAppCTA locale={locale} />

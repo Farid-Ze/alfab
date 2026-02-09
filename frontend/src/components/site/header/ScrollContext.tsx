@@ -1,9 +1,13 @@
 /**
  * ScrollContext — Header scroll state with useReducer
  *
- * Single dispatch replaces 3 separate setState calls (isScrolled, isVisible, headerMode).
+ * Single dispatch replaces separate setState calls.
  * Reducer bails out on unchanged state → React skips re-render.
  * Components that only care about menu state import MenuContext instead.
+ *
+ * Enterprise features:
+ * - scrollProgress (0–100) for scroll progress indicators
+ * - Referential equality bailout for zero-cost no-op dispatches
  */
 "use client";
 
@@ -22,6 +26,8 @@ export interface ScrollState {
     isScrolled: boolean;
     isVisible: boolean;
     headerMode: HeaderMode;
+    /** Page scroll progress 0–100 for progress bar indicators */
+    scrollProgress: number;
 }
 
 export type ScrollAction = {
@@ -29,14 +35,15 @@ export type ScrollAction = {
     isScrolled: boolean;
     isVisible: boolean;
     headerMode: HeaderMode;
+    scrollProgress: number;
 };
 
 function scrollReducer(state: ScrollState, action: ScrollAction): ScrollState {
-    // Referential equality bailout — React skips re-render
     if (
         state.isScrolled === action.isScrolled &&
         state.isVisible === action.isVisible &&
-        state.headerMode === action.headerMode
+        state.headerMode === action.headerMode &&
+        state.scrollProgress === action.scrollProgress
     ) {
         return state;
     }
@@ -44,6 +51,7 @@ function scrollReducer(state: ScrollState, action: ScrollAction): ScrollState {
         isScrolled: action.isScrolled,
         isVisible: action.isVisible,
         headerMode: action.headerMode,
+        scrollProgress: action.scrollProgress,
     };
 }
 
@@ -51,6 +59,7 @@ const initialState: ScrollState = {
     isScrolled: false,
     isVisible: true,
     headerMode: "full",
+    scrollProgress: 0,
 };
 
 export interface ScrollContextValue extends ScrollState {

@@ -1,5 +1,20 @@
 "use client";
 
+/**
+ * MobileNav — Enterprise-grade mobile navigation drawer
+ *
+ * Features:
+ * - Full-screen slide-in drawer from right
+ * - Body scroll lock with proper cleanup
+ * - Real focus trap cycling Tab/Shift+Tab within drawer
+ * - Escape key close
+ * - Auto-close on viewport resize to desktop (handled by useHeaderScroll)
+ * - Expandable sub-menus with animation
+ * - Active page indicator with aria-current
+ * - Language switcher + contact link at bottom
+ * - Print: hidden (inherits from framer-motion portal)
+ */
+
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,6 +39,14 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
     const [expandedItem, setExpandedItem] = useState<string | null>(null);
     const pathname = usePathname();
     const pathWithoutLocale = pathname.replace(/^\/(en|id)/, "") || "/";
+    const previousFocusRef = useRef<HTMLElement | null>(null);
+
+    // Store previously focused element for focus return
+    useEffect(() => {
+        if (isOpen) {
+            previousFocusRef.current = document.activeElement as HTMLElement;
+        }
+    }, [isOpen]);
 
     // Body scroll lock with proper cleanup
     useEffect(() => {
@@ -37,15 +60,28 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
         };
     }, [isOpen]);
 
-    // Close on Escape
+    // Close on Escape + return focus
     useEffect(() => {
         if (!isOpen) return;
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
+            if (e.key === "Escape") {
+                onClose();
+                requestAnimationFrame(() => {
+                    previousFocusRef.current?.focus();
+                });
+            }
         };
         document.addEventListener("keydown", handleKeyDown);
         return () => document.removeEventListener("keydown", handleKeyDown);
     }, [isOpen, onClose]);
+
+    // Close on route change
+    useEffect(() => {
+        if (isOpen) {
+            onClose();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pathname]);
 
     // Real focus trap: cycle Tab/Shift+Tab within drawer
     const handleFocusTrap = useCallback((e: KeyboardEvent) => {
@@ -81,6 +117,14 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
         setExpandedItem(expandedItem === itemId ? null : itemId);
     };
 
+    // Focus return on close via button
+    const handleClose = useCallback(() => {
+        onClose();
+        requestAnimationFrame(() => {
+            previousFocusRef.current?.focus();
+        });
+    }, [onClose]);
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -91,28 +135,29 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-40 bg-black/30"
-                        onClick={onClose}
+                        className="fixed inset-0 z-40 bg-black/30 print:hidden"
+                        onClick={handleClose}
                         aria-hidden="true"
                     />
 
                     {/* Drawer */}
                     <motion.div
                         ref={drawerRef}
+                        id="mobile-nav-drawer"
                         initial={{ opacity: 0, x: "100%" }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: "100%" }}
                         transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-                        className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white flex flex-col shadow-xl"
+                        className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white flex flex-col shadow-xl print:hidden"
                         role="dialog"
                         aria-modal="true"
                         aria-label={translations.nav?.menu || "Navigation menu"}
                     >
                         {/* Top bar: logo left, close right */}
-                        <div className="flex items-center justify-between px-6 h-16 border-b border-neutral-100">
-                            <BrandLogo locale={locale} size="sm" variant="dark" onClick={onClose} />
+                        <div className="flex items-center justify-between px-6 h-16 border-b border-neutral-100 shrink-0">
+                            <BrandLogo locale={locale} size="sm" variant="dark" onClick={handleClose} />
                             <button
-                                onClick={onClose}
+                                onClick={handleClose}
                                 aria-label={translations.nav?.closeMenu || "Close menu"}
                                 className="p-2 -mr-2 text-neutral-500 hover:text-neutral-900 transition-colors"
                             >
@@ -120,20 +165,23 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
                             </button>
                         </div>
 
-                        {/* Navigation */}
-                        <nav className="flex-1 overflow-y-auto py-8 px-6">
-                            <ul className="space-y-1">
+                        {/* Navigation — scrollable area */}
+                        <nav className="flex-1 overflow-y-auto overscroll-contain py-8 px-6" aria-label="Mobile navigation">
+                            <ul className="space-y-1" role="menu">
                                 {navigationItems.map((item) => {
                                     const panelId = `mobile-panel-${item.id}`;
                                     const isExpanded = expandedItem === item.id;
+                                    const itemPath = item.href ? `/${locale}${item.href}` : "";
+                                    const isActive = !!(itemPath && pathname.startsWith(itemPath));
 
                                     return (
-                                        <li key={item.id}>
+                                        <li key={item.id} role="none">
                                             {item.megaMenu ? (
                                                 <>
                                                     <button
                                                         onClick={() => toggleExpanded(item.id)}
                                                         className="flex items-center justify-between w-full py-4 text-lg font-normal text-neutral-900"
+                                                        role="menuitem"
                                                         aria-expanded={isExpanded}
                                                         aria-controls={panelId}
                                                     >
@@ -149,7 +197,7 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
                                                         {isExpanded && (
                                                             <motion.ul
                                                                 id={panelId}
-                                                                role="region"
+                                                                role="menu"
                                                                 initial={{ height: 0, opacity: 0 }}
                                                                 animate={{ height: "auto", opacity: 1 }}
                                                                 exit={{ height: 0, opacity: 0 }}
@@ -157,11 +205,12 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
                                                                 className="overflow-hidden pl-4 border-l border-neutral-200"
                                                             >
                                                                 {item.megaMenu.columns.flatMap(col => col.links).map((link, idx) => (
-                                                                    <li key={idx}>
+                                                                    <li key={idx} role="none">
                                                                         <Link
                                                                             href={`/${locale}${link.href}`}
-                                                                            onClick={onClose}
+                                                                            onClick={handleClose}
                                                                             className="block py-3 text-base font-normal text-neutral-500 hover:text-neutral-900 transition-colors"
+                                                                            role="menuitem"
                                                                         >
                                                                             {getTranslation(translations as Record<string, unknown>, link.labelKey)}
                                                                         </Link>
@@ -174,13 +223,14 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
                                             ) : (
                                                 <Link
                                                     href={`/${locale}${item.href || ""}`}
-                                                    onClick={onClose}
+                                                    onClick={handleClose}
                                                     className={`block py-4 text-lg font-normal ${
-                                                        item.href && pathname.startsWith(`/${locale}${item.href}`)
+                                                        isActive
                                                             ? "text-neutral-900 font-medium"
                                                             : "text-neutral-700"
                                                     }`}
-                                                    aria-current={item.href && pathname.startsWith(`/${locale}${item.href}`) ? "page" : undefined}
+                                                    role="menuitem"
+                                                    aria-current={isActive ? "page" : undefined}
                                                 >
                                                     {translations.nav?.[item.id as keyof typeof translations.nav] || item.labelKey}
                                                 </Link>
@@ -192,17 +242,17 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
                         </nav>
 
                         {/* Bottom: language + contact */}
-                        <div className="px-6 py-6 border-t border-neutral-100 space-y-4">
+                        <div className="px-6 py-6 border-t border-neutral-100 space-y-4 shrink-0">
                             <Link
                                 href={locale === "id" ? `/en${pathWithoutLocale}` : `/id${pathWithoutLocale}`}
-                                onClick={onClose}
+                                onClick={handleClose}
                                 className="block text-sm text-neutral-600 hover:text-neutral-900 transition-colors"
                             >
                                 {locale === "id" ? "English" : "Bahasa Indonesia"}
                             </Link>
                             <Link
                                 href={`/${locale}/contact`}
-                                onClick={onClose}
+                                onClick={handleClose}
                                 className="block text-sm text-neutral-600 hover:text-neutral-900 transition-colors"
                             >
                                 {translations.nav?.contact || "Contact"}

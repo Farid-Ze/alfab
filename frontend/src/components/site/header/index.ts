@@ -7,4 +7,20 @@ export { useScroll } from "./ScrollContext";
 export { useMenu } from "./MenuContext";
 export { useHeaderScroll } from "./useHeaderScroll";
 export { useHoverIntent } from "./useHoverIntent";
-export { navigationItems, type NavItem, type NavLink, type MegaMenuColumn, type MegaMenuFeatured, type FooterSection, footerSections, socialLinks, topBarData, type TopBarData } from "./navigation-data";
+export {
+    navigationItems,
+    type NavItem,
+    type NavLink,
+    type MegaMenuColumn,
+    type MegaMenuFeatured,
+    type FooterSection,
+    type TrustBadge,
+    type PaymentMethod,
+    type SocialLink,
+    footerSections,
+    socialLinks,
+    topBarData,
+    trustBadges,
+    paymentMethods,
+    type TopBarData,
+} from "./navigation-data";

@@ -1,3 +1,13 @@
+/**
+ * SocialIcons — Enterprise-grade social media icon links
+ *
+ * Features:
+ * - Extensible icon registry (add new platforms via navigation-data)
+ * - Accessible: aria-label per link, sr-only tooltip labels
+ * - Hover animation: scale + color transition
+ * - Supports: Shopee, Instagram, Facebook, TikTok, YouTube
+ */
+
 import { socialLinks } from "../header/navigation-data";
 
 function ShopeeIcon() {
@@ -24,15 +34,33 @@ function FacebookIcon() {
     );
 }
 
+function TikTokIcon() {
+    return (
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15.2a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.73a8.19 8.19 0 0 0 4.76 1.52V6.8a4.84 4.84 0 0 1-1-.11z" />
+        </svg>
+    );
+}
+
+function YouTubeIcon() {
+    return (
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+        </svg>
+    );
+}
+
 const iconComponents: Record<string, React.ComponentType> = {
     shopee: ShopeeIcon,
     instagram: InstagramIcon,
     facebook: FacebookIcon,
+    tiktok: TikTokIcon,
+    youtube: YouTubeIcon,
 };
 
 export function SocialIcons() {
     return (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2" role="list" aria-label="Social media">
             {socialLinks.map((link) => {
                 const Icon = iconComponents[link.icon];
                 return (
@@ -42,7 +70,8 @@ export function SocialIcons() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={link.label}
-                        className="flex items-center justify-center w-10 h-10 text-neutral-500 hover:text-white transition-colors duration-200"
+                        role="listitem"
+                        className="social-icon-link flex items-center justify-center w-10 h-10 rounded-full text-neutral-500 hover:text-white hover:bg-white/10 transition-all duration-200"
                     >
                         {Icon && <Icon />}
                     </a>

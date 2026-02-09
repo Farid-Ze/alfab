@@ -201,4 +201,40 @@
     --footer-heading: var(--color-neutral-0);
     --footer-link-hover: var(--color-neutral-0);
     --footer-border: rgba(255, 255, 255, 0.1);
+
+    /* ============================================
+     * ENTERPRISE COMPONENT TOKENS
+     * Skip Nav, Progress Bar, Backdrop, Back-to-Top,
+     * Trust Badges, Payment Badges
+     * ============================================ */
+
+    /* Skip Navigation */
+    --skip-nav-bg: var(--color-primary-900);
+    --skip-nav-text: var(--color-neutral-0);
+    --skip-nav-focus-ring: var(--color-secondary-500);
+
+    /* Scroll Progress Bar */
+    --progress-bar-height: 2px;
+    --progress-bar-bg: var(--color-secondary-500);
+    --progress-bar-track: transparent;
+
+    /* Mega Menu Backdrop */
+    --mega-backdrop-bg: rgba(0, 0, 0, 0.15);
+
+    /* Back to Top Button */
+    --back-to-top-bg: var(--color-neutral-0);
+    --back-to-top-text: var(--color-neutral-700);
+    --back-to-top-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    --back-to-top-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+    --back-to-top-size: 44px;
+
+    /* Trust Badges */
+    --trust-badge-icon-color: var(--color-secondary-600);
+    --trust-badge-icon-bg: var(--color-secondary-50);
+    --trust-badge-icon-size: 56px;
+
+    /* Payment Badges */
+    --payment-badge-bg: rgba(255, 255, 255, 0.08);
+    --payment-badge-text: var(--color-neutral-400);
+    --payment-badge-border: rgba(255, 255, 255, 0.12);
 }

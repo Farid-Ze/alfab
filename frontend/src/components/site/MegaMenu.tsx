@@ -1,5 +1,18 @@
 "use client";
 
+/**
+ * MegaMenu — Enterprise-grade desktop mega menu panel
+ *
+ * Features:
+ * - AnimatePresence enter/exit with reduced-motion detection
+ * - Dynamic header-bottom tracking via ResizeObserver
+ * - Escape key + click-outside close (excludes header for hover transitions)
+ * - ArrowDown focuses first link; ArrowUp from first link closes menu
+ * - Focus trap within panel: Tab cycles through links
+ * - Proper role="menu" / role="menuitem" + aria-label
+ * - Print: hidden
+ */
+
 import { useRef, useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,6 +46,8 @@ const megaMenuVariants = {
         transition: { duration: 0.15, ease: [0.4, 0, 1, 1] as const },
     },
 };
+
+const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled])';
 
 export function MegaMenu({
     item,
@@ -69,16 +84,36 @@ export function MegaMenu({
         return () => observer.disconnect();
     }, [isOpen, updateTopOffset]);
 
-    // Escape key + click-outside (clicks inside #site-header are excluded
-    // so hover intent can handle nav-link → different-item transitions)
+    // Escape key + click-outside + focus trap
     useEffect(() => {
         if (!isOpen) return;
 
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
+            if (e.key === "Escape") {
+                onClose();
+                return;
+            }
             if (e.key === "ArrowDown") {
                 e.preventDefault();
                 firstLinkRef.current?.focus();
+                return;
+            }
+
+            // Focus trap: Tab cycling within mega menu
+            if (e.key === "Tab" && menuRef.current) {
+                const focusable = menuRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+                if (focusable.length === 0) return;
+
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
             }
         };
 
@@ -104,10 +139,6 @@ export function MegaMenu({
         };
     }, [isOpen, onClose]);
 
-    // Focus first link only when opened via keyboard (ArrowDown handler)
-    // — not on hover, to avoid showing the focus ring on mouse interaction.
-    // The ArrowDown global handler already calls firstLinkRef.focus().
-
     if (!item?.megaMenu) return null;
 
     return (
@@ -119,7 +150,7 @@ export function MegaMenu({
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="fixed left-0 right-0 bg-white border-b border-neutral-200 shadow-lg"
+                    className="fixed left-0 right-0 bg-white border-b border-neutral-200 shadow-lg print:hidden"
                     style={{
                         top: topOffset,
                         zIndex: "var(--z-fixed)" as string,
@@ -145,7 +176,7 @@ export function MegaMenu({
                                     <h3 className="text-xs font-medium uppercase text-neutral-400 mb-6 tracking-widest">
                                         {getTranslation(translations as Record<string, unknown>, column.titleKey)}
                                     </h3>
-                                    <ul className="space-y-3">
+                                    <ul className="space-y-3" role="group">
                                         {column.links.map((link, linkIdx) => {
                                             const globalIdx = item.megaMenu!.columns
                                                 .slice(0, idx)

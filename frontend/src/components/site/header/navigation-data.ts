@@ -2,7 +2,10 @@
  * Navigation Data - Menu structure for header & footer
  *
  * Centralized data for navigation items, mega menu content,
- * top bar announcements, and footer sections.
+ * top bar announcements, footer sections, trust badges, and payment methods.
+ *
+ * Enterprise-grade: single source of truth for all site navigation
+ * and footer metadata across desktop, mobile, and print.
  */
 
 export interface NavLink {
@@ -40,6 +43,26 @@ export interface FooterSection {
 
 export interface TopBarData {
     promoKey: string;
+}
+
+export interface TrustBadge {
+    id: string;
+    label: string;
+    icon: "shield" | "truck" | "headphones" | "award" | "clock" | "check";
+    descriptionKey: string;
+}
+
+export interface PaymentMethod {
+    id: string;
+    label: string;
+    icon: string;
+}
+
+export interface SocialLink {
+    id: string;
+    label: string;
+    href: string;
+    icon: string;
 }
 
 /**
@@ -116,7 +139,7 @@ export const navigationItems: NavItem[] = [
 /**
  * Social media links (rendered in footer)
  */
-export const socialLinks = [
+export const socialLinks: SocialLink[] = [
     {
         id: "shopee",
         label: "Shopee",
@@ -134,6 +157,18 @@ export const socialLinks = [
         label: "Facebook",
         href: "https://facebook.com",
         icon: "facebook",
+    },
+    {
+        id: "tiktok",
+        label: "TikTok",
+        href: "https://tiktok.com/@alfabeauty",
+        icon: "tiktok",
+    },
+    {
+        id: "youtube",
+        label: "YouTube",
+        href: "https://youtube.com/@alfabeauty",
+        icon: "youtube",
     },
 ];
 
@@ -181,4 +216,48 @@ export const footerSections: FooterSection[] = [
             { labelKey: "footer.cookies", href: "/cookies" },
         ],
     },
+];
+
+/**
+ * Trust Badges — displayed above footer to build credibility
+ * Enterprise pattern: social proof via trust indicators
+ */
+export const trustBadges: TrustBadge[] = [
+    {
+        id: "authentic",
+        label: "100% Authentic",
+        icon: "shield",
+        descriptionKey: "footer.trust.authentic",
+    },
+    {
+        id: "delivery",
+        label: "Nationwide Delivery",
+        icon: "truck",
+        descriptionKey: "footer.trust.delivery",
+    },
+    {
+        id: "support",
+        label: "Professional Support",
+        icon: "headphones",
+        descriptionKey: "footer.trust.support",
+    },
+    {
+        id: "certified",
+        label: "BPOM Certified",
+        icon: "award",
+        descriptionKey: "footer.trust.certified",
+    },
+];
+
+/**
+ * Payment methods accepted — footer badge display
+ */
+export const paymentMethods: PaymentMethod[] = [
+    { id: "bca", label: "BCA", icon: "bca" },
+    { id: "mandiri", label: "Mandiri", icon: "mandiri" },
+    { id: "bni", label: "BNI", icon: "bni" },
+    { id: "bri", label: "BRI", icon: "bri" },
+    { id: "gopay", label: "GoPay", icon: "gopay" },
+    { id: "ovo", label: "OVO", icon: "ovo" },
+    { id: "dana", label: "DANA", icon: "dana" },
 ];
