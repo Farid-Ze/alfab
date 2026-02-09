@@ -12,9 +12,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { X } from "lucide-react";
 import { type Locale, t, getTranslation } from "@/lib/i18n";
-import { topBarData } from "./header";
+import { topBarData, socialLinks } from "./header";
 
 const TOPBAR_DISMISSED_KEY = "alfa-topbar-dismissed";
+
+// Find the Shopee link from navigation data
+const shopeeLink = socialLinks.find((s) => s.id === "shopee");
 
 interface TopBarProps {
     locale: Locale;
@@ -60,15 +63,33 @@ export function TopBar({ locale }: TopBarProps) {
             role="complementary"
             aria-label={translations.nav?.announcements || "Announcements"}
         >
-            <div className="flex items-center justify-center h-full px-4 relative">
-                <p className="text-[11px] sm:text-xs tracking-wide text-center">{promoText}</p>
-                <button
-                    onClick={handleDismiss}
-                    className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 p-1 text-neutral-500 hover:text-neutral-200 transition-colors duration-200"
-                    aria-label={translations.nav?.dismissAnnouncement || "Dismiss announcement"}
-                >
-                    <X size={14} strokeWidth={1.5} />
-                </button>
+            <div className="flex items-center justify-between h-full px-4 sm:px-10">
+                {/* Left spacer for centering on desktop */}
+                <div className="hidden lg:flex items-center min-w-[120px]" />
+
+                {/* Center: promo text */}
+                <p className="text-[11px] sm:text-xs tracking-wide text-center flex-1 lg:flex-none">{promoText}</p>
+
+                {/* Right: Shopee link + dismiss */}
+                <div className="flex items-center gap-3 sm:gap-4 min-w-[120px] justify-end">
+                    {shopeeLink && (
+                        <a
+                            href={shopeeLink.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hidden sm:inline-block text-[11px] sm:text-xs font-medium tracking-wide text-[var(--topbar-shopee-text)] hover:text-white transition-colors duration-150 uppercase whitespace-nowrap"
+                        >
+                            {getTranslation(translations as Record<string, unknown>, "topbar.shopeeLabel")}
+                        </a>
+                    )}
+                    <button
+                        onClick={handleDismiss}
+                        className="p-1 text-neutral-500 hover:text-neutral-200 transition-colors duration-200 shrink-0"
+                        aria-label={translations.nav?.dismissAnnouncement || "Dismiss announcement"}
+                    >
+                        <X size={14} strokeWidth={1.5} />
+                    </button>
+                </div>
             </div>
         </div>
     );

@@ -188,6 +188,7 @@
     --topbar-height: 2.25rem;
     --topbar-bg: var(--color-primary-900);
     --topbar-text: var(--color-neutral-400);
+    --topbar-shopee-text: var(--color-secondary-400, #f59e0b);
 
     /* Combined Header + TopBar */
     --header-total-height: calc(var(--topbar-height) + var(--header-height));

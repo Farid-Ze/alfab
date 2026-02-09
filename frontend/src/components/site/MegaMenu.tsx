@@ -1,23 +1,24 @@
 "use client";
 
 /**
- * MegaMenu — Enterprise-grade desktop mega menu panel
+ * MegaMenu — Clean, Alfaparf-style mega menu panel
+ *
+ * Reference: alfaparfmilanopro.com/int-en/brand
  *
  * Features:
- * - AnimatePresence enter/exit with reduced-motion detection
+ * - Clean show/hide — no framer-motion, no AnimatePresence
  * - Dynamic header-bottom tracking via ResizeObserver
- * - Escape key + click-outside close (excludes header for hover transitions)
- * - ArrowDown focuses first link; ArrowUp from first link closes menu
- * - Focus trap within panel: Tab cycles through links
+ * - Escape key + click-outside close
+ * - Keyboard: ArrowDown focuses first link, Escape closes
  * - Proper role="menu" / role="menuitem" + aria-label
+ * - "All Products" bottom link (like Alfaparf's "ALL LINES →")
  * - Print: hidden
  */
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { type Locale, t, getTranslation } from "@/lib/i18n";
 import { type NavItem } from "./header";
 
@@ -26,35 +27,13 @@ interface MegaMenuProps {
     item: NavItem | null;
     isOpen: boolean;
     onClose: () => void;
-    /** Hover continuity: cancel close when mouse enters panel */
-    onPanelEnter: () => void;
-    /** Hover continuity: start close countdown when mouse leaves panel */
-    onPanelLeave: () => void;
     locale: Locale;
 }
-
-const megaMenuVariants = {
-    hidden: { opacity: 0, y: -8 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.25, ease: [0, 0, 0.2, 1] as const },
-    },
-    exit: {
-        opacity: 0,
-        y: -8,
-        transition: { duration: 0.15, ease: [0.4, 0, 1, 1] as const },
-    },
-};
-
-const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled])';
 
 export function MegaMenu({
     item,
     isOpen,
     onClose,
-    onPanelEnter,
-    onPanelLeave,
     locale,
 }: MegaMenuProps) {
     const menuRef = useRef<HTMLDivElement>(null);
@@ -84,7 +63,7 @@ export function MegaMenu({
         return () => observer.disconnect();
     }, [isOpen, updateTopOffset]);
 
-    // Escape key + click-outside + focus trap
+    // Escape key + click-outside
     useEffect(() => {
         if (!isOpen) return;
 
@@ -96,24 +75,6 @@ export function MegaMenu({
             if (e.key === "ArrowDown") {
                 e.preventDefault();
                 firstLinkRef.current?.focus();
-                return;
-            }
-
-            // Focus trap: Tab cycling within mega menu
-            if (e.key === "Tab" && menuRef.current) {
-                const focusable = menuRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-                if (focusable.length === 0) return;
-
-                const first = focusable[0];
-                const last = focusable[focusable.length - 1];
-
-                if (e.shiftKey && document.activeElement === first) {
-                    e.preventDefault();
-                    last.focus();
-                } else if (!e.shiftKey && document.activeElement === last) {
-                    e.preventDefault();
-                    first.focus();
-                }
             }
         };
 
@@ -139,106 +100,107 @@ export function MegaMenu({
         };
     }, [isOpen, onClose]);
 
-    if (!item?.megaMenu) return null;
+    if (!item?.megaMenu || !isOpen) return null;
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <motion.div
-                    ref={menuRef}
-                    variants={megaMenuVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="fixed left-0 right-0 bg-white border-b border-neutral-200 shadow-lg print:hidden"
-                    style={{
-                        top: topOffset,
-                        zIndex: "var(--z-fixed)" as string,
-                    }}
-                    role="menu"
-                    aria-label={getTranslation(translations as Record<string, unknown>, item.labelKey)}
-                    onMouseEnter={onPanelEnter}
-                    onMouseLeave={onPanelLeave}
+        <div
+            ref={menuRef}
+            className="fixed left-0 right-0 bg-white border-b border-neutral-200 shadow-lg print:hidden"
+            style={{
+                top: topOffset,
+                zIndex: "var(--z-fixed)" as string,
+            }}
+            role="menu"
+            aria-label={getTranslation(translations as Record<string, unknown>, item.labelKey)}
+        >
+            <div className="max-w-6xl mx-auto px-6 lg:px-10 py-10 relative">
+                {/* Close button — Alfaparf style, top right */}
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 p-2 text-neutral-400 hover:text-neutral-900 transition-colors duration-200"
+                    aria-label={translations.nav?.closeMenu || "Close menu"}
                 >
-                    <div className="max-w-6xl mx-auto px-6 lg:px-10 py-12 relative">
-                        {/* Close button */}
-                        <button
-                            onClick={onClose}
-                            className="absolute top-4 right-4 p-2 text-neutral-400 hover:text-neutral-900 transition-colors duration-200"
-                            aria-label={translations.nav?.closeMenu || "Close menu"}
-                        >
-                            <X size={20} />
-                        </button>
+                    <X size={22} strokeWidth={1.5} />
+                </button>
 
-                        <div className={`grid gap-12 ${item.megaMenu.featured ? "grid-cols-4" : "grid-cols-3"}`}>
-                            {item.megaMenu.columns.map((column, idx) => (
-                                <div key={`${item.id}-${idx}`}>
-                                    <h3 className="text-xs font-medium uppercase text-neutral-400 mb-6 tracking-widest">
-                                        {getTranslation(translations as Record<string, unknown>, column.titleKey)}
-                                    </h3>
-                                    <ul className="space-y-3" role="group">
-                                        {column.links.map((link, linkIdx) => {
-                                            const globalIdx = item.megaMenu!.columns
-                                                .slice(0, idx)
-                                                .reduce((sum, c) => sum + c.links.length, 0) + linkIdx;
+                <div className={`grid gap-10 ${item.megaMenu.featured ? "grid-cols-4" : "grid-cols-3"}`}>
+                    {/* Columns of links */}
+                    {item.megaMenu.columns.map((column, idx) => (
+                        <div key={`${item.id}-${idx}`}>
+                            <h3 className="text-sm font-semibold uppercase text-neutral-900 mb-5 tracking-wider">
+                                {getTranslation(translations as Record<string, unknown>, column.titleKey)}
+                            </h3>
+                            <ul className="space-y-3" role="group">
+                                {column.links.map((link, linkIdx) => {
+                                    const globalIdx = item.megaMenu!.columns
+                                        .slice(0, idx)
+                                        .reduce((sum, c) => sum + c.links.length, 0) + linkIdx;
 
-                                            return (
-                                                <li key={linkIdx}>
-                                                    <Link
-                                                        ref={globalIdx === 0 ? firstLinkRef : undefined}
-                                                        href={`/${locale}${link.href}`}
-                                                        onClick={onClose}
-                                                        className="mega-menu-link text-sm text-neutral-600 hover:text-neutral-900 transition-colors duration-200"
-                                                        role="menuitem"
-                                                        onKeyDown={(e) => {
-                                                            if (e.key === "Escape") {
-                                                                e.preventDefault();
-                                                                onClose();
-                                                            }
-                                                            if (e.key === "ArrowUp" && globalIdx === 0) {
-                                                                e.preventDefault();
-                                                                onClose();
-                                                            }
-                                                        }}
-                                                    >
-                                                        {getTranslation(translations as Record<string, unknown>, link.labelKey)}
-                                                    </Link>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </div>
-                            ))}
-
-                            {/* Featured promo area */}
-                            {item.megaMenu.featured && (
-                                <div className="relative overflow-hidden rounded-lg bg-neutral-100">
-                                    <Image
-                                        src={item.megaMenu.featured.image}
-                                        alt=""
-                                        fill
-                                        className="object-cover pointer-events-none"
-                                        sizes="(min-width: 1024px) 25vw, 0px"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/70 to-transparent pointer-events-none" />
-                                    <div className="relative z-10 flex flex-col justify-end h-full p-6 min-h-[260px]">
-                                        <h4 className="text-sm font-semibold uppercase text-white tracking-wider mb-3">
-                                            {getTranslation(translations as Record<string, unknown>, item.megaMenu.featured.titleKey)}
-                                        </h4>
-                                        <Link
-                                            href={`/${locale}${item.megaMenu.featured.href}`}
-                                            onClick={onClose}
-                                            className="mega-menu-link text-xs font-medium uppercase text-white/90 hover:text-white tracking-widest transition-colors duration-200"
-                                        >
-                                            {getTranslation(translations as Record<string, unknown>, item.megaMenu.featured.ctaKey)}
-                                        </Link>
-                                    </div>
-                                </div>
-                            )}
+                                    return (
+                                        <li key={linkIdx}>
+                                            <Link
+                                                ref={globalIdx === 0 ? firstLinkRef : undefined}
+                                                href={`/${locale}${link.href}`}
+                                                onClick={onClose}
+                                                className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors duration-150"
+                                                role="menuitem"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Escape") {
+                                                        e.preventDefault();
+                                                        onClose();
+                                                    }
+                                                }}
+                                            >
+                                                {getTranslation(translations as Record<string, unknown>, link.labelKey)}
+                                            </Link>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
                         </div>
+                    ))}
+
+                    {/* Featured promo area (Alfaparf-style image + title + CTA) */}
+                    {item.megaMenu.featured && (
+                        <div className="relative overflow-hidden rounded-lg bg-neutral-100 min-h-[260px]">
+                            <Image
+                                src={item.megaMenu.featured.image}
+                                alt=""
+                                fill
+                                className="object-cover pointer-events-none"
+                                sizes="(min-width: 1024px) 25vw, 0px"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/70 to-transparent pointer-events-none" />
+                            <div className="relative z-10 flex flex-col justify-end h-full p-6">
+                                <h4 className="text-sm font-semibold uppercase text-white tracking-wider mb-3">
+                                    {getTranslation(translations as Record<string, unknown>, item.megaMenu.featured.titleKey)}
+                                </h4>
+                                <Link
+                                    href={`/${locale}${item.megaMenu.featured.href}`}
+                                    onClick={onClose}
+                                    className="text-xs font-medium uppercase text-white/90 hover:text-white tracking-widest transition-colors duration-150"
+                                >
+                                    {getTranslation(translations as Record<string, unknown>, item.megaMenu.featured.ctaKey)}
+                                </Link>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Bottom link — Alfaparf-style "ALL LINES →" */}
+                {item.href && (
+                    <div className="mt-10 pt-6 border-t border-neutral-100">
+                        <Link
+                            href={`/${locale}${item.href}`}
+                            onClick={onClose}
+                            className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-neutral-500 hover:text-neutral-900 transition-colors duration-150"
+                        >
+                            {translations.nav?.allProducts || "All Products"}
+                            <ArrowRight size={14} strokeWidth={1.5} />
+                        </Link>
                     </div>
-                </motion.div>
-            )}
-        </AnimatePresence>
+                )}
+            </div>
+        </div>
     );
 }

@@ -54,7 +54,6 @@ import {
     useScroll,
     useMenu,
     useHeaderScroll,
-    useHoverIntent,
     navigationItems,
 } from "./header";
 import { MegaMenu } from "./MegaMenu";
@@ -104,18 +103,6 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
     // Stable close callback
     const closeMenu = useCallback(() => setActiveMenu(null), [setActiveMenu]);
 
-    // Hover intent — debounced open + grace period close
-    const {
-        handleNavEnter,
-        handleNavLeave,
-        handlePanelEnter,
-        handlePanelLeave,
-        closeImmediate,
-    } = useHoverIntent({
-        onOpen: setActiveMenu,
-        onClose: closeMenu,
-    });
-
     /* ─── Roving Tabindex Keyboard Handler ─────────────────── */
     const handleNavKeyDown = useCallback(
         (e: React.KeyboardEvent, index: number, itemId: string, hasMegaMenu: boolean) => {
@@ -156,22 +143,22 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                     break;
                 }
                 case "Escape": {
-                    closeImmediate();
+                    closeMenu();
                     triggerRef.current?.focus();
                     break;
                 }
             }
         },
-        [setActiveMenu, closeImmediate]
+        [setActiveMenu, closeMenu]
     );
 
     /* ─── Focus-return on mega menu close ──────────────────── */
     const handleMegaMenuClose = useCallback(() => {
-        closeImmediate();
+        closeMenu();
         requestAnimationFrame(() => {
             triggerRef.current?.focus();
         });
-    }, [closeImmediate]);
+    }, [closeMenu]);
 
     // Resolve active nav item for the single MegaMenu instance
     const activeNavItem = useMemo(
@@ -279,11 +266,11 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                                         hasMega
                                             ? () => {
                                                   triggerRef.current = navItemRefs.current[index] ?? null;
-                                                  handleNavEnter(item.id);
+                                                  setActiveMenu(item.id);
                                               }
                                             : undefined
                                     }
-                                    onMouseLeave={hasMega ? handleNavLeave : undefined}
+                                    onMouseLeave={hasMega ? closeMenu : undefined}
                                 >
                                     <Link
                                         ref={(el) => {
@@ -348,22 +335,11 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                 </div>
             </header>
 
-            {/* Mega Menu Backdrop Overlay — click to close */}
-            {activeNavItem && (
-                <div
-                    className="mega-menu-backdrop"
-                    aria-hidden="true"
-                    onClick={handleMegaMenuClose}
-                />
-            )}
-
-            {/* Single MegaMenu instance — outside nav loop for hover continuity */}
+            {/* Single MegaMenu instance */}
             <MegaMenu
                 item={activeNavItem}
                 isOpen={!!activeNavItem}
                 onClose={handleMegaMenuClose}
-                onPanelEnter={handlePanelEnter}
-                onPanelLeave={handlePanelLeave}
                 locale={locale}
             />
 
