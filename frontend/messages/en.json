@@ -16,7 +16,10 @@
         "openMenu": "Open menu",
         "closeMenu": "Close menu",
         "mainNav": "Main navigation",
-        "announcements": "Announcements"
+        "announcements": "Announcements",
+        "becomePartner": "Become Partner",
+        "whatsappConsult": "Customer Service",
+        "dismissAnnouncement": "Dismiss announcement"
     },
     "topbar": {
         "promo": "Free shipping on orders over Rp 500.000",

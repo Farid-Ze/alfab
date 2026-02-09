@@ -496,12 +496,15 @@ footer a:hover {
     max-height: var(--header-utility-height);
     opacity: 1;
     transition: max-height var(--duration-slow) var(--ease-header),
-                opacity var(--duration-slow) var(--ease-header);
+                opacity var(--duration-slow) var(--ease-header),
+                padding var(--duration-slow) var(--ease-header),
+                border-color var(--duration-slow) var(--ease-header);
 }
 
 #site-header[data-mode="compact"] .header-utility-row {
     max-height: 0;
     opacity: 0;
+    border-bottom-color: transparent;
 }
 
 /* Nav row height adjusts in compact mode */
@@ -511,7 +514,7 @@ footer a:hover {
 }
 
 #site-header[data-mode="compact"] .header-nav-row nav {
-    height: 3.5rem;
+    height: var(--header-compact-nav-height, 3.25rem);
 }
 
 /* ============================================

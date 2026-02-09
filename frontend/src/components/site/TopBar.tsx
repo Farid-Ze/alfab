@@ -56,16 +56,16 @@ export function TopBar({ locale }: TopBarProps) {
 
     return (
         <div
-            className="topbar hidden lg:block w-full print:hidden"
+            className="topbar w-full print:hidden"
             role="complementary"
             aria-label={translations.nav?.announcements || "Announcements"}
         >
             <div className="flex items-center justify-center h-full px-4 relative">
-                <p className="text-xs tracking-wide">{promoText}</p>
+                <p className="text-[11px] sm:text-xs tracking-wide text-center">{promoText}</p>
                 <button
                     onClick={handleDismiss}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-neutral-500 hover:text-neutral-200 transition-colors duration-200"
-                    aria-label={translations.nav?.closeMenu || "Dismiss announcement"}
+                    className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 p-1 text-neutral-500 hover:text-neutral-200 transition-colors duration-200"
+                    aria-label={translations.nav?.dismissAnnouncement || "Dismiss announcement"}
                 >
                     <X size={14} strokeWidth={1.5} />
                 </button>

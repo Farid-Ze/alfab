@@ -171,10 +171,11 @@
     --input-radius: var(--radius-md);
 
     /* Header - Aesop-Inspired Two-Row Layout */
-    --header-utility-height: 3rem;    /* 48px - utility row */
+    --header-utility-height: 3.5rem;   /* 56px - utility row (breathable, Aesop-style) */
     --header-nav-height: 3rem;        /* 48px - navigation row */
     --header-mobile-height: 3.5rem;   /* 56px - mobile bar */
     --header-height: calc(var(--header-utility-height) + var(--header-nav-height));
+    --header-compact-nav-height: 3.25rem; /* 52px - compact single row */
     --header-bg: var(--color-neutral-0);
     --header-border-scrolled: var(--color-neutral-200);
     --header-shadow-scrolled: 0 1px 0 0 rgba(0, 0, 0, 0.04);

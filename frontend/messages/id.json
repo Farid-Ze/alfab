@@ -16,7 +16,10 @@
         "openMenu": "Buka menu",
         "closeMenu": "Tutup menu",
         "mainNav": "Navigasi utama",
-        "announcements": "Pengumuman"
+        "announcements": "Pengumuman",
+        "becomePartner": "Jadi Partner",
+        "whatsappConsult": "Layanan Pelanggan",
+        "dismissAnnouncement": "Tutup pengumuman"
     },
     "topbar": {
         "promo": "Gratis ongkir untuk pesanan di atas Rp 500.000",

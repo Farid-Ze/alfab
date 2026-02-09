@@ -1,9 +1,24 @@
 "use client";
 
 /**
- * SiteHeader — Enterprise-grade header component
+ * SiteHeader — Aesop-inspired enterprise-grade header
  *
- * Features beyond standard UI libraries:
+ * Layout (matches aesop.com exactly, minus search):
+ * ┌─────────────────────────────────────────────────────┐
+ * │ [TopBar] dark bg, centered promo, dismissible       │
+ * ├─────────────────────────────────────────────────────┤
+ * │ Contact | Service    LOGO (xl)   Partner | Lang     │ ← Utility Row
+ * ├─────────────────────────────────────────────────────┤
+ * │         Products  Education  Partnership  About     │ ← Nav Row (centered)
+ * └─────────────────────────────────────────────────────┘
+ *
+ * On scroll (compact mode):
+ * ┌─────────────────────────────────────────────────────┐
+ * │ [TopBar] persists                                   │
+ * ├─────────────────────────────────────────────────────┤
+ * │ Logo(sm)  Products Education ... About   WA | Lang  │ ← Single row
+ * └─────────────────────────────────────────────────────┘
+ *
  * ─── Accessibility (WCAG 2.1 AA) ────────────────────────────
  * - Skip navigation link (bypass to #main-content)
  * - Roving tabindex: ArrowLeft/Right/Home/End across nav items
@@ -21,7 +36,6 @@
  * - CSS data-attribute driven transitions (no inline style churn)
  *
  * ─── UX ──────────────────────────────────────────────────────
- * - Scroll progress bar indicator
  * - Hover intent with safe-triangle grace period
  * - Mega menu backdrop overlay
  * - Auto-close mobile nav on viewport resize to desktop
@@ -32,8 +46,9 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useMemo, useRef, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { Menu, MessageCircle } from "lucide-react";
 import { type Locale, t } from "@/lib/i18n";
+import { siteConfig } from "@/lib/config";
 import {
     HeaderProvider,
     useScroll,
@@ -58,27 +73,6 @@ function SkipNavLink() {
         <a href="#main-content" className="skip-nav-link">
             Skip to main content
         </a>
-    );
-}
-
-/* ─── Scroll Progress Bar ──────────────────────────────────── */
-function ScrollProgressBar() {
-    const { scrollProgress } = useScroll();
-
-    return (
-        <div
-            className="scroll-progress-track"
-            role="progressbar"
-            aria-valuenow={Math.round(scrollProgress)}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label="Page scroll progress"
-        >
-            <div
-                className="scroll-progress-bar"
-                style={{ transform: `scaleX(${scrollProgress / 100})` }}
-            />
-        </div>
     );
 }
 
@@ -195,12 +189,13 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
         setActiveMenu(null);
     }, [pathname, setActiveMenu]);
 
+    // WhatsApp URL
+    const waUrl = `https://wa.me/${siteConfig.contact.whatsapp.replace(/\D/g, "")}`;
+
     return (
         <>
             <SkipNavLink />
             <SrAnnouncement message={srMessage} />
-
-            <TopBar locale={locale} />
 
             <header
                 id="site-header"
@@ -210,12 +205,13 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                 data-mode={headerMode}
                 role="banner"
             >
-                {/* Scroll Progress Bar */}
-                <ScrollProgressBar />
+                {/* TopBar — inside sticky header so it persists on scroll (Aesop pattern) */}
+                <TopBar locale={locale} />
 
-                {/* Utility Row — Desktop only, collapses in compact mode via CSS */}
+                {/* ─── Utility Row — Desktop only, collapses in compact mode ─── */}
                 <div className="header-utility-row hidden lg:block border-b border-neutral-100 overflow-hidden">
                     <div className="grid grid-cols-3 items-center h-12 px-6 lg:px-10">
+                        {/* Left: Contact + Customer Service (Aesop: "Stores" + "Customer service") */}
                         <div className="flex items-center gap-6">
                             <Link
                                 href={`/${locale}/contact`}
@@ -223,13 +219,29 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                             >
                                 {translations.nav?.contact || "Contact"}
                             </Link>
+                            <a
+                                href={waUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-neutral-600 hover:text-neutral-900 transition-colors"
+                            >
+                                {translations.nav?.whatsappConsult || "Customer Service"}
+                            </a>
                         </div>
 
+                        {/* Center: Prominent brand logo — xl size, Aesop-style hero mark */}
                         <div className="flex justify-center">
-                            <BrandLogo locale={locale} size="lg" variant="dark" />
+                            <BrandLogo locale={locale} size="xl" variant="dark" />
                         </div>
 
+                        {/* Right: Become Partner + Language Switcher (Aesop: "Email sign up" + "Account" + "Cart") */}
                         <div className="flex items-center justify-end gap-6">
+                            <Link
+                                href={`/${locale}/partnership`}
+                                className="text-xs text-neutral-600 hover:text-neutral-900 transition-colors"
+                            >
+                                {translations.nav?.becomePartner || "Become Partner"}
+                            </Link>
                             <LanguageSwitcher
                                 locale={locale}
                                 pathWithoutLocale={pathWithoutLocale}
@@ -239,13 +251,14 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                     </div>
                 </div>
 
-                {/* Navigation Row — height controlled by CSS via data-mode */}
+                {/* ─── Navigation Row — centered links only in full mode ─── */}
                 <div className="header-nav-row hidden lg:block">
                     <nav
                         className="relative flex items-center justify-center px-6 lg:px-10"
                         aria-label={translations.nav?.mainNav || "Main navigation"}
                         role="menubar"
                     >
+                        {/* Compact mode: small logo on the left (Aesop scroll pattern) */}
                         {isCompact && (
                             <div className="absolute left-6 lg:left-10">
                                 <BrandLogo locale={locale} size="sm" variant="dark" />
@@ -285,7 +298,6 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                                         aria-current={isCurrent ? "page" : undefined}
                                         onKeyDown={(e) => handleNavKeyDown(e, index, item.id, hasMega)}
                                         onFocus={() => {
-                                            // Update roving tabindex when focus moves
                                             navItemRefs.current.forEach((ref, i) => {
                                                 if (ref) ref.tabIndex = i === index ? 0 : -1;
                                             });
@@ -299,8 +311,18 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                             );
                         })}
 
+                        {/* Compact mode: right-side actions (Aesop: search icon + cart icon) */}
                         {isCompact && (
                             <div className="absolute right-6 lg:right-10 flex items-center gap-4">
+                                <a
+                                    href={waUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-1.5 text-neutral-600 hover:text-neutral-900 transition-colors"
+                                    aria-label={translations.cta?.whatsapp || "WhatsApp"}
+                                >
+                                    <MessageCircle size={18} strokeWidth={1.5} />
+                                </a>
                                 <LanguageSwitcher
                                     locale={locale}
                                     pathWithoutLocale={pathWithoutLocale}
@@ -311,7 +333,7 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                     </nav>
                 </div>
 
-                {/* Mobile header bar */}
+                {/* ─── Mobile header bar ─── */}
                 <div className="flex lg:hidden items-center justify-between h-14 px-4 sm:px-6">
                     <BrandLogo locale={locale} size="sm" variant="dark" />
                     <button
