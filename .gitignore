@@ -1,0 +1,34 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Node
+node_modules/
+.next/
+dist/
+
+# --- Evidence pack ---
+# Paket A: PASS + Evidence is meant to be auditable.
+artifacts/
+!artifacts/paket-a/
+!artifacts/paket-a/**
+!artifacts/paket-a/**/*.log
+
+# Supabase CLI local state
+supabase/.temp/
+supabase/
+
+tmp/
+reference/
+reference.html
+
+studio-alfa-beauty-cms

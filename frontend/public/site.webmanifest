@@ -1,0 +1,23 @@
+{
+    "name": "Alfa Beauty Cosmetica",
+    "short_name": "Alfa Beauty",
+    "description": "Professional beauty distribution partner for salons and barbershops in Indonesia",
+    "start_url": "/id",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#1a1a2e",
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

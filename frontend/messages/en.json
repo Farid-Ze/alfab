@@ -1,0 +1,139 @@
+{
+    "nav": {
+        "home": "Home",
+        "products": "Products",
+        "education": "Education",
+        "partnership": "Partnership",
+        "about": "About",
+        "contact": "Contact",
+        "findSalon": "Find Your Salon",
+        "categories": "Categories",
+        "brands": "Brands",
+        "services": "Services",
+        "allProducts": "All Products",
+        "explore": "Explore",
+        "menu": "Navigation menu",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu",
+        "mainNav": "Main navigation",
+        "announcements": "Announcements"
+    },
+    "topbar": {
+        "promo": "Free shipping on orders over Rp 500.000",
+        "shopeeLabel": "Shop on Shopee"
+    },
+    "products": {
+        "category1": "Hair Color",
+        "category2": "Hair Care",
+        "category3": "Styling",
+        "category4": "Treatment",
+        "category5": "Tools",
+        "megaFeatured": "DISCOVER OUR PRODUCTS"
+    },
+    "brands": {
+        "alfaparf": "Alfaparf Milano",
+        "farmavita": "Farmavita",
+        "montibello": "Montibello",
+        "gamma": "Gamma+ Professional"
+    },
+    "services": {
+        "coloring": "Coloring Service",
+        "treatment": "Treatment Service",
+        "styling": "Styling Service"
+    },
+    "home": {
+        "hero": {
+            "headline": "Connecting Global Hair Innovation to Indonesia's Salon & Barber Professionals",
+            "subheadline": "Exclusive importer and distributor of leading Italian and Spanish professional haircare brands, serving Indonesia's salon & barber industry for over 18 years.",
+            "title": "Professional Beauty Distribution Partner",
+            "subtitle": "Products, Education, and Technical Support for Salons & Barbershops in Indonesia",
+            "cta": {
+                "products": "Explore Our Brands",
+                "partner": "Partner With Us"
+            }
+        },
+        "brands": {
+            "label": "Official Distributor",
+            "viewAll": "View All Brands"
+        },
+        "pillars": {
+            "title": "Three Pillars of Excellence",
+            "products": {
+                "title": "Premium Products",
+                "description": "Carefully selected international brands for professional results"
+            },
+            "education": {
+                "title": "Expert Education",
+                "description": "Technical training and certification programs"
+            },
+            "partnership": {
+                "title": "Strategic Partnership",
+                "description": "Business support and growth opportunities"
+            }
+        }
+    },
+    "cta": {
+        "whatsapp": "WhatsApp Consult",
+        "learnMore": "Learn More"
+    },
+    "footer": {
+        "copyright": "\u00a9 2026 PT Alfa Beauty Cosmetica. All rights reserved.",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "description": "Professional beauty distribution partner for salons and barbershops in Indonesia.",
+        "newsletterTitle": "Stay connected",
+        "newsletterDesc": "Subscribe for product updates, education programs, and industry insights.",
+        "emailPlaceholder": "Email address",
+        "subscribeSuccess": "Thank you for subscribing.",
+        "faq": "FAQ",
+        "shipping": "Shipping & Delivery",
+        "returns": "Returns",
+        "accessibility": "Accessibility",
+        "cookies": "Cookie Policy",
+        "sections": {
+            "products": "Products",
+            "company": "Company",
+            "support": "Support",
+            "legal": "Legal"
+        }
+    },
+    "error": {
+        "title": "Something went wrong",
+        "description": "We encountered an unexpected error. Please try again.",
+        "retry": "Try again"
+    },
+    "notFound": {
+        "title": "Page Not Found",
+        "description": "The page you're looking for doesn't exist or has been moved.",
+        "backHome": "Back to Home"
+    },
+    "pages": {
+        "home": { "title": "Home", "description": "Professional beauty distribution partner for salons and barbershops in Indonesia" },
+        "about": { "title": "About Us", "description": "About PT. Alfa Beauty Cosmetica - Professional beauty distribution partner" },
+        "contact": { "title": "Contact", "description": "Contact Alfa Beauty Cosmetica for business inquiries" },
+        "education": { "title": "Education", "description": "Professional training and education programs for salon professionals" },
+        "partnership": { "title": "Partnership", "description": "Become a distribution partner with Alfa Beauty Cosmetica" },
+        "privacy": { "title": "Privacy Policy", "description": "Privacy policy for Alfa Beauty Cosmetica" },
+        "products": { "title": "Products", "description": "Professional haircare products for salons and barbershops" },
+        "terms": { "title": "Terms of Service", "description": "Terms of service for Alfa Beauty Cosmetica" }
+    },
+    "maintenance": {
+        "subtitle": "Under Maintenance",
+        "description": "This page is currently under development. Please check back later.",
+        "cta": "Back to Home"
+    },
+    "whatsapp": {
+        "ariaLabel": "Contact via WhatsApp",
+        "chatLabel": "Chat WhatsApp"
+    },
+    "site": {
+        "title": "Alfa Beauty Cosmetica - Professional Beauty Distribution Partner",
+        "titleTemplate": "%s | Alfa Beauty",
+        "description": "Products, education, and technical support for salons & barbershops in Indonesia"
+    },
+    "globalError": {
+        "title": "Application Error",
+        "description": "A critical error occurred. Please refresh the page.",
+        "retry": "Try again"
+    }
+}

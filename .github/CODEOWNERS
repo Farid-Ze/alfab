@@ -1,0 +1,14 @@
+* @farid-ze
+
+# Backend / API / Security
+.github/workflows/ @farid-ze
+frontend/src/app/api/ @farid-ze
+frontend/src/lib/ @farid-ze
+frontend/src/middleware.ts @farid-ze
+
+# Frontend / UI
+frontend/src/components/ @farid-ze
+frontend/src/app/ @farid-ze
+
+# Documentation
+docs/ @farid-ze

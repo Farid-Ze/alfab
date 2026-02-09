@@ -1,0 +1,393 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+/* ============================================
+ * TAILWIND THEME EXTENSION
+ * Map CSS tokens to Tailwind utilities
+ * ============================================ */
+
+@theme {
+    /* ============================================
+     * PRIMITIVE COLORS
+     * Source of truth for all color values.
+     * These generate Tailwind utilities (bg-primary-900, text-neutral-600, etc.)
+     * AND CSS custom properties used by semantic tokens in tokens.css.
+     * ============================================ */
+
+    /* Primary - Deep Navy (Professional B2B) */
+    --color-primary-50: #f0f4ff;
+    --color-primary-100: #e0e8ff;
+    --color-primary-200: #c7d4ff;
+    --color-primary-300: #a3b8ff;
+    --color-primary-400: #7a94ff;
+    --color-primary-500: #5a70f5;
+    --color-primary-600: #4a5ae8;
+    --color-primary-700: #3d48cc;
+    --color-primary-800: #1a1f4e;
+    --color-primary-900: #0d1029;
+
+    /* Secondary - Teal/Mint (Fresh, Beauty) */
+    --color-secondary-50: #e5f4f4;
+    --color-secondary-100: #ccecec;
+    --color-secondary-200: #99d9d9;
+    --color-secondary-300: #66c6c6;
+    --color-secondary-400: #33b3b3;
+    --color-secondary-500: #0ca89e;
+    --color-secondary-600: #0a8a82;
+    --color-secondary-700: #086c66;
+    --color-secondary-800: #064e4a;
+    --color-secondary-900: #04302e;
+
+    /* Neutral - Custom Gray Scale */
+    --color-neutral-0: #ffffff;
+    --color-neutral-50: #f9fafb;
+    --color-neutral-100: #f3f4f6;
+    --color-neutral-200: #e5e7eb;
+    --color-neutral-300: #d1d5db;
+    --color-neutral-400: #9ca3af;
+    --color-neutral-500: #6b7280;
+    --color-neutral-600: #4b5563;
+    --color-neutral-700: #374151;
+    --color-neutral-800: #1f2937;
+    --color-neutral-900: #111827;
+
+    /* Feedback */
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-error: #ef4444;
+    --color-info: #3b82f6;
+
+    /* ============================================
+     * SEMANTIC COLOR ALIASES
+     * Tailwind utilities: bg-background, text-foreground, etc.
+     * ============================================ */
+
+    --color-primary: #1a1f4e;
+    --color-accent: #0ca89e;
+    --color-background: #ffffff;
+    --color-foreground: #1a1f4e;
+    --color-muted: #6b7280;
+    --color-surface-elevated: #f9fafb;
+    --color-surface-inverse: #0d1029;
+    --color-border: #e5e7eb;
+    --color-border-muted: #f3f4f6;
+
+    /* Font — references Next.js font CSS variable */
+    --font-sans: var(--font-montserrat), system-ui, -apple-system, sans-serif;
+    --font-serif: var(--font-montserrat), system-ui, -apple-system, sans-serif;
+}
+
+/* ============================================
+ * BASE STYLES
+ * ============================================ */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--surface-background);
+    color: var(--text-primary);
+    line-height: var(--leading-normal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+    background-color: var(--color-secondary-200);
+    color: var(--color-primary-900);
+}
+
+/* ============================================
+ * TYPOGRAPHY
+ * ============================================ */
+
+.text-balance {
+    text-wrap: balance;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text-primary);
+    font-weight: var(--font-bold);
+    line-height: var(--leading-tight);
+}
+
+/* Links - base reset only, no global hover color */
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-default);
+}
+
+/* Content link hover (scoped — does not affect nav/footer links) */
+.prose a:hover,
+article a:hover,
+.content-link:hover {
+    color: var(--text-link-hover);
+}
+
+/* ============================================
+ * COMPONENT UTILITIES
+ * ============================================ */
+
+@layer components {
+    /* Buttons */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        padding: var(--space-3) var(--space-6);
+        font-weight: var(--font-semibold);
+        border-radius: var(--radius-lg);
+        transition: all var(--duration-fast) var(--ease-default);
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: var(--btn-primary-bg);
+        color: var(--btn-primary-text);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--btn-primary-bg-hover);
+    }
+
+    .btn-secondary {
+        background-color: var(--btn-secondary-bg);
+        border: 1px solid var(--btn-secondary-border);
+        color: var(--btn-secondary-text);
+    }
+
+    .btn-secondary:hover {
+        background-color: var(--btn-secondary-hover-bg);
+    }
+
+    /* Cards */
+    .card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--card-radius);
+        box-shadow: var(--card-shadow);
+    }
+
+    /* Container */
+    .container {
+        width: 100%;
+        max-width: 1280px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: var(--space-4);
+        padding-right: var(--space-4);
+    }
+
+    @media (min-width: 640px) {
+        .container {
+            padding-left: var(--space-6);
+            padding-right: var(--space-6);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .container {
+            padding-left: var(--space-8);
+            padding-right: var(--space-8);
+        }
+    }
+
+    /* Section spacing */
+    .section {
+        padding-top: var(--space-16);
+        padding-bottom: var(--space-16);
+    }
+
+    @media (min-width: 768px) {
+        .section {
+            padding-top: var(--space-24);
+            padding-bottom: var(--space-24);
+        }
+    }
+}
+
+/* ============================================
+ * NAVIGATION - Alfaparf-Style Clean Hover
+ * Subtle opacity-based underline on hover;
+ * static underline for active page.
+ * ============================================ */
+
+.nav-link-underline {
+    position: relative;
+    transition: color var(--duration-normal) var(--ease-default);
+}
+
+.nav-link-underline::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: var(--space-5);
+    right: var(--space-5);
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--ease-default);
+}
+
+.nav-link-underline:hover::after,
+.nav-link-underline[aria-expanded="true"]::after {
+    opacity: 1;
+}
+
+/* Active page indicator — static, always visible */
+.nav-link-underline[aria-current="page"] {
+    color: var(--color-neutral-900);
+}
+
+.nav-link-underline[aria-current="page"]::after {
+    opacity: 1;
+    background-color: var(--color-neutral-900);
+}
+
+/* Mega menu link hover — subtle underline reveal */
+.mega-menu-link {
+    position: relative;
+    display: inline-block;
+}
+
+.mega-menu-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-normal) var(--ease-default);
+}
+
+.mega-menu-link:hover::after,
+.mega-menu-link:focus-visible::after {
+    transform: scaleX(1);
+}
+
+/* Footer link hover via token */
+footer a:hover {
+    color: var(--footer-link-hover);
+}
+
+/* ============================================
+ * HEADER - Data-Attribute Driven States
+ * Controlled via JS data-* attributes; styled via CSS.
+ * Eliminates inline style object re-creation on scroll.
+ * ============================================ */
+
+#site-header {
+    z-index: var(--z-sticky);
+    border-bottom-color: transparent;
+    transition: transform var(--duration-slow) var(--ease-header),
+                box-shadow var(--duration-slow) var(--ease-header),
+                border-color var(--duration-slow) var(--ease-header);
+}
+
+#site-header[data-scrolled="true"] {
+    border-bottom-color: var(--color-neutral-200);
+    box-shadow: var(--header-shadow-scrolled);
+}
+
+#site-header[data-visible="false"] {
+    transform: translateY(-100%);
+}
+
+/* Utility row collapse in compact mode */
+.header-utility-row {
+    max-height: var(--header-utility-height);
+    opacity: 1;
+    transition: max-height var(--duration-slow) var(--ease-header),
+                opacity var(--duration-slow) var(--ease-header);
+}
+
+#site-header[data-mode="compact"] .header-utility-row {
+    max-height: 0;
+    opacity: 0;
+}
+
+/* Nav row height adjusts in compact mode */
+.header-nav-row nav {
+    height: var(--header-nav-height);
+    transition: height var(--duration-slow) var(--ease-header);
+}
+
+#site-header[data-mode="compact"] .header-nav-row nav {
+    height: 3.5rem;
+}
+
+/* ============================================
+ * COMPONENT — Token-driven utility classes
+ * Replaces inline style={{ }} with class selectors.
+ * ============================================ */
+
+/* Letter-spacing tokens as utility classes */
+.tracking-ultra {
+    letter-spacing: var(--tracking-ultra);
+}
+
+.tracking-widest {
+    letter-spacing: var(--tracking-widest);
+}
+
+/* TopBar */
+.topbar {
+    background-color: var(--topbar-bg);
+    color: var(--topbar-text);
+    height: var(--topbar-height);
+}
+
+/* Footer */
+.site-footer {
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+}
+
+.footer-divider {
+    border-top: 1px solid var(--footer-border);
+}
+
+/* ============================================
+ * KEYFRAMES
+ * ============================================ */
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* ============================================
+ * REDUCED MOTION - Accessibility
+ * ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

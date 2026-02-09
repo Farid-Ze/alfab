@@ -1,0 +1,139 @@
+{
+    "nav": {
+        "home": "Beranda",
+        "products": "Produk",
+        "education": "Edukasi",
+        "partnership": "Kemitraan",
+        "about": "Tentang",
+        "contact": "Kontak",
+        "findSalon": "Temukan Salon Anda",
+        "categories": "Kategori",
+        "brands": "Merek",
+        "services": "Layanan",
+        "allProducts": "Semua Produk",
+        "explore": "Jelajahi",
+        "menu": "Menu navigasi",
+        "openMenu": "Buka menu",
+        "closeMenu": "Tutup menu",
+        "mainNav": "Navigasi utama",
+        "announcements": "Pengumuman"
+    },
+    "topbar": {
+        "promo": "Gratis ongkir untuk pesanan di atas Rp 500.000",
+        "shopeeLabel": "Belanja di Shopee"
+    },
+    "products": {
+        "category1": "Warna Rambut",
+        "category2": "Perawatan Rambut",
+        "category3": "Styling",
+        "category4": "Treatment",
+        "category5": "Alat",
+        "megaFeatured": "JELAJAHI PRODUK KAMI"
+    },
+    "brands": {
+        "alfaparf": "Alfaparf Milano",
+        "farmavita": "Farmavita",
+        "montibello": "Montibello",
+        "gamma": "Gamma+ Professional"
+    },
+    "services": {
+        "coloring": "Layanan Pewarnaan",
+        "treatment": "Layanan Treatment",
+        "styling": "Layanan Styling"
+    },
+    "home": {
+        "hero": {
+            "headline": "Menghubungkan Inovasi Rambut Global dengan Profesional Salon & Barber Indonesia",
+            "subheadline": "Importir dan distributor eksklusif merek perawatan rambut profesional terkemuka dari Italia dan Spanyol, melayani industri salon & barber Indonesia selama lebih dari 18 tahun.",
+            "title": "Mitra Distribusi Kecantikan Profesional",
+            "subtitle": "Produk, Edukasi, dan Dukungan Teknis untuk Salon & Barbershop di Indonesia",
+            "cta": {
+                "products": "Jelajahi Brand Kami",
+                "partner": "Bermitra dengan Kami"
+            }
+        },
+        "brands": {
+            "label": "Distributor Resmi",
+            "viewAll": "Lihat Semua Brand"
+        },
+        "pillars": {
+            "title": "Tiga Pilar Keunggulan",
+            "products": {
+                "title": "Produk Premium",
+                "description": "Brand internasional pilihan untuk hasil profesional"
+            },
+            "education": {
+                "title": "Edukasi Ahli",
+                "description": "Pelatihan teknis dan program sertifikasi"
+            },
+            "partnership": {
+                "title": "Kemitraan Strategis",
+                "description": "Dukungan bisnis dan peluang pertumbuhan"
+            }
+        }
+    },
+    "cta": {
+        "whatsapp": "Konsultasi WhatsApp",
+        "learnMore": "Pelajari Lebih Lanjut"
+    },
+    "footer": {
+        "copyright": "\u00a9 2026 PT Alfa Beauty Cosmetica. Hak cipta dilindungi.",
+        "privacy": "Kebijakan Privasi",
+        "terms": "Syarat Layanan",
+        "description": "Mitra distribusi kecantikan profesional untuk salon dan barbershop di Indonesia.",
+        "newsletterTitle": "Tetap terhubung",
+        "newsletterDesc": "Berlangganan untuk info produk, program edukasi, dan wawasan industri.",
+        "emailPlaceholder": "Alamat email",
+        "subscribeSuccess": "Terima kasih telah berlangganan.",
+        "faq": "FAQ",
+        "shipping": "Pengiriman",
+        "returns": "Pengembalian",
+        "accessibility": "Aksesibilitas",
+        "cookies": "Kebijakan Cookie",
+        "sections": {
+            "products": "Produk",
+            "company": "Perusahaan",
+            "support": "Dukungan",
+            "legal": "Hukum"
+        }
+    },
+    "error": {
+        "title": "Terjadi Kesalahan",
+        "description": "Kami mengalami kesalahan yang tidak terduga. Silakan coba lagi.",
+        "retry": "Coba lagi"
+    },
+    "notFound": {
+        "title": "Halaman Tidak Ditemukan",
+        "description": "Halaman yang Anda cari tidak ada atau telah dipindahkan.",
+        "backHome": "Kembali ke Beranda"
+    },
+    "pages": {
+        "home": { "title": "Beranda", "description": "Mitra distribusi kecantikan profesional untuk salon dan barbershop di Indonesia" },
+        "about": { "title": "Tentang Kami", "description": "Tentang PT. Alfa Beauty Cosmetica - Mitra distribusi kecantikan profesional" },
+        "contact": { "title": "Kontak", "description": "Hubungi Alfa Beauty Cosmetica untuk pertanyaan bisnis" },
+        "education": { "title": "Edukasi", "description": "Program pelatihan dan edukasi profesional untuk salon" },
+        "partnership": { "title": "Kemitraan", "description": "Jadilah mitra distribusi bersama Alfa Beauty Cosmetica" },
+        "privacy": { "title": "Kebijakan Privasi", "description": "Kebijakan privasi Alfa Beauty Cosmetica" },
+        "products": { "title": "Produk", "description": "Produk perawatan rambut profesional untuk salon dan barbershop" },
+        "terms": { "title": "Syarat Layanan", "description": "Syarat layanan Alfa Beauty Cosmetica" }
+    },
+    "maintenance": {
+        "subtitle": "Dalam Pemeliharaan",
+        "description": "Halaman ini sedang dalam proses pengembangan. Silakan kembali lagi nanti.",
+        "cta": "Kembali ke Beranda"
+    },
+    "whatsapp": {
+        "ariaLabel": "Hubungi via WhatsApp",
+        "chatLabel": "Chat WhatsApp"
+    },
+    "site": {
+        "title": "Alfa Beauty Cosmetica - Mitra Distribusi Kecantikan Profesional",
+        "titleTemplate": "%s | Alfa Beauty",
+        "description": "Produk, edukasi, dan dukungan teknis untuk salon & barbershop di Indonesia"
+    },
+    "globalError": {
+        "title": "Kesalahan Aplikasi",
+        "description": "Terjadi kesalahan kritis. Silakan muat ulang halaman.",
+        "retry": "Coba lagi"
+    }
+}
