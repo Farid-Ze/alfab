@@ -11,7 +11,11 @@
         "brands": "Brands",
         "services": "Services",
         "allProducts": "All Products",
+        "allEducation": "All Programs",
         "explore": "Explore",
+        "programs": "Programs",
+        "formats": "Formats",
+        "certification": "Certification",
         "menu": "Navigation menu",
         "openMenu": "Open menu",
         "closeMenu": "Close menu",
@@ -43,6 +47,19 @@
         "coloring": "Coloring Service",
         "treatment": "Treatment Service",
         "styling": "Styling Service"
+    },
+    "education": {
+        "colorMastery": "Color Mastery",
+        "cuttingTechnique": "Cutting Technique",
+        "treatmentSpecialist": "Treatment Specialist",
+        "businessGrowth": "Business Growth",
+        "workshop": "Hands-on Workshop",
+        "seminar": "Industry Seminar",
+        "onlineClass": "Online Class",
+        "inSalon": "In-Salon Training",
+        "alfaparfCertified": "Alfaparf Certified",
+        "colorExpert": "Color Expert",
+        "masterStylist": "Master Stylist"
     },
     "home": {
         "hero": {

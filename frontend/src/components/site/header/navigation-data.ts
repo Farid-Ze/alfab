@@ -124,6 +124,36 @@ export const navigationItems: NavItem[] = [
         id: "education",
         labelKey: "nav.education",
         href: "/education",
+        megaMenu: {
+            columns: [
+                {
+                    titleKey: "nav.programs",
+                    links: [
+                        { labelKey: "education.colorMastery", href: "/education?program=color-mastery" },
+                        { labelKey: "education.cuttingTechnique", href: "/education?program=cutting-technique" },
+                        { labelKey: "education.treatmentSpecialist", href: "/education?program=treatment-specialist" },
+                        { labelKey: "education.businessGrowth", href: "/education?program=business-growth" },
+                    ],
+                },
+                {
+                    titleKey: "nav.formats",
+                    links: [
+                        { labelKey: "education.workshop", href: "/education?format=workshop" },
+                        { labelKey: "education.seminar", href: "/education?format=seminar" },
+                        { labelKey: "education.onlineClass", href: "/education?format=online" },
+                        { labelKey: "education.inSalon", href: "/education?format=in-salon" },
+                    ],
+                },
+                {
+                    titleKey: "nav.certification",
+                    links: [
+                        { labelKey: "education.alfaparfCertified", href: "/education?cert=alfaparf" },
+                        { labelKey: "education.colorExpert", href: "/education?cert=color-expert" },
+                        { labelKey: "education.masterStylist", href: "/education?cert=master-stylist" },
+                    ],
+                },
+            ],
+        },
     },
     {
         id: "partnership",

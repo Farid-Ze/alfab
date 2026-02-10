@@ -172,7 +172,7 @@ export function MegaMenu({
                         )}
                     </div>
 
-                    {/* Bottom link — "ALL PRODUCTS →" */}
+                    {/* Bottom link — "ALL [X] →" */}
                     {item!.href && (
                         <div className="mt-10 pt-6 border-t border-neutral-100">
                             <Link
@@ -181,7 +181,11 @@ export function MegaMenu({
                                 className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-neutral-500 hover:text-neutral-900 transition-colors duration-150"
                                 tabIndex={isOpen ? 0 : -1}
                             >
-                                {translations.nav?.allProducts || "All Products"}
+                                {(() => {
+                                    const nav = translations.nav as Record<string, string> | undefined;
+                                    const key = item!.id === "products" ? "allProducts" : item!.id === "education" ? "allEducation" : undefined;
+                                    return (key && nav?.[key]) || getTranslation(translations, item!.labelKey);
+                                })()}
                                 <ArrowRight size={14} strokeWidth={1.5} />
                             </Link>
                         </div>

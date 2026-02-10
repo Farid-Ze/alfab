@@ -11,7 +11,11 @@
         "brands": "Merek",
         "services": "Layanan",
         "allProducts": "Semua Produk",
+        "allEducation": "Semua Program",
         "explore": "Jelajahi",
+        "programs": "Program",
+        "formats": "Format",
+        "certification": "Sertifikasi",
         "menu": "Menu navigasi",
         "openMenu": "Buka menu",
         "closeMenu": "Tutup menu",
@@ -43,6 +47,19 @@
         "coloring": "Layanan Pewarnaan",
         "treatment": "Layanan Treatment",
         "styling": "Layanan Styling"
+    },
+    "education": {
+        "colorMastery": "Penguasaan Warna",
+        "cuttingTechnique": "Teknik Potong",
+        "treatmentSpecialist": "Spesialis Perawatan",
+        "businessGrowth": "Pertumbuhan Bisnis",
+        "workshop": "Workshop Praktik",
+        "seminar": "Seminar Industri",
+        "onlineClass": "Kelas Online",
+        "inSalon": "Pelatihan di Salon",
+        "alfaparfCertified": "Sertifikasi Alfaparf",
+        "colorExpert": "Ahli Warna",
+        "masterStylist": "Master Stylist"
     },
     "home": {
         "hero": {
