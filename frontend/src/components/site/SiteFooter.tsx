@@ -48,7 +48,7 @@ export function SiteFooter({ locale }: SiteFooterProps) {
     return (
         <>
             {/* Trust Badges — above footer, white background */}
-            <TrustBadges badges={trustBadges} />
+            <TrustBadges badges={trustBadges} locale={locale} />
 
             <footer
                 className="site-footer text-neutral-300 print:bg-white print:text-neutral-900"
@@ -160,7 +160,7 @@ export function SiteFooter({ locale }: SiteFooterProps) {
             {/* Back to Top Button — fixed position */}
             <BackToTop
                 label={
-                    locale === "id" ? "Kembali ke atas" : "Back to top"
+                    getTranslation(translations as Record<string, unknown>, "footer.backToTop")
                 }
             />
         </>

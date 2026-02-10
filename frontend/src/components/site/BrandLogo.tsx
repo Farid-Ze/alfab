@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { type Locale } from "@/lib/i18n";
 import { siteConfig } from "@/lib/config";
 
 interface BrandLogoProps {
     /** Target locale for the logo link */
-    locale: string;
+    locale: Locale;
     /** Visual size variant */
     size?: "sm" | "lg" | "xl";
     /** Color variant */

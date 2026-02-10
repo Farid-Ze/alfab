@@ -93,6 +93,15 @@
         "returns": "Returns",
         "accessibility": "Accessibility",
         "cookies": "Cookie Policy",
+        "backToTop": "Back to top",
+        "subscribeLabel": "Subscribe",
+        "emailError": "Please enter a valid email address.",
+        "trust": {
+            "authentic": "All products are 100% genuine, sourced directly from manufacturers.",
+            "delivery": "Fast and reliable delivery to salons and barbershops across Indonesia.",
+            "support": "Dedicated professional support team for your business needs.",
+            "certified": "All products are registered and certified by BPOM Indonesia."
+        },
         "sections": {
             "products": "Products",
             "company": "Company",

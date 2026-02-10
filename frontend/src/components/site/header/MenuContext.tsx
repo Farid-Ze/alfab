@@ -10,7 +10,6 @@ import {
     createContext,
     useContext,
     useState,
-    useCallback,
     useMemo,
     type ReactNode,
 } from "react";
@@ -32,22 +31,12 @@ export function useMenu(): MenuContextValue {
 }
 
 export function MenuProvider({ children }: { children: ReactNode }) {
-    const [activeMenu, setActiveMenuState] = useState<string | null>(null);
-    const [isMobileOpen, setMobileOpenState] = useState(false);
-
-    const setActiveMenu = useCallback(
-        (id: string | null) => setActiveMenuState(id),
-        []
-    );
-
-    const setMobileOpen = useCallback(
-        (open: boolean) => setMobileOpenState(open),
-        []
-    );
+    const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const [isMobileOpen, setMobileOpen] = useState(false);
 
     const value = useMemo(
         () => ({ activeMenu, setActiveMenu, isMobileOpen, setMobileOpen }),
-        [activeMenu, setActiveMenu, isMobileOpen, setMobileOpen]
+        [activeMenu, isMobileOpen]
     );
 
     return (

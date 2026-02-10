@@ -111,12 +111,13 @@ export const navigationItems: NavItem[] = [
                     ],
                 },
             ],
-            featured: {
-                image: "/images/mega-menu-featured.jpg",
-                titleKey: "products.megaFeatured",
-                ctaKey: "nav.explore",
-                href: "/products",
-            },
+            // featured: uncomment when /public/images/mega-menu-featured.jpg is provided
+            // featured: {
+            //     image: "/images/mega-menu-featured.jpg",
+            //     titleKey: "products.megaFeatured",
+            //     ctaKey: "nav.explore",
+            //     href: "/products",
+            // },
         },
     },
     {
@@ -149,13 +150,13 @@ export const socialLinks: SocialLink[] = [
     {
         id: "instagram",
         label: "Instagram",
-        href: "https://instagram.com",
+        href: "https://instagram.com/alfabeauty", // TODO: replace with actual profile URL
         icon: "instagram",
     },
     {
         id: "facebook",
         label: "Facebook",
-        href: "https://facebook.com",
+        href: "https://facebook.com/alfabeauty", // TODO: replace with actual profile URL
         icon: "facebook",
     },
     {

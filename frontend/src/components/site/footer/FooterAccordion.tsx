@@ -43,7 +43,7 @@ export function FooterAccordion({ sections, locale }: FooterAccordionProps) {
                             {isExpanded && (
                                 <motion.ul
                                     id={panelId}
-                                    role="region"
+                                    role="list"
                                     initial={{ height: 0, opacity: 0 }}
                                     animate={{ height: "auto", opacity: 1 }}
                                     exit={{ height: 0, opacity: 0 }}

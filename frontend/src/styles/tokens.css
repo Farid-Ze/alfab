@@ -182,46 +182,31 @@
     --header-mega-bg: var(--color-neutral-0);
     --header-mega-shadow: var(--shadow-lg);
     --header-mega-border: var(--color-neutral-200);
-    --header-mega-overlay: rgba(0, 0, 0, 0.03);
 
     /* TopBar - Announcement Bar */
     --topbar-height: 2.25rem;
     --topbar-bg: var(--color-primary-900);
     --topbar-text: var(--color-neutral-400);
-    --topbar-shopee-text: var(--color-secondary-400, #f59e0b);
+    --topbar-shopee-text: var(--color-secondary-400);
 
     /* Combined Header + TopBar */
     --header-total-height: calc(var(--topbar-height) + var(--header-height));
 
-    /* Nav Underline Animation */
-    --nav-underline-height: 1px;
-    --nav-underline-color: var(--color-neutral-900);
-
     /* Footer */
     --footer-bg: var(--color-primary-900);
     --footer-text: var(--color-neutral-300);
-    --footer-heading: var(--color-neutral-0);
     --footer-link-hover: var(--color-neutral-0);
     --footer-border: rgba(255, 255, 255, 0.1);
 
     /* ============================================
      * ENTERPRISE COMPONENT TOKENS
-     * Skip Nav, Progress Bar, Backdrop, Back-to-Top,
-     * Trust Badges, Payment Badges
+     * Skip Nav, Back-to-Top, Trust Badges, Payment Badges
      * ============================================ */
 
     /* Skip Navigation */
     --skip-nav-bg: var(--color-primary-900);
     --skip-nav-text: var(--color-neutral-0);
     --skip-nav-focus-ring: var(--color-secondary-500);
-
-    /* Scroll Progress Bar */
-    --progress-bar-height: 2px;
-    --progress-bar-bg: var(--color-secondary-500);
-    --progress-bar-track: transparent;
-
-    /* Mega Menu Backdrop */
-    --mega-backdrop-bg: rgba(0, 0, 0, 0.15);
 
     /* Back to Top Button */
     --back-to-top-bg: var(--color-neutral-0);

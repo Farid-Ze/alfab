@@ -1,4 +1,4 @@
-import { env, clientEnv } from "./env";
+import { clientEnv } from "./env";
 
 /**
  * Application Configuration

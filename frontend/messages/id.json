@@ -93,6 +93,15 @@
         "returns": "Pengembalian",
         "accessibility": "Aksesibilitas",
         "cookies": "Kebijakan Cookie",
+        "backToTop": "Kembali ke atas",
+        "subscribeLabel": "Berlangganan",
+        "emailError": "Masukkan alamat email yang valid.",
+        "trust": {
+            "authentic": "Semua produk 100% asli, bersumber langsung dari produsen.",
+            "delivery": "Pengiriman cepat dan andal ke salon dan barbershop di seluruh Indonesia.",
+            "support": "Tim dukungan profesional yang siap membantu kebutuhan bisnis Anda.",
+            "certified": "Semua produk terdaftar dan tersertifikasi oleh BPOM Indonesia."
+        },
         "sections": {
             "products": "Produk",
             "company": "Perusahaan",

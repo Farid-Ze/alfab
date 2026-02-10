@@ -14,6 +14,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { Shield, Truck, Headphones, Award, Clock, CheckCircle } from "lucide-react";
+import { type Locale, t, getTranslation } from "@/lib/i18n";
 import { type TrustBadge } from "../header/navigation-data";
 
 const iconMap = {
@@ -27,9 +28,11 @@ const iconMap = {
 
 interface TrustBadgesProps {
     badges: TrustBadge[];
+    locale?: Locale;
 }
 
-export function TrustBadges({ badges }: TrustBadgesProps) {
+export function TrustBadges({ badges, locale = "id" }: TrustBadgesProps) {
+    const translations = t(locale);
     const sectionRef = useRef<HTMLDivElement>(null);
     const [isRevealed, setIsRevealed] = useState(false);
 
@@ -90,7 +93,7 @@ export function TrustBadges({ badges }: TrustBadgesProps) {
                                     {badge.label}
                                 </h3>
                                 <p className="text-xs text-neutral-500 leading-relaxed max-w-[200px]">
-                                    {badge.descriptionKey}
+                                    {getTranslation(translations as Record<string, unknown>, badge.descriptionKey)}
                                 </p>
                             </div>
                         );

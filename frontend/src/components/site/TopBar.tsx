@@ -3,8 +3,9 @@
  *
  * Enterprise features:
  * - Dismissible via X button with sessionStorage persistence
- * - Smooth collapse animation on dismiss
- * - Accessible: role="complementary", aria-label, close button with aria-label
+ * - Smooth collapse via CSS transition (max-height → 0) — CLS prevention
+ * - data-dismissed attribute drives CSS transition (no DOM removal)
+ * - Accessible: role="complementary", aria-label, aria-hidden when collapsed
  * - Print hidden
  */
 "use client";
@@ -54,16 +55,19 @@ export function TopBar({ locale }: TopBarProps) {
         topBarData.promoKey
     );
 
-    // Before hydration, render the bar (matches SSR). After hydration, respect dismissed state.
-    if (isHydrated && isDismissed) return null;
+    // Derive dismissed state: before hydration always show (SSR match),
+    // after hydration respect sessionStorage value.
+    const dismissed = isHydrated && isDismissed;
 
     return (
         <div
             className="topbar w-full print:hidden"
             role="complementary"
             aria-label={translations.nav?.announcements || "Announcements"}
+            aria-hidden={dismissed || undefined}
+            data-dismissed={dismissed || undefined}
         >
-            <div className="flex items-center justify-between h-full px-4 sm:px-10">
+            <div className="flex items-center justify-between h-[var(--topbar-height)] px-4 sm:px-10">
                 {/* Left spacer for centering on desktop */}
                 <div className="hidden lg:flex items-center min-w-[120px]" />
 
@@ -78,6 +82,7 @@ export function TopBar({ locale }: TopBarProps) {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="hidden sm:inline-block text-[11px] sm:text-xs font-medium tracking-wide text-[var(--topbar-shopee-text)] hover:text-white transition-colors duration-150 uppercase whitespace-nowrap"
+                            tabIndex={dismissed ? -1 : undefined}
                         >
                             {getTranslation(translations as Record<string, unknown>, "topbar.shopeeLabel")}
                         </a>
@@ -86,6 +91,7 @@ export function TopBar({ locale }: TopBarProps) {
                         onClick={handleDismiss}
                         className="p-1 text-neutral-500 hover:text-neutral-200 transition-colors duration-200 shrink-0"
                         aria-label={translations.nav?.dismissAnnouncement || "Dismiss announcement"}
+                        tabIndex={dismissed ? -1 : undefined}
                     >
                         <X size={14} strokeWidth={1.5} />
                     </button>

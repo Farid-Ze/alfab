@@ -5,14 +5,13 @@
  *
  * Features:
  * - Full-screen slide-in drawer from right
- * - Body scroll lock with proper cleanup
+ * - iOS-safe scroll lock via position:fixed + scroll position preservation
  * - Real focus trap cycling Tab/Shift+Tab within drawer
- * - Escape key close
- * - Auto-close on viewport resize to desktop (handled by useHeaderScroll)
+ * - Escape key close with focus return
  * - Expandable sub-menus with animation
  * - Active page indicator with aria-current
  * - Language switcher + contact link at bottom
- * - Print: hidden (inherits from framer-motion portal)
+ * - Print: hidden
  */
 
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -40,6 +39,7 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
     const pathname = usePathname();
     const pathWithoutLocale = pathname.replace(/^\/(en|id)/, "") || "/";
     const previousFocusRef = useRef<HTMLElement | null>(null);
+    const scrollYRef = useRef(0);
 
     // Store previously focused element for focus return
     useEffect(() => {
@@ -48,15 +48,34 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
         }
     }, [isOpen]);
 
-    // Body scroll lock with proper cleanup
+    // iOS-safe scroll lock via position:fixed + scroll preservation
     useEffect(() => {
         if (isOpen) {
-            document.body.style.overflow = "hidden";
+            scrollYRef.current = window.scrollY;
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+            document.body.style.position = "fixed";
+            document.body.style.top = `-${scrollYRef.current}px`;
+            document.body.style.left = "0";
+            document.body.style.right = "0";
+            document.body.style.paddingRight = `${scrollbarWidth}px`;
         } else {
-            document.body.style.overflow = "";
+            const savedY = scrollYRef.current;
+            document.body.style.position = "";
+            document.body.style.top = "";
+            document.body.style.left = "";
+            document.body.style.right = "";
+            document.body.style.paddingRight = "";
+            window.scrollTo(0, savedY);
         }
         return () => {
-            document.body.style.overflow = "";
+            const savedY = scrollYRef.current;
+            document.body.style.position = "";
+            document.body.style.top = "";
+            document.body.style.left = "";
+            document.body.style.right = "";
+            document.body.style.paddingRight = "";
+            window.scrollTo(0, savedY);
         };
     }, [isOpen]);
 
@@ -224,11 +243,10 @@ export function MobileNav({ locale, isOpen, onClose }: MobileNavProps) {
                                                 <Link
                                                     href={`/${locale}${item.href || ""}`}
                                                     onClick={handleClose}
-                                                    className={`block py-4 text-lg font-normal ${
-                                                        isActive
+                                                    className={`block py-4 text-lg font-normal ${isActive
                                                             ? "text-neutral-900 font-medium"
                                                             : "text-neutral-700"
-                                                    }`}
+                                                        }`}
                                                     role="menuitem"
                                                     aria-current={isActive ? "page" : undefined}
                                                 >

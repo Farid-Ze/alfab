@@ -1,15 +1,18 @@
 "use client";
 
 /**
- * SiteHeader — Aesop-inspired enterprise-grade header
+ * SiteHeader — Enterprise-grade header (post-refactor)
  *
- * Layout (matches aesop.com exactly, minus search):
+ * Layout (full mode — at top of page):
  * ┌─────────────────────────────────────────────────────┐
  * │ [TopBar] dark bg, centered promo, dismissible       │
  * ├─────────────────────────────────────────────────────┤
  * │ Contact | Service    LOGO (xl)   Partner | Lang     │ ← Utility Row
  * ├─────────────────────────────────────────────────────┤
  * │         Products  Education  Partnership  About     │ ← Nav Row (centered)
+ * │ ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐ │
+ * │   [MegaMenu] — absolute, top:100%, CSS-driven      │ ← Inside header
+ * │ └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘ │
  * └─────────────────────────────────────────────────────┘
  *
  * On scroll (compact mode):
@@ -18,6 +21,13 @@
  * ├─────────────────────────────────────────────────────┤
  * │ Logo(sm)  Products Education ... About   WA | Lang  │ ← Single row
  * └─────────────────────────────────────────────────────┘
+ *
+ * ─── Improvements over previous version ───────────────────
+ * ✓ useHoverIntent integrated — debounced open (60ms), grace period (200ms)
+ * ✓ MegaMenu placed INSIDE <header> — seamless hover + correct semantics
+ * ✓ Eliminated unnecessary <div role="none"> wrappers per nav item
+ * ✓ Consolidated triggerRef into lastFocusedIndex pattern
+ * ✓ CSS-driven MegaMenu positioning (no JS measurement)
  *
  * ─── Accessibility (WCAG 2.1 AA) ────────────────────────────
  * - Skip navigation link (bypass to #main-content)
@@ -34,10 +44,11 @@
  * - Volatile state in refs for zero-dep scroll handler
  * - Dynamic import for MobileNav (no SSR, code-split)
  * - CSS data-attribute driven transitions (no inline style churn)
+ * - useHoverIntent timers managed in refs (stable callbacks)
  *
  * ─── UX ──────────────────────────────────────────────────────
- * - Hover intent with safe-triangle grace period
- * - Mega menu backdrop overlay
+ * - Hover intent with safe-triangle grace period via useHoverIntent
+ * - MegaMenu inside header enables seamless mouse movement to panel
  * - Auto-close mobile nav on viewport resize to desktop
  * - Reduced motion automatic detection
  */
@@ -54,6 +65,7 @@ import {
     useScroll,
     useMenu,
     useHeaderScroll,
+    useHoverIntent,
     navigationItems,
 } from "./header";
 import { MegaMenu } from "./MegaMenu";
@@ -94,7 +106,7 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
 
     // Refs for roving tabindex keyboard navigation
     const navItemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-    const triggerRef = useRef<HTMLAnchorElement | null>(null);
+    const lastFocusedIndex = useRef<number>(0);
 
     useHeaderScroll({ threshold: 20, scrollDelta: 5 });
 
@@ -102,6 +114,24 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
 
     // Stable close callback
     const closeMenu = useCallback(() => setActiveMenu(null), [setActiveMenu]);
+
+    /* ─── Hover Intent ─────────────────────────────────────── */
+    const {
+        handleNavEnter,
+        handleNavLeave,
+        handlePanelEnter,
+        handlePanelLeave,
+        closeImmediate,
+    } = useHoverIntent({
+        onOpen: (id) => {
+            const index = navigationItems.findIndex((item) => item.id === id);
+            if (index >= 0) lastFocusedIndex.current = index;
+            setActiveMenu(id);
+        },
+        onClose: closeMenu,
+        openDelay: 60,
+        closeDelay: 200,
+    });
 
     /* ─── Roving Tabindex Keyboard Handler ─────────────────── */
     const handleNavKeyDown = useCallback(
@@ -137,28 +167,28 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                 case " ": {
                     if (hasMegaMenu) {
                         e.preventDefault();
-                        triggerRef.current = items[index] ?? null;
+                        lastFocusedIndex.current = index;
                         setActiveMenu(itemId);
                     }
                     break;
                 }
                 case "Escape": {
-                    closeMenu();
-                    triggerRef.current?.focus();
+                    closeImmediate();
+                    navItemRefs.current[lastFocusedIndex.current]?.focus();
                     break;
                 }
             }
         },
-        [setActiveMenu, closeMenu]
+        [setActiveMenu, closeImmediate]
     );
 
     /* ─── Focus-return on mega menu close ──────────────────── */
     const handleMegaMenuClose = useCallback(() => {
-        closeMenu();
+        closeImmediate();
         requestAnimationFrame(() => {
-            triggerRef.current?.focus();
+            navItemRefs.current[lastFocusedIndex.current]?.focus();
         });
-    }, [closeMenu]);
+    }, [closeImmediate]);
 
     // Resolve active nav item for the single MegaMenu instance
     const activeNavItem = useMemo(
@@ -192,13 +222,13 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                 data-mode={headerMode}
                 role="banner"
             >
-                {/* TopBar — inside sticky header so it persists on scroll (Aesop pattern) */}
+                {/* TopBar — inside sticky header so it persists on scroll */}
                 <TopBar locale={locale} />
 
                 {/* ─── Utility Row — Desktop only, collapses in compact mode ─── */}
                 <div className="header-utility-row hidden lg:block border-b border-neutral-100 overflow-hidden">
                     <div className="grid grid-cols-3 items-center h-12 px-6 lg:px-10">
-                        {/* Left: Contact + Customer Service (Aesop: "Stores" + "Customer service") */}
+                        {/* Left: Contact + Customer Service */}
                         <div className="flex items-center gap-6">
                             <Link
                                 href={`/${locale}/contact`}
@@ -216,12 +246,12 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                             </a>
                         </div>
 
-                        {/* Center: Prominent brand logo — xl size, Aesop-style hero mark */}
+                        {/* Center: Prominent brand logo */}
                         <div className="flex justify-center">
                             <BrandLogo locale={locale} size="xl" variant="dark" />
                         </div>
 
-                        {/* Right: Become Partner + Language Switcher (Aesop: "Email sign up" + "Account" + "Cart") */}
+                        {/* Right: Become Partner + Language Switcher */}
                         <div className="flex items-center justify-end gap-6">
                             <Link
                                 href={`/${locale}/partnership`}
@@ -238,14 +268,14 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                     </div>
                 </div>
 
-                {/* ─── Navigation Row — centered links only in full mode ─── */}
-                <div className="header-nav-row hidden lg:block">
+                {/* ─── Navigation Row — centered links, MegaMenu inside ─── */}
+                <div className="header-nav-row hidden lg:block relative">
                     <nav
                         className="relative flex items-center justify-center px-6 lg:px-10"
                         aria-label={translations.nav?.mainNav || "Main navigation"}
                         role="menubar"
                     >
-                        {/* Compact mode: small logo on the left (Aesop scroll pattern) */}
+                        {/* Compact mode: small logo on the left */}
                         {isCompact && (
                             <div className="absolute left-6 lg:left-10">
                                 <BrandLogo locale={locale} size="sm" variant="dark" />
@@ -258,47 +288,36 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                             const hasMega = !!item.megaMenu;
 
                             return (
-                                <div
+                                <Link
                                     key={item.id}
-                                    className="relative"
-                                    role="none"
-                                    onMouseEnter={
-                                        hasMega
-                                            ? () => {
-                                                  triggerRef.current = navItemRefs.current[index] ?? null;
-                                                  setActiveMenu(item.id);
-                                              }
-                                            : undefined
-                                    }
-                                    onMouseLeave={hasMega ? closeMenu : undefined}
+                                    ref={(el) => {
+                                        navItemRefs.current[index] = el;
+                                    }}
+                                    href={itemPath || `/${locale}`}
+                                    className="nav-link-underline relative block py-3 px-5 text-sm text-neutral-700 hover:text-neutral-900 transition-colors duration-200"
+                                    role="menuitem"
+                                    tabIndex={index === 0 ? 0 : -1}
+                                    aria-expanded={hasMega ? activeMenu === item.id : undefined}
+                                    aria-haspopup={hasMega ? "menu" : undefined}
+                                    aria-current={isCurrent ? "page" : undefined}
+                                    onKeyDown={(e) => handleNavKeyDown(e, index, item.id, hasMega)}
+                                    onFocus={() => {
+                                        lastFocusedIndex.current = index;
+                                        navItemRefs.current.forEach((ref, i) => {
+                                            if (ref) ref.tabIndex = i === index ? 0 : -1;
+                                        });
+                                    }}
+                                    onMouseEnter={hasMega ? () => handleNavEnter(item.id) : undefined}
+                                    onMouseLeave={hasMega ? handleNavLeave : undefined}
                                 >
-                                    <Link
-                                        ref={(el) => {
-                                            navItemRefs.current[index] = el;
-                                        }}
-                                        href={itemPath || `/${locale}`}
-                                        className="nav-link-underline relative block py-3 px-5 text-sm text-neutral-700 hover:text-neutral-900 transition-colors duration-200"
-                                        role="menuitem"
-                                        tabIndex={index === 0 ? 0 : -1}
-                                        aria-expanded={hasMega ? activeMenu === item.id : undefined}
-                                        aria-haspopup={hasMega ? "menu" : undefined}
-                                        aria-current={isCurrent ? "page" : undefined}
-                                        onKeyDown={(e) => handleNavKeyDown(e, index, item.id, hasMega)}
-                                        onFocus={() => {
-                                            navItemRefs.current.forEach((ref, i) => {
-                                                if (ref) ref.tabIndex = i === index ? 0 : -1;
-                                            });
-                                        }}
-                                    >
-                                        {translations.nav?.[
-                                            item.id as keyof typeof translations.nav
-                                        ] || item.labelKey}
-                                    </Link>
-                                </div>
+                                    {translations.nav?.[
+                                        item.id as keyof typeof translations.nav
+                                    ] || item.labelKey}
+                                </Link>
                             );
                         })}
 
-                        {/* Compact mode: right-side actions (Aesop: search icon + cart icon) */}
+                        {/* Compact mode: right-side actions */}
                         {isCompact && (
                             <div className="absolute right-6 lg:right-10 flex items-center gap-4">
                                 <a
@@ -318,6 +337,16 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                             </div>
                         )}
                     </nav>
+
+                    {/* MegaMenu — inside header for seamless hover + CSS positioning */}
+                    <MegaMenu
+                        item={activeNavItem}
+                        isOpen={!!activeNavItem}
+                        onClose={handleMegaMenuClose}
+                        locale={locale}
+                        onPanelEnter={handlePanelEnter}
+                        onPanelLeave={handlePanelLeave}
+                    />
                 </div>
 
                 {/* ─── Mobile header bar ─── */}
@@ -334,14 +363,6 @@ function SiteHeaderInner({ locale }: { locale: Locale }) {
                     </button>
                 </div>
             </header>
-
-            {/* Single MegaMenu instance */}
-            <MegaMenu
-                item={activeNavItem}
-                isOpen={!!activeNavItem}
-                onClose={handleMegaMenuClose}
-                locale={locale}
-            />
 
             <MobileNav
                 locale={locale}

@@ -6,6 +6,7 @@ export { HeaderProvider, type HeaderMode } from "./HeaderContext";
 export { useScroll } from "./ScrollContext";
 export { useMenu } from "./MenuContext";
 export { useHeaderScroll } from "./useHeaderScroll";
+export { useHoverIntent } from "./useHoverIntent";
 export {
     navigationItems,
     type NavItem,

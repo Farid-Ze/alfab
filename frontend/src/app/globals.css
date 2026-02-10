@@ -296,32 +296,6 @@ footer a:hover {
 }
 
 /* ============================================
- * SCROLL PROGRESS BAR
- * Thin progress indicator at top of header
- * ============================================ */
-
-.scroll-progress-track {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--progress-bar-height);
-    background: var(--progress-bar-track);
-    overflow: hidden;
-    z-index: 1;
-    pointer-events: none;
-}
-
-.scroll-progress-bar {
-    width: 100%;
-    height: 100%;
-    background: var(--progress-bar-bg);
-    transform-origin: left;
-    will-change: transform;
-    transition: none;
-}
-
-/* ============================================
  * BACK TO TOP BUTTON
  * Fixed position bottom-right scroll-to-top
  * ============================================ */
@@ -475,6 +449,57 @@ footer a:hover {
 }
 
 /* ============================================
+ * MEGA MENU PANEL — CSS-driven positioning
+ * Positioned absolutely inside <header> so no JS
+ * measurement is needed (enterprise pattern: Aesop, Apple, Stripe).
+ * ============================================ */
+
+.mega-menu-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: var(--z-fixed);
+    background-color: var(--header-mega-bg);
+    border-bottom: 1px solid var(--header-mega-border);
+    box-shadow: var(--header-mega-shadow);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity var(--duration-normal) var(--ease-default),
+                visibility var(--duration-normal) var(--ease-default),
+                transform var(--duration-normal) var(--ease-default);
+    pointer-events: none;
+}
+
+.mega-menu-panel[data-open="true"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* ============================================
+ * TOPBAR — Smooth collapse on dismiss (CLS prevention)
+ * Uses max-height transition instead of removing the
+ * element from the DOM which causes layout shift.
+ * ============================================ */
+
+.topbar {
+    background-color: var(--topbar-bg);
+    color: var(--topbar-text);
+    max-height: var(--topbar-height);
+    overflow: hidden;
+    transition: max-height var(--duration-slow) var(--ease-default),
+                opacity var(--duration-normal) var(--ease-default);
+}
+
+.topbar[data-dismissed="true"] {
+    max-height: 0;
+    opacity: 0;
+}
+
+/* ============================================
  * COMPONENT — Token-driven utility classes
  * Replaces inline style={{ }} with class selectors.
  * ============================================ */
@@ -486,13 +511,6 @@ footer a:hover {
 
 .tracking-widest {
     letter-spacing: var(--tracking-widest);
-}
-
-/* TopBar */
-.topbar {
-    background-color: var(--topbar-bg);
-    color: var(--topbar-text);
-    height: var(--topbar-height);
 }
 
 /* Footer */
@@ -527,10 +545,6 @@ footer a:hover {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
-    }
-
-    .scroll-progress-bar {
-        transition: none !important;
     }
 
     .trust-badge-item {
@@ -583,19 +597,3 @@ footer a:hover {
     }
 }
 
-/* ============================================
- * SR-ONLY UTILITY
- * Screen reader only content — visually hidden
- * ============================================ */
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-}
